@@ -1,0 +1,72 @@
+# reset
+X=$'\e[0m'           # text reset
+
+# regular colors
+R=$'\e[0;31m'        # red
+G=$'\e[0;32m'        # green
+B=$'\e[0;34m'        # blue
+C=$'\e[0;36m'        # cyan
+M=$'\e[0;35m'        # purple
+Y=$'\e[0;33m'        # yellow
+K=$'\e[0;30m'        # black
+W=$'\e[0;37m'        # white
+
+# bold
+EMR=$'\e[1;31m'      # red
+EMG=$'\e[1;32m'      # green
+EMB=$'\e[1;34m'      # blue
+EMC=$'\e[1;36m'      # cyan
+EMM=$'\e[1;35m'      # purple
+EMY=$'\e[1;33m'      # yellow
+EMK=$'\e[1;30m'      # black
+EMW=$'\e[1;37m'      # white
+
+# underline
+ULR=$'\e[4;31m'      # red
+ULG=$'\e[4;32m'      # green
+ULB=$'\e[4;34m'      # blue
+ULC=$'\e[4;36m'      # cyan
+ULM=$'\e[4;35m'      # purple
+ULY=$'\e[4;33m'      # yellow
+ULK=$'\e[4;30m'      # black
+ULW=$'\e[4;37m'      # white
+
+# Background
+BGR=$'\e[41m'        # red
+BGG=$'\e[42m'        # green
+BGB=$'\e[44m'        # blue
+BGC=$'\e[46m'        # cyan
+BGM=$'\e[45m'        # purple
+BGY=$'\e[43m'        # yellow
+BGK=$'\e[40m'        # black
+BGW=$'\e[47m'        # white
+
+# high intensty
+HIR=$'\e[0;91m'      # red
+HIG=$'\e[0;92m'      # green
+HIB=$'\e[0;94m'      # blue
+HIC=$'\e[0;96m'      # cyan
+HIM=$'\e[0;95m'      # purple
+HIY=$'\e[0;93m'      # yellow
+HIK=$'\e[0;90m'      # black
+HIW=$'\e[0;97m'      # white
+
+# bold high intensty
+HIEMR=$'\e[1;91m'    # red
+HIEMG=$'\e[1;92m'    # green
+HIEMB=$'\e[1;94m'    # blue
+HIEMC=$'\e[1;96m'    # cyan
+HIEMM=$'\e[1;95m'    # purple
+HIEMY=$'\e[1;93m'    # yellow
+HIEMK=$'\e[1;90m'    # black
+HIEMW=$'\e[1;97m'    # white
+
+# high intensty backgrounds
+HIBGR=$'\e[0;101m'   # red
+HIBGG=$'\e[0;102m'   # green
+HIBGB=$'\e[0;104m'   # blue
+HIBGC=$'\e[0;106m'   # cyan
+HIBGM=$'\e[10;95m'   # purple
+HIBGY=$'\e[0;103m'   # yellow
+HIBGK=$'\e[0;100m'   # black
+

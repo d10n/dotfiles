@@ -1,0 +1,27 @@
+" vim: set ts=2 sw=2:
+
+NeoBundle 'ervandew/supertab'
+NeoBundle 'flazz/vim-colorschemes'
+NeoBundle 'terryma/vim-multiple-cursors'
+NeoBundle 'terryma/vim-expand-region'
+NeoBundle 'bkad/CamelCaseMotion'
+NeoBundle 'Shougo/neocomplcache'
+NeoBundle 'editorconfig/editorconfig-vim'
+NeoBundle 'PreserveNoEOL'
+
+" CamelCaseMotion
+" w/b/e through camelCase and under_score
+map <silent> <S-W> <Plug>CamelCaseMotion_w
+map <silent> <S-B> <Plug>CamelCaseMotion_b
+map <silent> <S-E> <Plug>CamelCaseMotion_e
+"map <silent> w <Plug>CamelCaseMotion_w
+"map <silent> b <Plug>CamelCaseMotion_b
+"map <silent> e <Plug>CamelCaseMotion_e
+"sunmap w
+"sunmap b
+"sunmap e
+
+if filereadable($HOME . '/.vimrc.plugins.local')
+  source ~/.vimrc.plugins.local
+endif
+

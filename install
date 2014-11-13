@@ -1,0 +1,75 @@
+#!/usr/bin/env python
+
+import os
+import glob
+import signal
+import sys
+import textwrap
+
+dotfile_directory = os.path.dirname(os.path.realpath(__file__))
+dotfile_directory_files = glob.glob(dotfile_directory + '/*')
+file_blacklist = [os.path.basename(__file__), 'README.md']
+
+
+def main():
+    print(textwrap.dedent("""
+        Update the dotfiles by running "git pull" in {}
+        Check README.md for changes when you update.
+        """).strip().format(dotfile_directory))
+    dotfiles, executables = gather_dotfiles()
+    symlink_dotfiles(dotfiles)
+    execute_executables(executables)
+
+
+def gather_dotfiles():
+    dotfiles = []
+    executables = []
+    for dotfile in dotfile_directory_files:
+        dotfile_name = os.path.basename(dotfile)
+        if not os.path.isfile(dotfile):
+            continue
+        if dotfile_name in file_blacklist:
+            continue
+        if dotfile_name.endswith('.disabled'):
+            continue
+        if os.access(dotfile, os.X_OK):
+            executables.append(dotfile)
+        else:
+            dotfiles.append(dotfile)
+    return dotfiles, executables
+
+
+def symlink_dotfiles(dotfiles):
+    for dotfile in dotfiles:
+        dotfile_name = os.path.basename(dotfile)
+        install = raw_input('Install ' + dotfile_name + '? [Y/n]: ')
+        if not (install == '' or install.lower() == 'y'):
+            continue
+        install_location = os.path.join(
+            os.path.expanduser('~'), '.' + dotfile_name)
+        if os.path.exists(install_location):
+            print(install_location + ' already exists, skipping')
+            continue
+        print('Symlink ' + dotfile + ' to ' + install_location)
+        os.symlink(dotfile, install_location)
+
+
+def execute_executables(executables):
+    for executable in executables:
+        run = raw_input('Run ' + executable + '? [Y/n]: ')
+        if not (run == '' or run.lower() == 'y'):
+            continue
+        print('Execute ' + executable)
+        os.system(executable)
+
+
+def handle_sigint():
+    def clean_exit(signal, frame):
+        print('')
+        sys.exit(0)
+    signal.signal(signal.SIGINT, clean_exit)
+
+
+if __name__ == '__main__':
+    handle_sigint()
+    main()
