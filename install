@@ -6,6 +6,12 @@ import signal
 import sys
 import textwrap
 
+# Python 2/3 compatibility
+try:
+    input = raw_input
+except NameError:
+    pass
+
 dotfile_directory = os.path.dirname(os.path.realpath(__file__))
 dotfile_directory_files = glob.glob(dotfile_directory + '/*')
 file_blacklist = [os.path.basename(__file__), 'README.md']
@@ -42,7 +48,7 @@ def gather_dotfiles():
 def symlink_dotfiles(dotfiles):
     for dotfile in dotfiles:
         dotfile_name = os.path.basename(dotfile)
-        install = raw_input('Install ' + dotfile_name + '? [Y/n]: ')
+        install = input('Install ' + dotfile_name + '? [Y/n]: ')
         if not (install == '' or install.lower() == 'y'):
             continue
         install_location = os.path.join(
@@ -56,7 +62,7 @@ def symlink_dotfiles(dotfiles):
 
 def execute_executables(executables):
     for executable in executables:
-        run = raw_input('Run ' + executable + '? [Y/n]: ')
+        run = input('Run ' + executable + '? [Y/n]: ')
         if not (run == '' or run.lower() == 'y'):
             continue
         print('Execute ' + executable)
