@@ -112,7 +112,12 @@ pws2() {
 
 
 setup_highlighting() {
-    local zsh_syntax_highlight=/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    local zsh_syntax_highlight
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        zsh_syntax_highlight=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        zsh_syntax_highlight=/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    fi
     [[ -f "$zsh_syntax_highlight" ]] && . "$zsh_syntax_highlight"
 }
 setup_highlighting && unset -f setup_highlighting
