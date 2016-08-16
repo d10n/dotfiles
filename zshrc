@@ -95,6 +95,14 @@ man() {
     command man "$@"
 }
 
+findexact() {
+    if [[ -z "$1" ]] || [[ -z "$2" ]]; then
+        echo "Usage: $0 <path> <filename>"
+        return 1
+    fi
+    find "$1" -name "$(echo $2|sed 's/\(\[\|\]\|\*\|\?\)/\\\1/g')"
+}
+
 pws() {
     # /usr/local/bin -> /u/l/bin
     # ~/code/hxsl -> ~/c/hxsl
