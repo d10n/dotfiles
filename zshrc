@@ -144,7 +144,7 @@ fi
 #PROMPT="%n@%m:%~"'${vcs_info_msg_0_}'$'\n'"%# "  # no color + vcs_info
 #PROMPT="%{%B%}%n@%m:%~ "'${vcs_info_msg_0_}'$'\n'"%#%{$reset_color%} "  # bold + vcs_info
 #PROMPT="%{$UC$BGUC%}[%{$K$BGUC%}%n %{$K$BGW%} %m%{$W$BGW%}]%{$X$HIBGK%} %~ %{$X%}"'${vcs_info_msg_0_}'$'\n'"%{$X$EMW%}%#%{$X%} "  # bash.colors color + vcs_info
-PROMPT="%{$UC$BGUC%}[%{$fg[black]$BGUC%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "  # zsh color + vcs_info
+PROMPT="%{$UC$BGUC%}[%{$fg[black]$BGUC%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"$fg[white]%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "  # zsh color + vcs_info
 autoload -Uz vcs_info
 precmd() {
     vcs_info
