@@ -224,12 +224,23 @@ key[Enter]=${terminfo[kent]}  # fix OS X numpad enter
 [[ -n "${key[PageDown]}" ]]  && bindkey  "${key[PageDown]}" end-of-buffer-or-history
 [[ -n "${key[Enter]}"    ]]  && bindkey  "${key[Enter]}"    accept-line
 
-ZSH_HISTORY_SUBSTRING_SEARCH='/usr/local/opt/zsh-history-substring-search/zsh-history-substring-search.zsh'
-if [[ -f "$ZSH_HISTORY_SUBSTRING_SEARCH" ]]; then
-    . "$ZSH_HISTORY_SUBSTRING_SEARCH"
-    [[ -n "${key[Up]}"   ]]  && bindkey  "${key[Up]}"       history-substring-search-up
-    [[ -n "${key[Down]}" ]]  && bindkey  "${key[Down]}"     history-substring-search-down
-fi
+setup_history_search() {
+    local zsh_history_substring_search
+    if [[ -d ~/.config/dotfiles/zsh-history-substring-search ]]; then
+        zsh_history_substring_search=~/.config/zsh-history-substring-search/zsh-history-substring-search.zsh
+    elif [[ "$OSTYPE" == "linux-gnu" ]]; then
+        zsh_history_substring_search=/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+    elif [[ "$OSTYPE" == "darwin"* ]]; then
+        zsh_history_substring_search=/usr/local/opt/zsh-history-substring-search/zsh-history-substring-search.zsh
+    fi
+    if [[ -f "$zsh_history_substring_search" ]]; then
+        . "$zsh_history_substring_search"
+        [[ -n "${key[Up]}"   ]]  && bindkey  "${key[Up]}"       history-substring-search-up
+        [[ -n "${key[Down]}" ]]  && bindkey  "${key[Down]}"     history-substring-search-down
+    fi
+}
+setup_history_search && unset -f setup_history_search
+
 
 # Finally, make sure the terminal is in application mode, when zle is
 # active. Only then are the values from $terminfo valid.
