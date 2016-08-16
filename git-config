@@ -29,6 +29,9 @@ git config --global alias.ds "diff --patience --staged"
 # Show branches
 git config --global alias.b "branch"
 
+# Update both branches and tags
+git config --global alias.f '!'"printf 'branches: '; git fetch --all --prune; printf 'tags: ';  git fetch --all --prune --tags"
+
 # Add color to git output
 git config --global color.ui auto
 
