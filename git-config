@@ -11,6 +11,9 @@ git config --global alias.oldest-ancestor '!''bash -c '\''diff --old-line-format
 # Pretty log graph
 git config --global alias.prettyLogGraph "log --graph --all --format=format:'%C(auto)%h - (%cr) %d %s %C(yellow)%cn%C(reset)' --abbrev-commit --date=relative"
 
+# Sort branch by date
+git config --global alias.bs $'for-each-ref --sort=committerdate refs/heads/ --format="%(committerdate:relative)\t%(refname:short) %(color:red)%(subject) %(color:blue)%(authorname)"'
+
 # Short log
 git config --global alias.l !"git --no-pager log --graph --format='%C(auto)%h - (%cr) %d %s %C(yellow)%cn%C(reset)' -5"
 
