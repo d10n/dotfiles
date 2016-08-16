@@ -38,6 +38,9 @@ git config --global color.ui auto
 # Push only the current branch
 git config --global push.default current
 
+# Show other changes when doing git pull --rebase
+git config --global rebase.stat true
+
 # easy git instaweb
 git config --global instaweb.local true
 git config --global instaweb.httpd webrick
