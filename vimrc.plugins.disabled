@@ -1,5 +1,6 @@
 " vim: set ts=2 sw=2:
 
+NeoBundle 'fatih/vim-go'
 NeoBundle 'Rip-Rip/clang_complete'
 NeoBundle 'jdonaldson/vaxe'
 NeoBundle 'scrooloose/syntastic'
