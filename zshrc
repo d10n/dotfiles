@@ -82,6 +82,8 @@ apply_aliases() {
     alias more="less"
     alias df="df -h"
     alias du="du -ch"
+
+    alias tmux='tmux -2'
 }
 apply_aliases && unset -f apply_aliases
 
