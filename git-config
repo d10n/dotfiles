@@ -5,6 +5,9 @@ set -x
 # NeoBundle makes vim bork out when run as vi (which is git default)
 #git config --global core.editor $(which vim)
 
+# Find the branching point http://stackoverflow.com/a/4991675
+git config --global alias.oldest-ancestor '!''bash -c '\''diff --old-line-format= --new-line-format= <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1'\'' -'
+
 # Pretty log graph
 git config --global alias.prettyLogGraph "log --graph --all --format=format:'%C(auto)%h - (%cr) %d %s %C(yellow)%cn%C(reset)' --abbrev-commit --date=relative"
 
