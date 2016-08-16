@@ -11,7 +11,7 @@ setopt EXTENDED_GLOB NO_NOMATCH NOTIFY
 setopt HIST_IGNORE_SPACE HIST_IGNORE_DUPS
 setopt COMPLETE_ALIASES
 setopt PROMPT_SUBST  # variables in prompt
-#setopt SH_WORD_SPLIT
+#setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
 REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, show its time
 
 bindkey -e
