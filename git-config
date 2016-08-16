@@ -15,7 +15,7 @@ git config --global alias.prettyLogGraph "log --graph --all --format=format:'%C(
 git config --global alias.bs $'for-each-ref --sort=committerdate refs/heads/ --format="%(committerdate:relative)\t%(refname:short) %(color:red)%(subject) %(color:blue)%(authorname)"'
 
 # Short log
-git config --global alias.l !"git --no-pager log --graph --format='%C(auto)%h - (%cr) %d %s %C(yellow)%cn%C(reset)' -5"
+git config --global alias.l '!'"git --no-pager log --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)' -5"
 
 # Short status
 git config --global alias.s "status -s"
