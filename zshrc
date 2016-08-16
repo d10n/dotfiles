@@ -155,8 +155,8 @@ precmd() {
 
 zstyle ':vcs_info:*' enable git  #hg svn
 zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:git*' formats $'\n'"(%s) %7.7i%c%u %b%m"
-zstyle ':vcs_info:git*' actionformats $'\n'"(%s|%a) %7.7i%c%u %b%m"
+zstyle ':vcs_info:git*' formats $'\n'"(%s) %7.7i%c%u %b %m"
+zstyle ':vcs_info:git*' actionformats $'\n'"(%s|%a) %7.7i%c%u %b %m"
 zstyle ':vcs_info:git*' stagedstr ' C'
 zstyle ':vcs_info:git*' unstagedstr ' U'
 zstyle ':vcs_info:git*:*' get-revision true
