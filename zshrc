@@ -72,6 +72,7 @@ apply_aliases() {
     alias lt="ls -rT"  # sort by timestamp
 
     # modified commands
+    which gtar &>/dev/null && alias tar="gtar"
     which colordiff &>/dev/null && alias diff="colordiff"
     which wget &>/dev/null && alias wget="wget --content-disposition"
     alias more="less"
