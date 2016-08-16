@@ -63,7 +63,11 @@ apply_aliases() {
         export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
         alias ls="ls -Gp"
     fi
-    [[ "$OSTYPE" == "linux-gnu" ]] && alias ls="ls --color=auto -p"
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        alias ls="ls --color=auto -p"
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
+    fi
     alias l="ls"
     alias la="ls -a"
     alias ll="ls -la"
