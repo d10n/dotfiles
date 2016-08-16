@@ -1,5 +1,6 @@
 " vim: set ts=2 sw=2:
 
+NeoBundle 'tpope/vim-eunuch'
 NeoBundle 'ervandew/supertab'
 NeoBundle 'flazz/vim-colorschemes'
 NeoBundle 'terryma/vim-multiple-cursors'
