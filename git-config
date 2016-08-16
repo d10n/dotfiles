@@ -1,4 +1,6 @@
+#!/bin/bash
 # Execute this script, or run individual lines you want. Don't symlink this to ~/.gitconfig.
+set -x
 
 # NeoBundle makes vim bork out when run as vi (which is git default)
 #git config --global core.editor $(which vim)
