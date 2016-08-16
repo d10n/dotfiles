@@ -23,6 +23,9 @@ git config --global alias.s "status -s"
 # More readable diff
 git config --global alias.d "diff --patience"
 
+# Diff staged
+git config --global alias.ds "diff --patience --staged"
+
 # Show branches
 git config --global alias.b "branch"
 
