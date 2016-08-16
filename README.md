@@ -20,10 +20,13 @@ Make local customizations with:
 ### .zshrc
 
 Required usage notes:
+
  * To use zsh as the default shell, run `chsh -s $(which zsh)`
  * Make `.zprofile` and `.profile`
 
+
 Recommended usage notes:
+
  * Optionally,
     * `brew install zsh-syntax-highlighting` to get colors while you type
     * `brew install zsh-history-substring-search` to make searching history easy; for example, type `gradle` and press up arrow to go through the history of all commands saying `gradle`.
@@ -49,6 +52,7 @@ Recommended usage notes:
 These plugins are generally useful. If you don't want to install plugins, don't make a .vimrc.plugins file. When first starting vim after saving this file, the plugins will install and you will be prompted to press enter a few times.
 
 Features:
+
  * Tab completion
  * Extra color schemes
  * Sublime Text-like multiple cursors
