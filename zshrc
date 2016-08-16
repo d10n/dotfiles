@@ -1,6 +1,7 @@
 [[ -z "${ORIGINAL_VARS}" ]] && ORIGINAL_VARS="$(declare -px)"
 typeset +x ORIGINAL_VARS
-[[ -n "${FIXPATH}" ]] && PATH="$FIXPATH" && unset FIXPATH
+[[ -n "${FIX_PATH}" ]] && PATH="$FIX_PATH" && unset FIX_PATH
+[[ -n "${RUN_WITH}" ]] && eval "$RUN_WITH" && unset RUN_WITH
 
 HISTFILE=~/.histfile
 HISTSIZE=100000
@@ -47,11 +48,12 @@ set_iterm_tab_rgb() {
 }
 
 reset_env() {
+    local command="$1"
     # assume login shell for now
-    # OS X messes with the path in /etc/profile and /etc/zprofile. FIXPATH works around this
-    exec env -i ORIGINAL_VARS="$ORIGINAL_VARS" "$(which zsh)" -d -c '
+    # OS X messes with the path in /etc/profile and /etc/zprofile. FIX_PATH works around this
+    exec env -i ORIGINAL_VARS="$ORIGINAL_VARS" RUN_WITH="$command" "$(which zsh)" -d -c '
         eval "$ORIGINAL_VARS"
-        FIXPATH="$PATH" $(which zsh) -l'
+        FIX_PATH="$PATH" RUN_WITH="$RUN_WITH" $(which zsh) -l'
 }
 
 apply_aliases() {
