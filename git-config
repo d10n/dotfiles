@@ -41,6 +41,9 @@ git config --global push.default current
 # Show other changes when doing git pull --rebase
 git config --global rebase.stat true
 
+# Enable git rerere
+git config --global rerere.enabled true
+
 # easy git instaweb
 git config --global instaweb.local true
 git config --global instaweb.httpd webrick
