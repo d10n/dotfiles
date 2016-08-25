@@ -227,7 +227,8 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
         --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
 
     if [[ -z ${branch} ]] ; then
-        detached_from=${$(git describe --tags --exact-match 2>/dev/null):-${hook_com[branch]%%.*}}
+        #detached_from=${$(git describe --all --exact-match 2>/dev/null):-$(git rev-parse --short HEAD)}
+        detached_from=${$(git describe --all --always)}
         hook_com[branch]="[detached from ${detached_from}]"
     elif [[ -n ${remote} ]] ; then
         ahead=$(git rev-list "${hook_com[branch]}@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
