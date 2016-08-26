@@ -44,6 +44,7 @@ Recommended usage notes:
  * Skim through and read the comments for more
 
 ### .vimrc.plugins
+
 These plugins are generally useful. If you don't want to install plugins, don't make a .vimrc.plugins file. When first starting vim after saving this file, the plugins will install and you will be prompted to press enter a few times.
 
 Features:
