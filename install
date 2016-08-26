@@ -53,7 +53,11 @@ def symlink_dotfiles(dotfiles):
             os.path.expanduser('~'), '.' + dotfile_name)
         if os.path.exists(install_location):
             short_install_location = substitute_home(install_location)
-            print(short_install_location + ' already exists, skipping')
+            short_dotfile = substitute_home(dotfile)
+            if os.path.realpath(install_location) != dotfile:
+                print(short_install_location + ' already exists and is not symlinked to ' + short_dotfile + ', skipping')
+            else:
+                print(short_install_location + ' already exists, skipping')
             continue
         install = input('Symlink ' + dotfile_name + '? [Y/n]: ')
         if not (install == '' or install.lower() == 'y'):
