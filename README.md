@@ -52,8 +52,8 @@ Features:
  * Tab completion
  * Extra color schemes
  * Sublime Text-like multiple cursors
- * Expand visual selection with +, contract with _
- * w/b/e through camelCase and under_score words with shift+w/b/e key
+ * Expand visual selection with `+`, contract with `_`
+ * w/b/e through `camelCase` and `under_score` words with shift+w/b/e key
  * EditorConfig
 
 ### .tmux.conf
