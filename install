@@ -48,13 +48,13 @@ def gather_dotfiles():
 def symlink_dotfiles(dotfiles):
     for dotfile in dotfiles:
         dotfile_name = os.path.basename(dotfile)
-        install = input('Symlink ' + dotfile_name + '? [Y/n]: ')
-        if not (install == '' or install.lower() == 'y'):
-            continue
         install_location = os.path.join(
             os.path.expanduser('~'), '.' + dotfile_name)
         if os.path.exists(install_location):
             print(install_location + ' already exists, skipping')
+            continue
+        install = input('Symlink ' + dotfile_name + '? [Y/n]: ')
+        if not (install == '' or install.lower() == 'y'):
             continue
         print('Symlink ' + dotfile + ' to ' + install_location)
         os.symlink(dotfile, install_location)
