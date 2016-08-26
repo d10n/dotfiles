@@ -1,9 +1,4 @@
 # dotfiles
-"Dotfiles" are configuration/customization files that conventionally begin with a `.`. The leading `.` in the filename makes the file hidden in most normal views.
-
-These files go in your home directory (`/Users/yourname/` on OS X, `/home/yourname/` on others).
-
-The tilde character (`~`) is commonly substituted for typing out the full home directory path. For example, `~/foo/bar` is equivalent to `/Users/yourname/foo/bar`.
 
 Clone to `~/.config/dotfiles` and run `~/.config/dotfiles/install` or manually symlink the files you want.  
 Executable files are meant to be executed instead of symlinked.
