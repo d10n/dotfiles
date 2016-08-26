@@ -23,8 +23,8 @@ Required usage notes:
 Recommended usage notes:
 
  * Optionally,
-    * `brew install zsh-syntax-highlighting` to get colors while you type
-    * `brew install zsh-history-substring-search` to make searching history easy; for example, type `gradle` and press up arrow to go through the history of all commands saying `gradle`.
+    * install `zsh-syntax-highlighting` to get colors while you type
+    * install `zsh-history-substring-search` to make searching history easy; for example, type `gradle` and press up arrow to go through the history of all commands saying `gradle`.
  * The full path is shown in the prompt so you can stop typing `pwd`
  * When inside a git repository, a line is added to the prompt showing basic git status information so you can stop typing `git status`
     * Run `git fetch` to sync with upstream and see how many commits behind you are
