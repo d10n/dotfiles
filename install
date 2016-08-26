@@ -5,6 +5,7 @@ import glob
 import signal
 import sys
 import textwrap
+import re
 
 # Python 2/3 compatibility
 try:
@@ -51,7 +52,8 @@ def symlink_dotfiles(dotfiles):
         install_location = os.path.join(
             os.path.expanduser('~'), '.' + dotfile_name)
         if os.path.exists(install_location):
-            print(install_location + ' already exists, skipping')
+            short_install_location = substitute_home(install_location)
+            print(short_install_location + ' already exists, skipping')
             continue
         install = input('Symlink ' + dotfile_name + '? [Y/n]: ')
         if not (install == '' or install.lower() == 'y'):
@@ -67,6 +69,10 @@ def execute_executables(executables):
             continue
         print('Execute ' + executable)
         os.system(executable)
+
+
+def substitute_home(path):
+    return re.sub(re.escape(os.path.expanduser('~')), '~', path, 1)
 
 
 def handle_sigint():
