@@ -59,8 +59,16 @@ def symlink_dotfiles(dotfiles):
             else:
                 print(short_install_location + ' already exists, skipping')
             continue
+        skip_file = os.path.join(
+                os.path.dirname(dotfile),
+                '.{}.skip'.format(os.path.basename(dotfile)))
+        if os.path.exists(skip_file):
+            short_skip_file = substitute_home(skip_file)
+            print(short_skip_file + ' exists, skipping')
+            continue
         install = input('Symlink ' + dotfile_name + '? [Y/n]: ')
         if not (install == '' or install.lower() == 'y'):
+            create_empty_file(skip_file)
             continue
         print('Symlink ' + dotfile + ' to ' + install_location)
         os.symlink(dotfile, install_location)
@@ -73,6 +81,10 @@ def execute_executables(executables):
             continue
         print('Execute ' + executable)
         os.system(executable)
+
+
+def create_empty_file(file_path):
+    open(file_path, 'a').close()
 
 
 def substitute_home(path):
