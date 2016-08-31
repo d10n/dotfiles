@@ -25,7 +25,7 @@ autoload -Uz compinit && compinit -i > /dev/null
 
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
 
-[[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
+[[ "$TERM_PROGRAM" = "iTerm.app" ]] && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
 
 which rbenv &>/dev/null && eval "$(rbenv init -)"
 
