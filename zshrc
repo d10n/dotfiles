@@ -311,6 +311,35 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
     zle -N zle-line-finish
 fi
 
+is_iterm() (
+    # adapted from isiterm2.sh
+    [[ ! -t 0 || ! -t 1 ]] && exit 1
+    saved_stty="$(stty -g)"
+    trap "stty '$saved_stty'; exit 1" INT
+    read_bytes() {
+      numbytes=$1; dd bs=1 count=$numbytes 2>/dev/null
+    }
+    read_dsr() {
+      dsr=""; spam="$(read_bytes 2)"; byte="$(read_bytes 1)"
+      while [[ "${byte}" != "n" ]]; do
+        dsr="${dsr}${byte}"; byte="$(read_bytes 1)"
+      done
+      echo "${dsr}"
+    }
+    stty -echo -icanon raw
+    MIN_VERSION=2.9.20160304; [[ $# -eq 1 ]] && MIN_VERSION="$1"
+    echo -en '\x1b[1337n'; echo -en '\x1b[5n'
+    version_string="$(read_dsr)"
+    if [[ "${version_string}" != "0" && "${version_string}" != "3" ]]; then
+      dsr="$(read_dsr)"
+    else
+      version_string=""
+    fi
+    stty "$saved_stty"
+    version="${version_string/* /}"
+    term="${version_string/ */}"
+    [[ "$term" = ITERM2  && "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ]]
+)
 
 # local config lets you update my settings without overwriting your settings
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
