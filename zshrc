@@ -25,8 +25,6 @@ autoload -Uz compinit && compinit -i > /dev/null
 
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
 
-[[ "$TERM_PROGRAM" = "iTerm.app" ]] && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
-
 which rbenv &>/dev/null && eval "$(rbenv init -)"
 
 mkcd() {
@@ -340,6 +338,7 @@ is_iterm() (
     term="${version_string/ */}"
     [[ "$term" = ITERM2  && "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ]]
 )
+is_iterm && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
 
 # local config lets you update my settings without overwriting your settings
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
