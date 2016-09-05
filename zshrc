@@ -193,6 +193,38 @@ else
     BGUC=$bg[cyan]
 fi
 
+preexec() {
+    _date_start="$(date -u +%s)"
+}
+
+pretty_print_date_difference() {
+    local date_end="$1"
+    local date_start="$2"
+    local date_start_iso
+    local date_end_iso
+    (( $date_end - $date_start < 5 )) && return
+    if date --version 2>/dev/null | grep -q GNU; then
+        date_start_iso="$(date -u -d @"$date_start" +%FT%TZ)"
+        date_end_iso="$(date -u -d @"$date_start" +%FT%TZ)"
+    else
+        date_start_iso="$(date -u -r "$date_start" +%FT%TZ)"
+        date_end_iso="$(date -u -r "$date_start" +%FT%TZ)"
+    fi
+    echo "Start date:   $date_start_iso"
+    printf 'Time elapsed: '
+    python -c '
+import sys
+now = int(sys.argv[1])
+then = int(sys.argv[2])
+d = divmod(now-then,86400)  # days
+h = divmod(d[1],3600)  # hours
+m = divmod(h[1],60)  # minutes
+s = m[1]  # seconds
+print("{}d {:0>2}:{:0>2}:{:0>2}".format(d[0], h[0], m[0], s))
+    ' $date_end $date_start
+    echo "End date:     $(date -u +%FT%TZ)"
+}
+
 #PROMPT="%n@%m:%~"$'\n'"%# "  # no color
 #PROMPT="%n@%m:%~"'${vcs_info_msg_0_}'$'\n'"%# "  # no color + vcs_info
 PROMPT="%{%B%}%n@%m:%~ "'${vcs_info_msg_0_}'$'\n'"%#%{$reset_color%} "  # bold + vcs_info
@@ -200,6 +232,10 @@ PROMPT="%{%B%}%n@%m:%~ "'${vcs_info_msg_0_}'$'\n'"%#%{$reset_color%} "  # bold +
 #PROMPT="%{$UC$BGUC%}[%{$fg[black]$BGUC%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"$fg[white]%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "  # zsh color + vcs_info
 autoload -Uz vcs_info
 precmd() {
+    _date_end="$(date -u +%s)"
+    pretty_print_date_difference "$_date_end" "${_date_start:-$_date_end}"
+    unset _date_start
+    unset _date_end
     vcs_info
     echo -en "\e]0;$(pws)\a"
     #print -Pn "\e]0;%C\a"
