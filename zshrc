@@ -210,9 +210,7 @@ pretty_print_date_difference() {
         date_start_iso="$(date -u -r "$date_start" +%FT%TZ)"
         date_end_iso="$(date -u -r "$date_start" +%FT%TZ)"
     fi
-    echo "Start date:   $date_start_iso"
-    printf 'Time elapsed: '
-    python -c '
+    local wall_time=$(python -c '
 import sys
 now = int(sys.argv[1])
 then = int(sys.argv[2])
@@ -220,9 +218,14 @@ d = divmod(now-then,86400)  # days
 h = divmod(d[1],3600)  # hours
 m = divmod(h[1],60)  # minutes
 s = m[1]  # seconds
-print("{}d {:0>2}:{:0>2}:{:0>2}".format(d[0], h[0], m[0], s))
-    ' $date_end $date_start
-    echo "End date:     $(date -u +%FT%TZ)"
+if d[0] > 0:
+    sys.stdout.write("{}d ".format(d[0]))
+sys.stdout.write("{:0>2}:{:0>2}:{:0>2}".format(h[0], m[0], s))
+' $date_end $date_start)
+    echo -n "Wall time: $wall_time\t"
+    echo -n "Start: $date_start_iso\t"
+    echo -n "Stop: $date_end_iso"
+    echo
 }
 
 #PROMPT="%n@%m:%~"$'\n'"%# "  # no color
