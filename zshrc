@@ -365,7 +365,6 @@ is_iterm() (
       echo "${dsr/*$'\x1b['/}"
     }
     stty -echo -icanon raw
-    MIN_VERSION=2.9.20160304; [[ $# -eq 1 ]] && MIN_VERSION="$1"
     echo -en '\x1b[1337n'; echo -en '\x1b[5n'
     version_string="$(read_dsr)"
     if [[ "${version_string}" != "0" && "${version_string}" != "3" ]]; then
@@ -376,6 +375,7 @@ is_iterm() (
     stty "$saved_stty"
     version="${version_string/* /}"
     term="${version_string/ */}"
+    MIN_VERSION=2.9.20160304; [[ $# -eq 1 ]] && MIN_VERSION="$1"
     [[ "$term" = ITERM2  && ( "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ) ]]
 )
 is_iterm && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
