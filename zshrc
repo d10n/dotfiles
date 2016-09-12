@@ -376,7 +376,7 @@ is_iterm() (
     stty "$saved_stty"
     version="${version_string/* /}"
     term="${version_string/ */}"
-    [[ "$term" = ITERM2  && "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ]]
+    [[ "$term" = ITERM2  && ( "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ) ]]
 )
 is_iterm && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
 
