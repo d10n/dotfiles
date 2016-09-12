@@ -358,11 +358,11 @@ is_iterm() (
       numbytes=$1; dd bs=1 count=$numbytes 2>/dev/null
     }
     read_dsr() {
-      dsr=""; spam="$(read_bytes 2)"; byte="$(read_bytes 1)"
+      dsr=""; byte="$(read_bytes 3)"
       while [[ "${byte}" != "n" ]]; do
         dsr="${dsr}${byte}"; byte="$(read_bytes 1)"
       done
-      echo "${dsr}"
+      echo "${dsr/*$'\x1b['/}"
     }
     stty -echo -icanon raw
     MIN_VERSION=2.9.20160304; [[ $# -eq 1 ]] && MIN_VERSION="$1"
