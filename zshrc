@@ -321,7 +321,7 @@ key[Enter]=${terminfo[kent]}  # fix OS X numpad enter
 setup_history_search() {
     local zsh_history_substring_search
     if [[ -d ~/.config/dotfiles/zsh-history-substring-search ]]; then
-        zsh_history_substring_search=~/.config/zsh-history-substring-search/zsh-history-substring-search.zsh
+        zsh_history_substring_search=~/.config/dotfiles/zsh-history-substring-search/zsh-history-substring-search.zsh
     elif [[ "$OSTYPE" == "linux-gnu" ]]; then
         zsh_history_substring_search=/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
     elif [[ "$OSTYPE" == "darwin"* ]]; then
