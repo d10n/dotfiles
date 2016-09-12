@@ -17,6 +17,37 @@ export WORDCHARS=${WORDCHARS/\/}  # Make ctrl-w delete 1 folder at a time
 
 bindkey -e
 
+is_iterm() (
+    # adapted from isiterm2.sh
+    [[ ! -t 0 || ! -t 1 ]] && exit 1
+    saved_stty="$(stty -g)"
+    trap "stty '$saved_stty'; exit 1" INT
+    read_bytes() {
+      numbytes=$1; dd bs=1 count=$numbytes 2>/dev/null
+    }
+    read_dsr() {
+      dsr=""; byte="$(read_bytes 3)"
+      while [[ "${byte}" != "n" ]]; do
+        dsr="${dsr}${byte}"; byte="$(read_bytes 1)"
+      done
+      echo "${dsr/*$'\x1b['/}"
+    }
+    stty -echo -icanon raw
+    echo -en '\x1b[1337n'; echo -en '\x1b[5n'
+    version_string="$(read_dsr)"
+    if [[ "${version_string}" != "0" && "${version_string}" != "3" ]]; then
+      dsr="$(read_dsr)"
+    else
+      version_string=""
+    fi
+    stty "$saved_stty"
+    version="${version_string/* /}"
+    term="${version_string/ */}"
+    MIN_VERSION=2.9.20160304; [[ $# -eq 1 ]] && MIN_VERSION="$1"
+    [[ "$term" = ITERM2  && ( "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ) ]]
+)
+is_iterm && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
+
 zstyle ':compinstall' filename "$HOME/.zshrc"
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # case-insensitive tab completion
 zstyle ':completion:*' insert-tab pending  # paste with tabs doesn't start completion
@@ -348,37 +379,6 @@ if (( ${+terminfo[smkx]} )) && (( ${+terminfo[rmkx]} )); then
     zle -N zle-line-init
     zle -N zle-line-finish
 fi
-
-is_iterm() (
-    # adapted from isiterm2.sh
-    [[ ! -t 0 || ! -t 1 ]] && exit 1
-    saved_stty="$(stty -g)"
-    trap "stty '$saved_stty'; exit 1" INT
-    read_bytes() {
-      numbytes=$1; dd bs=1 count=$numbytes 2>/dev/null
-    }
-    read_dsr() {
-      dsr=""; byte="$(read_bytes 3)"
-      while [[ "${byte}" != "n" ]]; do
-        dsr="${dsr}${byte}"; byte="$(read_bytes 1)"
-      done
-      echo "${dsr/*$'\x1b['/}"
-    }
-    stty -echo -icanon raw
-    echo -en '\x1b[1337n'; echo -en '\x1b[5n'
-    version_string="$(read_dsr)"
-    if [[ "${version_string}" != "0" && "${version_string}" != "3" ]]; then
-      dsr="$(read_dsr)"
-    else
-      version_string=""
-    fi
-    stty "$saved_stty"
-    version="${version_string/* /}"
-    term="${version_string/ */}"
-    MIN_VERSION=2.9.20160304; [[ $# -eq 1 ]] && MIN_VERSION="$1"
-    [[ "$term" = ITERM2  && ( "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ) ]]
-)
-is_iterm && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
 
 # local config lets you update my settings without overwriting your settings
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
