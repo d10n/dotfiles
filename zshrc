@@ -7,8 +7,11 @@ HISTFILE=~/.histfile
 HISTSIZE=100000
 SAVEHIST=100000
 
-setopt EXTENDED_GLOB NO_NOMATCH NOTIFY
-setopt HIST_IGNORE_SPACE HIST_IGNORE_DUPS
+setopt EXTENDED_GLOB
+setopt NO_NOMATCH
+setopt NOTIFY
+setopt HIST_IGNORE_SPACE
+setopt HIST_IGNORE_DUPS
 setopt COMPLETE_ALIASES
 setopt PROMPT_SUBST  # variables in prompt
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
