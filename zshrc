@@ -243,10 +243,10 @@ pretty_print_date_difference() {
     (( $date_end - $date_start < 5 )) && return
     if date --version 2>/dev/null | grep -q GNU; then
         date_start_iso="$(date -u -d @"$date_start" +%FT%TZ)"
-        date_end_iso="$(date -u -d @"$date_start" +%FT%TZ)"
+        date_end_iso="$(date -u -d @"$date_end" +%FT%TZ)"
     else
         date_start_iso="$(date -u -r "$date_start" +%FT%TZ)"
-        date_end_iso="$(date -u -r "$date_start" +%FT%TZ)"
+        date_end_iso="$(date -u -r "$date_end" +%FT%TZ)"
     fi
     local wall_time=$(python -c '
 import sys
