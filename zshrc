@@ -12,6 +12,9 @@ setopt NO_NOMATCH
 setopt NOTIFY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_DUPS
+setopt HIST_VERIFY  # print expanded history command before executing
+setopt EXTENDED_HISTORY  # write to HISTFILE with :start:elapsed;command format
+setopt INC_APPEND_HISTORY
 setopt COMPLETE_ALIASES
 setopt PROMPT_SUBST  # variables in prompt
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
