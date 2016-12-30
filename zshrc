@@ -195,20 +195,19 @@ pws() {
             }
         }
     }'
-}
 
-pws2() {
-    # 8 times slower than awk
-    print -Pn %~ | perl -ne '
-        my @dirs = split("/", $_);
-        my $basename = pop @dirs;
-        foreach $dir (@dirs) {
-            print $dir =~ /^(\.*.)/;
-            print "/";
-        }
-        print $basename;
-    '
-    # 10 times slower than awk
+    ## 8 times slower than awk
+    #print -Pn %~ | perl -ne '
+    #    my @dirs = split("/", $_);
+    #    my $basename = pop @dirs;
+    #    foreach $dir (@dirs) {
+    #        print $dir =~ /^(\.*.)/;
+    #        print "/";
+    #    }
+    #    print $basename;
+    #'
+
+    ## 10 times slower than awk
     #print -Pn %~ |perl -ne "s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;"
 }
 
