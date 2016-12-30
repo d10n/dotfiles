@@ -38,7 +38,8 @@ is_iterm() (
       done
       echo "${dsr/*$'\x1b['/}"
     }
-    stty -echo -icanon raw
+    stty -echo -icanon raw 2>/dev/null
+    [[ $? -ne 0 ]] && stty "$saved_stty" && exit 1
     echo -en '\x1b[1337n'; echo -en '\x1b[5n'
     version_string="$(read_dsr)"
     if [[ "${version_string}" != "0" && "${version_string}" != "3" ]]; then
