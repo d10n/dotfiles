@@ -53,7 +53,7 @@ is_iterm() (
     MIN_VERSION=2.9.20160304; [[ $# -eq 1 ]] && MIN_VERSION="$1"
     [[ "$term" = ITERM2  && ( "$version" > "$MIN_VERSION" || "$version" = "$MIN_VERSION" ) ]]
 )
-is_iterm && [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && . "${HOME}/.iterm2_shell_integration.zsh"
+[[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && is_iterm && . "${HOME}/.iterm2_shell_integration.zsh"
 
 zstyle ':compinstall' filename "$HOME/.zshrc"
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # case-insensitive tab completion
