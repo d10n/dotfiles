@@ -108,6 +108,12 @@ apply_aliases() {
         alias pbcopy='xsel --clipboard --input'
         alias pbpaste='xsel --clipboard --output'
     fi
+    if [[ "$OSTYPE" == "cygwin" ]]; then
+        alias ls="ls --color=auto -p"
+        #alias pbcopy='clip'
+        alias pbcopy='dd of=/dev/clipboard status=none'
+        alias pbpaste='dd if=/dev/clipboard status=none'
+    fi
     alias l="ls"
     alias la="ls -a"
     alias ll="ls -la"
