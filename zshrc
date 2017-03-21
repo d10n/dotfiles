@@ -163,34 +163,36 @@ findexact() {
     find "$1" -name "$(echo $2|sed 's/\(\[\|\]\|\*\|\?\)/\\\1/g')"
 }
 
-vfiobind() {
-    for dev in "$@"; do
-        if [ -e /sys/bus/pci/devices/$dev/driver ]; then
-            echo vfio-pci > /sys/bus/pci/devices/$dev/driver_override
-            echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
-            echo $dev > /sys/bus/pci/drivers_probe
-        fi
-    done
-}
-
-vfiounbind() {
-    for dev in "$@"; do
-        if [ -e /sys/bus/pci/devices/$dev/driver ]; then
-            echo > /sys/bus/pci/devices/$dev/driver_override
-            echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
-            echo $dev > /sys/bus/pci/drivers_probe
-        fi
-    done
-}
-
-lsiommu() {
-    for iommu_group in $(find /sys/kernel/iommu_groups/ -maxdepth 1 -mindepth 1 -type d); do
-        echo "IOMMU group $(basename "$iommu_group")"
-        for device in $(ls -1 "$iommu_group"/devices/); do
-            echo -n $'\t'; lspci -nns "$device"
+if [[ "$OSTYPE" == "linux-gnu" ]]; then
+    vfiobind() {
+        for dev in "$@"; do
+            if [ -e /sys/bus/pci/devices/$dev/driver ]; then
+                echo vfio-pci > /sys/bus/pci/devices/$dev/driver_override
+                echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
+                echo $dev > /sys/bus/pci/drivers_probe
+            fi
         done
-    done
-}
+    }
+
+    vfiounbind() {
+        for dev in "$@"; do
+            if [ -e /sys/bus/pci/devices/$dev/driver ]; then
+                echo > /sys/bus/pci/devices/$dev/driver_override
+                echo $dev > /sys/bus/pci/devices/$dev/driver/unbind
+                echo $dev > /sys/bus/pci/drivers_probe
+            fi
+        done
+    }
+
+    lsiommu() {
+        for iommu_group in $(find /sys/kernel/iommu_groups/ -maxdepth 1 -mindepth 1 -type d); do
+            echo "IOMMU group $(basename "$iommu_group")"
+            for device in $(ls -1 "$iommu_group"/devices/); do
+                echo -n $'\t'; lspci -nns "$device"
+            done
+        done
+    }
+fi
 
 pws() {
     # /usr/local/bin -> /u/l/bin
