@@ -15,8 +15,8 @@ if [[ -f ~/.histfile ]]; then
 else
     HISTFILE=~/.zsh_history
 fi
-HISTSIZE=100000
-SAVEHIST=100000
+HISTSIZE=1000000
+SAVEHIST=1000000
 
 setopt EXTENDED_GLOB
 setopt NO_NOMATCH
