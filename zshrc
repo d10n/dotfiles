@@ -28,6 +28,10 @@ setopt EXTENDED_HISTORY  # write to HISTFILE with :start:elapsed;command format
 setopt INC_APPEND_HISTORY
 setopt COMPLETE_ALIASES
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
+
+setopt NO_FLOW_CONTROL  # disable ^s and ^q
+stty -ixon -ixoff # disable ^s and ^q again
+
 REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, show its time
 export WORDCHARS=${WORDCHARS/\/}  # Make ctrl-w delete 1 folder at a time
 
