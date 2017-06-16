@@ -47,6 +47,9 @@ git config --global rebase.stat true
 # Enable git rerere
 git config --global rerere.enabled true
 
+# Fetch pull requests too
+#git config --global --add remote.origin.fetch "+refs/pull/*/head:refs/remotes/origin/pr/*"
+
 # Show the patch by default with git stash show
 git config --global stash.showPatch true
 
