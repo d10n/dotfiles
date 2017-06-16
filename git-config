@@ -38,13 +38,37 @@ git config --global color.ui auto
 # Push only the current branch
 git config --global push.default current
 
+# Show the original code in merge conflicts
+git config --global merge.conflictstyle diff3
+
 # Show other changes when doing git pull --rebase
 git config --global rebase.stat true
 
 # Enable git rerere
 git config --global rerere.enabled true
 
+# Show the patch by default with git stash show
+git config --global stash.showPatch true
+
+# Automatically stash and unstash before and after a rebase
+git config --global rebase.autoStash true
+
+# Show ref names in git log
+git config --global log.decorate full
+
+# Show all untracked files in git status, not just root directories
+git config --global status.showUntrackedFiles all
+
+# Verify transferred objects in exchange for slower transfer
+git config --global transfer.fsckObjects true
+
 # easy git instaweb
 git config --global instaweb.local true
 git config --global instaweb.httpd webrick
+
+# Update sandbox branch
+# Old, but maybe a useful reference for shell functions in git aliases
+# * origin/master is merged into your branch
+# * your branch is pushed to the sandbox
+#git config --global alias.update-sandbox '!updatesandbox() ( set -euo pipefail; if [[ "$#" -ne 1 ]]; then echo $'\''Usage: git update-sandbox <sandbox-name>\nExample: git update-sandbox pear'\''; exit 1; fi; set -x; git fetch; git merge origin/master; git push origin "HEAD:$1" || { set +x; echo "Force push required. Press enter to continue or ctrl+c to abort: "; read; set -x; git push --force origin "HEAD:$1"; } ); updatesandbox'
 
