@@ -124,6 +124,7 @@ set numberwidth=5  " Line number column width
 set laststatus=2  " Always show status line
 set showcmd  " Show last command
 set display+=lastline  " Display what can be shown of a last line longer than the window
+set showmode  " Show the mode on the last line
 
 set autochdir  " Set the cwd to the file's basedir
 "set clipboard+=unnamed  " Share windows clipboard
