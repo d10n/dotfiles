@@ -24,14 +24,14 @@ let g:clang_complete_macros = 1
 let g:clang_auto_select=1
 let g:clang_hl_errors = 1
 
-" neocomplcache
-let g:neocomplcache_enable_at_startup = 1 " always load neocc
-let g:neocomplcache_enable_auto_select = 1 " auto-popup!
-if !exists('g:neocomplcache_omni_patterns')
-  let g:neocomplcache_omni_patterns = {} " set a default pattern dict
-endif
-" try for completions after '.', '(', etc.
-let g:neocomplcache_omni_patterns.haxe = '\v([\]''"\)]|\w|(^\s*))(\.|\()'
+"" neocomplcache
+"let g:neocomplcache_enable_at_startup = 1 " always load neocc
+"let g:neocomplcache_enable_auto_select = 1 " auto-popup!
+"if !exists('g:neocomplcache_omni_patterns')
+"  let g:neocomplcache_omni_patterns = {} " set a default pattern dict
+"endif
+"" try for completions after '.', '(', etc.
+"let g:neocomplcache_omni_patterns.haxe = '\v([\]''"\)]|\w|(^\s*))(\.|\()'
 
 " vaxe
 let g:vaxe_completion_write_compiler_ouput = 1
