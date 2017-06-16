@@ -137,6 +137,8 @@ if exists('&undodir')
   execute 'set undodir='.root.'/undo'
 endif
 
+set cryptmethod=blowfish2
+
 " Fix arrow keys on Darwin
 if s:uname == 'Darwin'
   execute system('echo noremap $(tput kcuu1) \<Up\>')
