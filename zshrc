@@ -1,3 +1,9 @@
+setopt PROMPT_SUBST  # variables in prompt
+PS4='%D{%Y-%m-%d %H:%M:%S.%.} '
+#set -x  # for debugging zsh startup time
+#zmodload zsh/zprof  # for debugging zsh startup time
+print -P '%D{%Y-%m-%d %H:%M:%S.%.}' | read __ZSH_STARTUP_LOCAL_START_DATE
+
 [[ -z "${ORIGINAL_VARS}" ]] && ORIGINAL_VARS="$(declare -px)"
 ORIGINAL_VARS="$(echo "$ORIGINAL_VARS"|grep -v ZDOTDIR)"  # Fix IntelliJ integration
 typeset +x ORIGINAL_VARS
@@ -17,7 +23,6 @@ setopt HIST_VERIFY  # print expanded history command before executing
 setopt EXTENDED_HISTORY  # write to HISTFILE with :start:elapsed;command format
 setopt INC_APPEND_HISTORY
 setopt COMPLETE_ALIASES
-setopt PROMPT_SUBST  # variables in prompt
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
 REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, show its time
 export WORDCHARS=${WORDCHARS/\/}  # Make ctrl-w delete 1 folder at a time
@@ -396,3 +401,17 @@ fi
 
 # local config lets you update my settings without overwriting your settings
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
+
+print_zsh_startup_time() {
+    echo "startup begin  \t$__ZSH_STARTUP_LOCAL_START_DATE\nstartup finish \t$__ZSH_STARTUP_LOCAL_FINISH_DATE"
+}
+[[ -z "$precmd_functions" ]] && precmd_functions=()
+startup_timer_precmd() {
+    precmd_functions=("${(@)precmd_functions:#startup_timer_precmd}")
+    if [[ -z "$__ZSH_STARTUP_LOCAL_FINISH_DATE" ]]; then
+        print -P '%D{%Y-%m-%d %H:%M:%S.%.}' | read __ZSH_STARTUP_LOCAL_FINISH_DATE
+        command -v zprof &>/dev/null && zprof
+#        print_zsh_startup_time
+    fi
+}
+precmd_functions+=startup_timer_precmd
