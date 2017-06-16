@@ -10,7 +10,11 @@ typeset +x ORIGINAL_VARS
 [[ -n "${FIX_PATH}" ]] && PATH="$FIX_PATH" && unset FIX_PATH
 [[ -n "${RUN_WITH}" ]] && eval "$RUN_WITH" && unset RUN_WITH
 
-HISTFILE=~/.histfile
+if [[ -f ~/.histfile ]]; then
+    HISTFILE=~/.histfile
+else
+    HISTFILE=~/.zsh_history
+fi
 HISTSIZE=100000
 SAVEHIST=100000
 
