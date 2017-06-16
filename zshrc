@@ -42,24 +42,22 @@ is_iterm() (
     [[ ! -t 0 || ! -t 1 ]] && exit 1
     saved_stty="$(stty -g)"
     trap "stty '$saved_stty'; exit 1" INT
-    read_bytes() {
-      numbytes=$1; dd bs=1 count=$numbytes 2>/dev/null
-    }
+    read_bytes() { numbytes=$1; dd bs=1 count=$numbytes 2>/dev/null; }
     read_dsr() {
-      dsr=""; byte="$(read_bytes 3)"
-      while [[ "${byte}" != "n" ]]; do
-        dsr="${dsr}${byte}"; byte="$(read_bytes 1)"
-      done
-      echo "${dsr/*$'\x1b['/}"
+        dsr=""; byte="$(read_bytes 3)"
+        while [[ "${byte}" != "n" ]]; do
+            dsr="${dsr}${byte}"; byte="$(read_bytes 1)"
+        done
+        echo "${dsr/*$'\x1b['/}"
     }
     stty -echo -icanon raw 2>/dev/null
     [[ $? -ne 0 ]] && stty "$saved_stty" && exit 1
     echo -en '\x1b[1337n'; echo -en '\x1b[5n'
     version_string="$(read_dsr)"
     if [[ "${version_string}" != "0" && "${version_string}" != "3" ]]; then
-      dsr="$(read_dsr)"
+        dsr="$(read_dsr)"
     else
-      version_string=""
+        version_string=""
     fi
     stty "$saved_stty"
     version="${version_string/* /}"
