@@ -152,6 +152,10 @@ noremap Q <Nop>
 vnoremap < <gv
 vnoremap > >gv
 
+" Tab indent blocks
+vnoremap <Tab> >gv
+vnoremap <S-Tab> <gv
+
 " Smart home key
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 inoremap <silent> <Home> <C-O><Home>
