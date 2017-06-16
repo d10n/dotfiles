@@ -1,4 +1,5 @@
 [[ -z "${ORIGINAL_VARS}" ]] && ORIGINAL_VARS="$(declare -px)"
+ORIGINAL_VARS="$(echo "$ORIGINAL_VARS"|grep -v ZDOTDIR)"  # Fix IntelliJ integration
 typeset +x ORIGINAL_VARS
 [[ -n "${FIX_PATH}" ]] && PATH="$FIX_PATH" && unset FIX_PATH
 [[ -n "${RUN_WITH}" ]] && eval "$RUN_WITH" && unset RUN_WITH
