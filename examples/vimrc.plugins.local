@@ -14,7 +14,7 @@ NeoBundle 'scrooloose/syntastic'
 
 " clang_complete
 let g:clang_use_library = 1
-if s:uname == 'Darwin'
+if g:uname == 'Darwin'
   let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib/'
 else
   let g:clang_library_path = '/usr/lib/clang'
