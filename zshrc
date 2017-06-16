@@ -25,8 +25,9 @@ setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_DUPS
 setopt HIST_VERIFY  # print expanded history command before executing
 setopt HIST_REDUCE_BLANKS
+setopt APPEND_HISTORY
 setopt EXTENDED_HISTORY  # write to HISTFILE with :start:elapsed;command format
-setopt INC_APPEND_HISTORY
+setopt INC_APPEND_HISTORY  # append command to histfile immediately
 setopt COMPLETE_ALIASES
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
 
