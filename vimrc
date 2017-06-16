@@ -21,10 +21,10 @@ endfor
 
 " Detect OS
 if has('unix')
-  let s:uname = system('echo -n `uname -s`')
+  let g:uname = system('echo -n `uname -s`')
 else
   " Assume Windows
-  let s:uname = 'Windows'
+  let g:uname = 'Windows'
 endif
 
 if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.vimrc.plugins
@@ -140,7 +140,7 @@ endif
 set cryptmethod=blowfish2
 
 " Fix arrow keys on Darwin
-if s:uname == 'Darwin'
+if g:uname == 'Darwin'
   execute system('echo noremap $(tput kcuu1) \<Up\>')
   execute system('echo noremap $(tput kcud1) \<Down\>')
   execute system('echo noremap $(tput kcub1) \<Left\>')
