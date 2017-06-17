@@ -35,6 +35,11 @@ path=($path $HOME/bin)
 # fi
 
 
+## Ruby
+#which rbenv &>/dev/null && eval "$(rbenv init -)"
+#export RBENV_ROOT=/usr/local/var/rbenv
+
+
 ## Python
 #export WORKON_HOME=$HOME/.virtualenvs
 #export PROJECT_HOME=$HOME/code

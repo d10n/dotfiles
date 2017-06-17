@@ -79,8 +79,6 @@ autoload -Uz compinit && compinit -i > /dev/null
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
 [[ -d ~/.config/dotfiles/faster-vcs-info ]] && fpath=(~/.config/dotfiles/faster-vcs-info $fpath)
 
-which rbenv &>/dev/null && eval "$(rbenv init -)"
-
 mkcd() {
     local dir="$*"
     mkdir -p "$dir" && cd "$dir"
