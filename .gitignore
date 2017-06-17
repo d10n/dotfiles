@@ -1,2 +1,10 @@
 # Files that have been skipped by the install script
 .*.skip
+
+# Local dotfiles
+/*.local
+
+# Zsh utility libraries
+/faster-vcs-info/
+/zsh-history-substring-search/
+/zsh-syntax-highlighting/
