@@ -1,0 +1,179 @@
+#!/bin/bash
+[[ -z "${ORIGINAL_VARS}" ]] && ORIGINAL_VARS="$(declare -px)"
+typeset +x ORIGINAL_VARS
+[[ -n "${FIXPATH}" ]] && PATH="$FIXPATH" && unset FIXPATH
+
+setup_completion() {
+    if [[ -f /usr/share/git/completion/git-completion.bash ]]; then
+        . /usr/share/git/completion/git-completion.bash
+    elif [[ -f /usr/local/share/git/completion/git-completion.bash ]]; then
+        . /usr/local/share/git/completion/git-completion.bash
+    elif [[ -f /usr/share/bash-completion/completions/git ]]; then
+        . /usr/share/bash-completion/completions/git
+    elif [[ -f /usr/local/share/bash-completion/completions/git ]]; then
+        . /usr/local/share/bash-completion/completions/git
+    elif [[ -f /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash ]]; then
+        . /Library/Developer/CommandLineTools/usr/share/git-core/git-completion.bash
+    fi
+}
+setup_completion && unset -f setup_completion
+
+mkcd() {
+    local dir="$*"
+    mkdir -p "$dir" && cd "$dir"
+}
+cd() {
+    [[ -z "$@" ]] && set_iterm_tab_rgb
+    builtin cd "$@"
+}
+
+set_iterm_tab_rgb() {
+    [[ "$TERM_PROGRAM" != "iTerm.app" ]] && return
+    [[ -n "${NO_ITERM_TAB_COLOR+set}" ]] && return
+    if [[ -z "$@" ]]; then
+        echo -ne "\033]6;1;bg;*;default\a"  # reset
+    else
+        echo -ne "\033]6;1;bg;red;brightness;${1}\a\033]6;1;bg;green;brightness;${2}\a\033]6;1;bg;blue;brightness;${3}\a"
+    fi
+}
+
+work_on_repository() {
+    local main_command='
+        cd ~/code/'"$1"'/product
+        . ../infrastructure/set.env.sh'
+    if [[ "$2" == 'here' ]]; then
+        eval "$main_command"
+        return
+    fi
+    # set.env.sh borks out if run twice, so reset the environment
+    # assume it's a login shell for now
+    # OS X messes with the path in /etc/profile and /etc/zprofile. FIXPATH works around this
+    exec env -i ORIGINAL_VARS="$ORIGINAL_VARS" "$(which bash)" --noprofile -c '
+        eval "$ORIGINAL_VARS"
+        '"$main_command"'
+        FIXPATH="$PATH" exec $(which bash) -l'
+}
+
+apply_aliases() {
+    # ls
+    if [[ "$OSTYPE" == "darwin"* ]]; then
+        export CLICOLOR=1
+        export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
+        alias ls="ls -Gp"
+    fi
+    if [[ "$OSTYPE" == "linux-gnu" ]]; then
+        alias ls="ls --color=auto -p"
+        alias pbcopy='xsel --clipboard --input'
+        alias pbpaste='xsel --clipboard --output'
+    fi
+    if [[ "$OSTYPE" == "cygwin" ]]; then
+        alias ls="ls --color=auto -p"
+        #alias pbcopy='clip'
+        alias pbcopy='dd of=/dev/clipboard status=none'
+        alias pbpaste='dd if=/dev/clipboard status=none'
+    fi
+    alias l="ls"
+    alias la="ls -a"
+    alias ll="ls -la"
+    alias lr="ls -R"
+    alias lz="ls -rS"  # sort by size
+    alias lt="ls -rT"  # sort by timestamp
+
+    # modified commands
+    which gtar &>/dev/null && alias tar="gtar"
+    which colordiff &>/dev/null && alias diff="colordiff"
+    which wget &>/dev/null && alias wget="wget --content-disposition"
+    which pygmentize &>/dev/null && alias ccat="pygmentize -g"  # pip install Pygments
+    alias more="less"
+    alias df="df -h"
+    alias du="du -ch"
+
+    alias tmux='tmux -2'
+}
+apply_aliases && unset -f apply_aliases
+
+
+pws() {
+    # /usr/local/bin -> /u/l/bin
+    # ~/code/srv/src -> ~/c/s/src
+    # Edge case: ~/._.foo/bar -> ~/._.f/b
+    pwd | sed s\0^"$HOME"\0~\0 | awk '{
+        len = split($0,dirs,"/");
+        for(i = 1; i <= len; i++) {
+            if(i < len) {
+                match(dirs[i], /^[._]*./)
+                printf substr(dirs[i], RSTART, RLENGTH)"/"
+            } else {
+                print dirs[i]
+            }
+        }
+    }'
+
+    ## 8 times slower than awk
+    #pwd | sed s\0^"$HOME"\0~\0 | perl -ne '
+    #    my @dirs = split("/", $_);
+    #    my $basename = pop @dirs;
+    #    foreach $dir (@dirs) {
+    #        print $dir =~ /^(\.*.)/;
+    #        print "/";
+    #    }
+    #    print $basename;
+    #'
+
+    # 10 times slower than awk
+    #pwd|sed s\0\^'$HOME'\0~\0||perl -ne "s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;"
+}
+
+[[ -f ~/.bash.colors ]] && . ~/.bash.colors
+
+if [[ $EUID == '0' ]]; then
+    # running as root or with privileges
+    # set user color
+    UC=$'\e[0;31m'
+    BGUC=$'\e[41m'
+else
+    UC=$'\e[0;36m'
+    BGUC=$'\e[46m'
+fi
+
+PROMPT_COMMAND='echo -en "\033]0;$(pwd|sed s\0\^'$HOME'\0~\0|perl -ne "s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;")\007"'
+
+PS1="\u@\h:\w"'$(__git_info)'$'\n'"\$ "
+PS1="\[$UC$BGUC\][\[$K$BGUC\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\$\[$X\] "
+
+__git_info() {
+    if ! git rev-parse --is-inside-work-tree &>/dev/null; then
+        return
+    fi
+    local message branch remote_ref remote commit_hash detached_tag detached_from tracking ahead behind gitstatus base stashes stash_message
+    base=$(git rev-parse --show-toplevel)
+    # On a branch?
+    branch=$(git symbolic-ref --short -q HEAD)
+    # On a remote-tracking branch?
+    remote_ref=$(git rev-parse --verify "${branch}@{upstream}" --symbolic-full-name 2>/dev/null)
+    remote=${remote_ref/refs\/remotes\/}
+    commit_hash=$(git rev-parse --verify --short=7 HEAD 2>/dev/null)
+    if [[ -z ${branch} ]] ; then
+        detached_tag=$(git describe --tags --exact-match 2>/dev/null)
+        detached_from=${detached_tag:-${commit_hash}}
+        tracking="[detached from ${detached_from}]"
+    elif [[ -n ${remote} ]] ; then
+        ahead=$(git rev-list "${branch}@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
+        (( $ahead )) && gitstatus+="+${ahead}"
+        behind=$(git rev-list "HEAD..${branch}@{upstream}" 2>/dev/null | wc -l | tr -d ' ')
+        (( $behind )) && gitstatus="${gitstatus:+$gitstatus/}-${behind}"
+        tracking="[${remote}${gitstatus:+ ${gitstatus}}]"
+    fi
+    if [[ -s "$base/.git/refs/stash" ]] ; then
+        stashes=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+        stash_message="(${stashes} stashed)"
+    fi
+    message="(git)"
+    [[ -n "${commit_hash}" ]] && message+=" ${commit_hash}"
+    [[ -n "${branch}" ]] && message+=" ${branch}"
+    [[ -n "${tracking}" ]] && message+=" ${tracking}"
+    [[ -n "${stash_message}" ]] && message+=" ${stash_message}"
+    echo -en "\n${message}"
+}
+
+#[[ -f ~/.bashrc.local ]] && . ~/.bashrc.local
