@@ -1,0 +1,19 @@
+#!/bin/bash
+
+tools=(
+    https://github.com/kyanagi/faster-vcs-info.git
+    https://github.com/zsh-users/zsh-history-substring-search.git
+    https://github.com/zsh-users/zsh-syntax-highlighting.git
+    https://github.com/funtoo/keychain.git
+)
+
+for tool in "${tools[@]}"; do
+    dir_name="$(basename "${tool/.git}")"
+    if [[ ! -d "$dir_name" ]]; then
+        git clone "$tool"
+    fi
+    pushd "$dir_name"
+    git pull
+    which make &>/dev/null && [[ -f Makefile ]] && make
+    popd
+done
