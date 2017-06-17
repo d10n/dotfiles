@@ -137,6 +137,7 @@ apply_aliases() {
     which gtar &>/dev/null && alias tar="gtar"
     which colordiff &>/dev/null && alias diff="colordiff"
     which wget &>/dev/null && alias wget="wget --content-disposition"
+    which pygmentize &>/dev/null && alias ccat="pygmentize -g"  # pip install Pygments
     alias more="less"
     alias df="df -h"
     alias du="du -ch"
