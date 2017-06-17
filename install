@@ -16,7 +16,7 @@ except NameError:
 
 dotfile_directory = os.path.dirname(os.path.realpath(__file__))
 dotfile_directory_files = glob.glob(dotfile_directory + '/*')
-file_blacklist = [os.path.basename(__file__), 'README.md']
+file_blacklist = [os.path.basename(__file__), 'README.md', 'Makefile']
 
 
 def main():
