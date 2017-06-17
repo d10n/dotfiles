@@ -10,6 +10,8 @@ Make local customizations with:
     ~/.zshrc.local
     ~/.bashrc.local
 
+Sample local files are in the example directory.
+
 ## Overview
 
 ### .zshrc
