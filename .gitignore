@@ -5,6 +5,7 @@
 /*.local
 
 # Zsh utility libraries
+/keychain/
 /faster-vcs-info/
 /zsh-history-substring-search/
 /zsh-syntax-highlighting/
