@@ -6,6 +6,7 @@ import signal
 import sys
 import textwrap
 import re
+import subprocess
 
 # Python 2/3 compatibility
 try:
@@ -80,7 +81,7 @@ def execute_executables(executables):
         if not (run == '' or run.lower() == 'y'):
             continue
         print('Execute ' + executable)
-        os.system(executable)
+        subprocess.Popen([executable], cwd=dotfile_directory).wait()
 
 
 def create_empty_file(file_path):
