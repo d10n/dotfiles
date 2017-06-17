@@ -222,9 +222,11 @@ else
     BGUC=$bg[cyan]
 fi
 
-preexec() {
+print_long_command_duration_preexec() {
     _date_start="$(date -u +%s)"
 }
+[[ -z "$preexec_functions" ]] && preexec_functions=()
+preexec_functions+=print_long_command_duration_preexec
 
 pretty_print_date_difference() {
     local date_end="$1"
@@ -263,16 +265,22 @@ PROMPT="%{%B%}%n@%m:%~ "'${vcs_info_msg_0_}'$'\n'"%#%{$reset_color%} "  # bold +
 #PROMPT="%{$UC$BGUC%}[%{$K$BGUC%}%n %{$K$BGW%} %m%{$W$BGW%}]%{$X$HIBGK%} %~ %{$X%}"'${vcs_info_msg_0_}'$'\n'"%{$X$EMW%}%#%{$X%} "  # bash.colors color + vcs_info
 #PROMPT="%{$UC$BGUC%}[%{$fg[black]$BGUC%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"$fg[white]%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "  # zsh color + vcs_info
 autoload -Uz vcs_info
-precmd() {
+print_long_command_duration_precmd() {
     _date_end="$(date -u +%s)"
     pretty_print_date_difference "$_date_end" "${_date_start:-$_date_end}"
     unset _date_start
     unset _date_end
-    vcs_info
+}
+set_terminal_title_short_path() {
     echo -en "\e]0;$(pws)\a"
     #print -Pn "\e]0;%C\a"
     #print -Pn "\e]0;%~\a"
 }
+[[ -z "$precmd_functions" ]] && precmd_functions=()
+precmd_functions+=(
+    print_long_command_duration_precmd
+    vcs_info
+    set_terminal_title_short_path)
 
 zstyle ':vcs_info:*' enable git  #hg svn
 zstyle ':vcs_info:*' check-for-changes true
