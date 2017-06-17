@@ -1,0 +1,238 @@
+typeset -U path  # Keep only the first occurrence of each duplicated value
+path=($path /usr/local/bin)
+path=($path $HOME/bin)
+
+
+## API tokens
+#export HOMEBREW_GITHUB_API_TOKEN="31337deadbeef101e57124263d012133fee15b4d"
+
+
+## ssh
+#[[ -z "$SSH_AUTH_SOCK" ]] && {
+#    eval "$(ssh-agent)" >/dev/null
+#    trap "kill $SSH_AGENT_PID" 0
+#}
+#https://github.com/funtoo/keychain.git
+#alias keychain=~/.config/dotfiles/keychain/keychain
+# win:
+#eval $(keychain --eval --agents ssh id_rsa)
+# mac:
+#eval $(keychain --eval --agents ssh --inherit any id_rsa)
+
+
+## Default programs
+#export BROWSER=firefox
+#export VISUAL=vim
+#export EDITOR="$VISUAL"
+#export SYSTEMD_EDITOR=vim
+
+
+## Docker/Kubernetes
+# { if minikube status | grep -q -v -e 'N/A' -e 'Stopped'; then eval "$(minikube docker-env)"; fi }
+# eval $(docker-machine env default --shell=bash)
+# if [[ $? -ne 0 ]]; then
+#     eval $(minikube docker-env --shell=bash)
+# fi
+
+
+## Python
+#export WORKON_HOME=$HOME/.virtualenvs
+#export PROJECT_HOME=$HOME/code
+#source ~/Library/Python/2.7/bin/virtualenvwrapper.sh
+#source /usr/local/bin/virtualenvwrapper.sh
+
+
+## Node
+#. $(brew --prefix nvm)/nvm.sh  # brew --prefix nvm is too slow
+#. /usr/local/opt/nvm/nvm.sh  # nvm installed from brew is unsupported
+## nvm adds a second of load time
+#export NVM_DIR=~/.nvm
+#[[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"
+#[[ -s "$NVM_DIR/bash_completion" ]] && . "$NVM_DIR/bash_completion"
+## Lazy load nvm instead:
+NVM_DIR=~/.nvm
+if [[ -d "$NVM_DIR" ]]; then
+    nvm() { lazy_load_nvm; "$0" "$@" }
+    npm() { lazy_load_nvm; "$0" "$@" }
+    node() { lazy_load_nvm; "$0" "$@" }
+    lazy_load_nvm() {
+        export NVM_DIR
+        unset -f lazy_load_nvm nvm npm node
+        [[ -s "$NVM_DIR/nvm.sh" ]] && . "$NVM_DIR/nvm.sh"
+        [[ -s "$NVM_DIR/bash_completion" ]] && . "$NVM_DIR/bash_completion"
+    }
+fi
+
+
+## Go
+#export GOPATH=~/go
+##export PATH="$PATH:$(go env GOPATH)/bin"  # go env gopath is too slow
+#path=($path $GOPATH/bin)
+#gobin() {
+#    [[ -z "$GOPATH" ]] && echo "not setting path" && return
+#    export PATH="$PATH:$GOPATH/bin"
+#}
+#gopath-here() {
+#    export GOPATH="$PWD"
+#}
+
+
+## Haxe
+#export HAXE_STD_PATH="/usr/local/lib/haxe/std"
+
+
+## Android
+#export ANDROID_HOME=/usr/local/opt/android-sdk
+
+
+## Editors
+#alias subl=subl3
+#alias idea='cygstart "C:\Users\username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\JetBrains Toolbox\IntelliJ IDEA Ultimate.lnk"'
+#alias subl='/cygdrive/c/Program\ Files/Sublime\ Text\ 3/subl'
+
+
+## Miscellaneous aliases
+#alias workfetch="find ~/code/{dotfiles,qemu,borg} -type d -maxdepth 1 -name .git -execdir sh -c 'basename \$PWD;git f' \;"
+#alias curl-srv="bash <(cd ~/code/srv; git show curl-srv:./curl-srv)"
+#alias curl-srv-dev="bash -x <(cd ~/code/srv; git show curl-srv:./curl-srv)"
+#alias gen-aws='jq -r '\''.[] | select(.tags[] | select(.key == "Name").value | contains("build")) | {ip: .publicIpAddress, name: (.tags[] | select(select(.key == "Name").value | contains("build")).value)} | select(.ip != null) | "Host \(.name)\n  HostName \(.ip)\n  User me\n"'\'' /tmp/aws.txt > ~/.ssh/config.d/aws'
+#alias gen-local='pushd ~/.chef/vms; for name in *-master.vm; do echo "vagrant ssh-config ${name/.vm/} > ~/.ssh/config.d/${name/.vm/}"|sh -v; done; popd'
+#alias vm-ips='cat ~/.chef/vms/*.vm | grep -e :ip -e v.name | paste  - -'
+#alias solrsniff="ssh -o StrictHostKeyChecking=no $SSH_OPTS vagrant@solr sudo -i \"tcpdump -A -i eth1 host 10.0.0.2|grep --line-buffered -o 'GET.*HTTP/1\.1'\"|perl -pe '\$|=1;s/%([[:xdigit:]]{2})/chr hex \$1/ge'"
+
+
+## Prompt
+#BGUC="$bg[blue]"
+#PROMPT="%{$X$UC%}%n@%m%{$X%}:%{$Y%}%~ %{$X%}"'${vcs_info_msg_0_}'$'\n'"%{$X$EMW%}%#%{$X%} "  # bash.colors color + vcs_info
+#PROMPT=" %{$fg[black]$BGUC%}%n%{$fg[black]$bg[black]%}@%{$fg[black]$bg[white]%}%m%{$fg[black]$bg[black]%}:%{$reset_color"$'\e[0;100m'"$fg[white]%}%~%{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "
+PROMPT="%{$UC$BGUC%}[%{$fg[black]$BGUC%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"$fg[white]%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} " # zsh color + vcs_info
+ZSH_HIGHLIGHT_STYLES[default]='fg=39'
+ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
+ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[alias]='fg=26'
+ZSH_HIGHLIGHT_STYLES[builtin]='fg=26'
+ZSH_HIGHLIGHT_STYLES[function]='fg=26'
+ZSH_HIGHLIGHT_STYLES[command]='fg=26'
+ZSH_HIGHLIGHT_STYLES[precommand]='fg=red,bold'
+#ZSH_HIGHLIGHT_STYLES[precommand]='fg=26,underline'
+ZSH_HIGHLIGHT_STYLES[commandseparator]='none'
+ZSH_HIGHLIGHT_STYLES[hashed-command]='fg=26'
+ZSH_HIGHLIGHT_STYLES[path]='underline'
+ZSH_HIGHLIGHT_STYLES[path_prefix]='underline'
+#ZSH_HIGHLIGHT_STYLES[path_approx]='fg=yellow,underline'
+ZSH_HIGHLIGHT_STYLES[path_approx]='fg=red,bold'
+ZSH_HIGHLIGHT_STYLES[globbing]='fg=92'
+ZSH_HIGHLIGHT_STYLES[history-expansion]='fg=92'
+ZSH_HIGHLIGHT_STYLES[single-hyphen-option]='fg=39'
+ZSH_HIGHLIGHT_STYLES[double-hyphen-option]='fg=39'
+ZSH_HIGHLIGHT_STYLES[back-quoted-argument]='none'
+ZSH_HIGHLIGHT_STYLES[single-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[double-quoted-argument]='fg=yellow'
+ZSH_HIGHLIGHT_STYLES[dollar-double-quoted-argument]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[back-double-quoted-argument]='fg=cyan'
+ZSH_HIGHLIGHT_STYLES[assign]='none'
+
+
+## Miscellaneous functions
+
+npm-installed-publish-dates() {
+    npm ls --depth=0 --json |
+    jq -r '.dependencies | to_entries | map("\(.key) \(.value.version)") | .[]' |
+    while read line; do
+        name="${line/ */}"
+        version="${line/* /}"
+        npm view --json $name@$version time |
+        (jq -r --arg version $version '.[$version]'; echo $name) |
+        paste - -
+    done |
+    sort
+}
+
+#gtm() {
+#    if [[ "$#" -ne 1 ]]; then
+#        echo $'Usage: gtm <meeting-id>\nExample: gtm 123-456-543'
+#        exit 1
+#    fi
+#    open "gotomeeting://SALaunch?Action=Join&MeetingID=${1//-/}"
+#}
+
+#sshjenkins() {
+#    default_user=your.username
+#    if [[ "$1" = "-h" || -z "$1" ]]; then
+#        echo "usage: sshjenkins [user@]machine-build"
+#        echo "example: sshjenkins srv-acceptance-test-build-master"
+#        echo "Put your LDAP password in ~/.chef-ldap for auto login"
+#        echo "For sandbox builds use chef-repo-sandbox-build-{name of sandbox} as the build name"
+#        echo "example: sshjenkins ui-chef-repo-sandbox-build-patient-record-sandbox"
+#        echo "example: sshjenkins ui-chef-repo-sandbox-build-ash"
+#        return
+#    fi
+#    if [[ "$1" = *@* ]]; then
+#        user="${1/@*/}"
+#        host="${1/*@/}"
+#    else
+#        user="$default_user"
+#        host="$1"
+#        auto=true
+#    fi
+#    if [[ "$host" =~ "^10\.[0-9]+\.[0-9]+\.[0-9]+$" ]]; then
+#        ip="$(knife exec -E "puts nodes.find('local_ipv4:$host') {|n| n['cloud']['public_ipv4'] }" --config ~/.chef/knife.rb)"
+#    elif [[ "$host" =~ "^[0-9]+\.[0-9]+\.[0-9]+\.[0-9]+$" ]]; then
+#        ip="$host"
+#    else
+#        if [[ $host == *'chef-repo-sandbox-build'* ]]; then
+#            org=$(echo "${host}" | sed -e "s/^.*-sandbox-build-//")
+#            echo "Attempting to contact sandbox: ${org}"
+#            # This needs to use the magical noint node to get the public_ip custom attribute. The regular node won't have it
+#            ip="$(knife node show ${host}-noint -a public_ip --config ~/.chef/knife.rb --server-url "https://pantry.chef.local/organizations/${org}"| awk '$1 == "public_ip:" {print $2}')"
+#        else
+#            ip="$(knife exec -E "puts nodes.find('name:*${host}*') {|n| puts n['public_ip'] }" --config ~/.chef/knife.rb)"
+#            [[ -z "$ip" ]] && ip="$(knife node show ${host} --config ~/.chef/knife.rb | awk '$1 == "IP:" {print $2}')"
+#        fi
+#    fi
+#    ssh_command=(ssh -o StrictHostKeyChecking=no $user@$ip)
+#    [[ -z "$ip" ]] && return
+#    if [[ "$auto" -ne "true" || ! -f ~/.chef-ldap ]]; then
+#        ${ssh_command[@]}
+#        return
+#    fi
+#    if command -v sshpass &>/dev/null; then
+#        sshpass -f ~/.chef-ldap ${ssh_command[@]}
+#    else
+#        password="$(<~/.chef-ldap)"
+#        expect <(<<EOF
+#            spawn ${ssh_command[@]}
+#            expect "password"
+#            send "$password"
+#            send "\r"
+#            expect -re "# |% |\\\\$ "
+#            interact
+#EOF
+#        )
+#    fi
+#}
+
+#update-sandbox() (
+#    set -euo pipefail
+#    if [[ "$#" -ne 1 ]]; then
+#        echo $'Usage: update-sandbox <sandbox-name>\nExample: update-sandbox pear'
+#        exit 1
+#    fi
+#    set -x
+#    git fetch
+#    git merge origin/master
+#    git push origin "HEAD:$1" || {
+#        set +x
+#        echo "Force push required. Press enter to continue or ctrl+c to abort: "
+#        read
+#        set -x
+#        git push --force origin "HEAD:$1"
+#    }
+#)
+
+#aws-public-ip() {
+#    #jq -r '.[] | select(.privateIpAddress == "10.1.2.3") | {r: .privateIpAddress, u: .publicIpAddress, n: (.tags[] | select(.key == "Name").value)} | "\(.r) \t \(.u) \t \(.n)"' /tmp/aws.txt
+#    for ip in "$@"; do
+#        jq -r '.[] | select(.privateIpAddress == "'"$ip"'") | [.privateIpAddress, .publicIpAddress, (.tags[] | select(.key == "Name").value)] | @tsv' /tmp/aws.txt
+#    done
+#}
