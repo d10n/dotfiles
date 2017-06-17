@@ -77,7 +77,7 @@ def symlink_dotfiles(dotfiles):
 
 def execute_executables(executables):
     for executable in executables:
-        run = input('Execute ' + executable + '? [Y/n]: ')
+        run = input('Execute ' + executable + '? (read first!) [Y/n]: ')
         if not (run == '' or run.lower() == 'y'):
             continue
         print('Execute ' + executable)
