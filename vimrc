@@ -166,14 +166,15 @@ map 0 <Home>
 " Move the original 0 functionality to ^ since the new 0 replaces ^
 noremap ^ 0
 
-" Clear search highlights with esc
+" Clear search highlights with ^c
+" Remapping Esc can cause vim to start in Replace mode
 if has('gui_running')
-  nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
+  "nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
   nnoremap <silent> <C-c> :nohlsearch<CR><silent><C-c>
 else
   "nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
   augroup no_highlight
-    autocmd TermResponse * nnoremap <Esc> :nohlsearch<CR><Esc>
+    "autocmd TermResponse * nnoremap <Esc> :nohlsearch<CR><Esc>
     autocmd TermResponse * nnoremap <C-c> :nohlsearch<CR><silent><C-c>
   augroup END
 end
