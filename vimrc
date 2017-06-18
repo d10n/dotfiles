@@ -177,7 +177,7 @@ if exists('&undodir')
   execute 'set undodir='.root.'/undo'
 endif
 
-set cryptmethod=blowfish2
+silent! set cryptmethod=blowfish2
 
 " Fix arrow keys on Darwin
 if g:uname == 'Darwin'
