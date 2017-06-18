@@ -13,7 +13,7 @@ endif
 
 let root = '~/.vim'
 " Make vim dir if it's missing (for brand-new setups)
-for dir in ['backup', 'tmp', 'undo']
+for dir in ['backup', 'tmp', 'undo', 'autoload']
   if !isdirectory(expand(root.'/'.dir, 1))
     exec 'silent !mkdir -p '.root.'/'.dir
   endif
@@ -27,29 +27,64 @@ else
   let g:uname = 'Windows'
 endif
 
+" Bootstrap plugin manager and plugins
 if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.vimrc.plugins
-  let neobundle_src = 'https://github.com/Shougo/neobundle.vim'
-  " Clone neobundle if it's missing
-  if !isdirectory(expand(root, 1).'/bundle/neobundle.vim')
-    exec '!git clone '.neobundle_src.' '.shellescape(expand(root.'/bundle/neobundle.vim', 1))
+  " Only use one of these choices:
+  let use_vimplug = 1
+  let use_neobundle = 0
+
+  if use_vimplug
+    " Download with curl (recommended by vim-plug)
+    let vimplug_src = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+    let vimplug_dst = expand(root, 1).'/autoload/plug.vim'
+    if !filereadable(vimplug_dst)
+      if executable('curl') == 1
+        exec 'silent !curl -l -o '.shellescape(vimplug_dst).' '.vimplug_src
+      else  " assume wget is available
+        exec 'silent !wget -O '.shellescape(vimplug_dst).' '.vimplug_src
+      endif
+      autocmd VimEnter * PlugInstall
+    endif
+
+    " Clone vim-plug with git if it's missing (not recommended by vim-plug)
+    "let vimplug_src = 'https://github.com/junegunn/vim-plug.git'
+    "if !isdirectory(expand(root, 1).'/vim-plug')
+    "  exec 'silent !git clone '.vimplug_src.' '.shellescape(expand(root.'/vim-plug', 1))
+    "  exec 'source '.expand(root, 1).'/vim-plug/plug.vim'
+    "  autocmd VimEnter * PlugInstall
+    "else
+    "  exec 'source '.expand(root, 1).'/vim-plug/plug.vim'
+    "endif
+
+    call plug#begin()
+    source ~/.vimrc.plugins
+    call plug#end()
   endif
 
-  " Immediately make neobundle accessible in the rtp
-  if has('vim_starting')
-    exec 'set runtimepath+='.root.'/bundle/neobundle.vim'
+  if use_neobundle
+    let neobundle_src = 'https://github.com/Shougo/neobundle.vim'
+    " Clone neobundle if it's missing
+    if !isdirectory(expand(root, 1).'/bundle/neobundle.vim')
+      exec 'silent !git clone '.neobundle_src.' '.shellescape(expand(root.'/bundle/neobundle.vim', 1))
+    endif
+
+    " Immediately make neobundle accessible in the rtp
+    if has('vim_starting')
+      exec 'set runtimepath+='.root.'/bundle/neobundle.vim'
+    endif
+
+    " filetype on then off before calling neobundle fixes nonzero exit status on OS X
+    filetype on
+    filetype off
+    call neobundle#begin(expand(root.'/bundle/'))
+    filetype plugin indent on  " Required for neobundle
+
+    " Manage neobundle with neobundle - required
+    NeoBundleFetch 'Shougo/neobundle.vim'
+    source ~/.vimrc.plugins
+    call neobundle#end()
+    NeoBundleCheck
   endif
-
-  " filetype on then off before calling neobundle fixes nonzero exit status on OS X
-  filetype on
-  filetype off
-  call neobundle#begin(expand(root.'/bundle/'))
-  filetype plugin indent on  " Required for neobundle
-
-  " Manage neobundle with neobundle - required
-  NeoBundleFetch 'Shougo/neobundle.vim'
-  source ~/.vimrc.plugins
-  call neobundle#end()
-  NeoBundleCheck
 endif
 
 filetype plugin indent on  " Automatically detect filetypes

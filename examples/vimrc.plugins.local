@@ -1,18 +1,21 @@
 " vim: set ts=2 sw=2:
 
-NeoBundle 'fatih/vim-go'
-NeoBundle 'Rip-Rip/clang_complete'
-NeoBundle 'jdonaldson/vaxe'
-NeoBundle 'scrooloose/syntastic'
-NeoBundle 'dlwicksell/axiom', {'rtp': 'vim'}
+Plug 'fatih/vim-go'
+Plug 'Rip-Rip/clang_complete'
+Plug 'jdonaldson/vaxe'
+Plug 'scrooloose/syntastic'
+Plug 'dlwicksell/axiom', {'rtp': 'vim'}
 
-"" YouCompleteMe crashes mvim and is generally a pain
-"NeoBundle 'Valloric/YouCompleteMe', {
-"  \ 'build': {
-"  \   'unix': './install.sh --clang-completer --system-libclang'
-"  \ },
-"\ }
-"cmake -G "Unix Makefiles" -DUSE_SYSTEM_LIBCLANG=ON . ~/.vim/bundle/YouCompleteMe/cpp/
+"function! BuildYCM(info)
+"  " info is a dictionary with 3 fields
+"  " - name:   name of the plugin
+"  " - status: 'installed', 'updated', or 'unchanged'
+"  " - force:  set on PlugInstall! or PlugUpdate!
+"  if a:info.status == 'installed' || a:info.force
+"    !./install.py
+"  endif
+"endfunction
+"Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 
 " clang_complete
 let g:clang_use_library = 1

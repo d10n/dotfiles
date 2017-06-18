@@ -1,14 +1,14 @@
 " vim: set ts=2 sw=2:
 
-NeoBundle 'tpope/vim-eunuch'
-NeoBundle 'ervandew/supertab'
-NeoBundle 'flazz/vim-colorschemes'
-NeoBundle 'terryma/vim-multiple-cursors'
-NeoBundle 'terryma/vim-expand-region'
-NeoBundle 'bkad/CamelCaseMotion'
-NeoBundle 'Shougo/neocomplcache'
-NeoBundle 'editorconfig/editorconfig-vim'
-NeoBundle 'PreserveNoEOL'
+Plug 'tpope/vim-eunuch'
+Plug 'ervandew/supertab'
+Plug 'flazz/vim-colorschemes', {'do': ':colorscheme badwolf'}
+Plug 'terryma/vim-multiple-cursors'
+Plug 'terryma/vim-expand-region'
+Plug 'bkad/CamelCaseMotion'
+Plug 'Shougo/neocomplcache'
+Plug 'editorconfig/editorconfig-vim'
+Plug 'vim-scripts/PreserveNoEOL'
 
 " CamelCaseMotion
 " w/b/e through camelCase and under_score
