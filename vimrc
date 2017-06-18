@@ -43,7 +43,6 @@ if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.v
       else  " assume wget is available
         exec 'silent !wget -O '.shellescape(vimplug_dst).' '.vimplug_src
       endif
-      autocmd VimEnter * PlugInstall
     endif
 
     " Clone vim-plug with git if it's missing (not recommended by vim-plug)
@@ -56,7 +55,11 @@ if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.v
     "  exec 'source '.expand(root, 1).'/vim-plug/plug.vim'
     "endif
 
-    call plug#begin()
+    autocmd VimEnter *
+          \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+          \|   PlugInstall --sync | q
+          \| endif
+    call plug#begin(expand(root.'/bundle/'))
     source ~/.vimrc.plugins
     call plug#end()
   endif
