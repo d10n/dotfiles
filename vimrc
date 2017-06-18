@@ -126,6 +126,8 @@ set showcmd  " Show last command
 set display+=lastline  " Display what can be shown of a last line longer than the window
 set showmode  " Show the mode on the last line
 
+set splitright
+
 set autochdir  " Set the cwd to the file's basedir
 "set clipboard+=unnamed  " Share windows clipboard
 set backup  " Make a backup before overwriting a file
