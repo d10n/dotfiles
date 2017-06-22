@@ -12,7 +12,7 @@ git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old
 git config --global alias.bs $'!f() { [[ "$1" = "-a" ]] && refs="--" || refs="refs/heads/"; git for-each-ref --format="%(committerdate:raw)%(taggerdate:raw)%(committerdate:relative)%(taggerdate:relative)\t%(refname:short) %(color:red)%(subject) %(color:blue)%(authorname)" "$refs" | sort -k1,1 | cut -c17-; }; f'
 
 # Short log
-git config --global alias.l '!'"git --no-pager log --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)' -5"
+git config --global alias.l "!git --no-pager log --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)' -5"
 
 # Full log graph
 git config --global alias.lg "log --all --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)'"
