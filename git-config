@@ -8,17 +8,14 @@ set -x
 # Find the branching point http://stackoverflow.com/a/4991675
 git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old-line-format= --new-line-format= <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1)"'"' -"
 
-# Pretty log graph
-# for old git
-#git config --global alias.prettyLogGraph "log --graph --all --format=format:'%C(bold blue)%h%C(reset) - %C(bold green)(%cr)%C(reset) %C(bold yellow)%d%C(reset) %C(red)%s%C(reset) %C(bold red) %cn%C(reset)' --abbrev-commit --date=relative"
-# for git 1.8.3+
-git config --global alias.prettyLogGraph "log --graph --all --format=format:'%C(auto)%h - (%cr) %d %s %C(yellow)%cn%C(reset)' --abbrev-commit --date=relative"
-
 # Sort branch by date
 git config --global alias.bs $'for-each-ref --sort=committerdate refs/heads/ --format="%(committerdate:relative)\t%(refname:short) %(color:red)%(subject) %(color:blue)%(authorname)"'
 
 # Short log
 git config --global alias.l '!'"git --no-pager log --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)' -5"
+
+# Full log graph
+git config --global alias.lg "log --all --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)'"
 
 # Short status
 git config --global alias.s "status -s"
