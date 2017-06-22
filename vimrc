@@ -245,12 +245,24 @@ endif
 "  inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 "endif
 
+function! ToggleGutter()
+  "if &signcolumn == 'auto'
+  if &number
+    set signcolumn=no
+  else
+    set signcolumn=auto
+  endif
+  set invnumber
+endfunction
+command! ToggleGutter call ToggleGutter()
+command! ToggleGutterAndList call ToggleGutter() | let &list=&number
+
 " Paste, copy, and line wrap toggle
 set pastetoggle=<F2>
- noremap <F3> :set invlist invnumber<CR>
-inoremap <F3> <C-o><F3>
+ noremap <F3> :ToggleGutterAndList<CR>
+inoremap <F3> <C-o>:ToggleGutterAndList<CR>
  noremap <F4> :set nowrap!<CR>
-inoremap <F4> <C-o><F4>
+inoremap <F4> <C-o>:set nowrap!<CR>
 
 " Local config
 if filereadable($HOME . '/.vimrc.local')
