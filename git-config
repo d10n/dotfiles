@@ -13,9 +13,11 @@ git config --global alias.bs $'!f() { [[ "$1" = "-a" ]] && refs="--" || refs="re
 
 # Short log
 git config --global alias.l "!git --no-pager log --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)' -5"
+#git config --global alias.l "!git --no-pager log --graph --format='%C(yellow)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)' -5"
 
 # Full log graph
 git config --global alias.lg "log --all --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)'"
+#git config --global alias.lg "log --all --graph --format='%C(yellow)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)'"
 
 # Short status
 git config --global alias.s "status -s"
