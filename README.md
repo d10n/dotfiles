@@ -22,11 +22,10 @@ Required usage notes:
  * Make `.zprofile` and `.profile`
 
 
-Recommended usage notes:
+Notes:
 
- * Optionally,
-    * install `zsh-syntax-highlighting` to get colors while you type
-    * install `zsh-history-substring-search` to make searching history easy; for example, type `gradle` and press up arrow to go through the history of all commands saying `gradle`.
+ * `zsh-syntax-highlighting` adds colors while you type
+ * `zsh-history-substring-search` lets you type part of a previous command and press the up and down arrow keys to cycle through command history with that part
  * The full path is shown in the prompt so you can stop typing `pwd`
  * When inside a git repository, a line is added to the prompt showing basic git status information so you can stop typing `git status`
     * Run `git fetch` to sync with upstream and see how many commits behind you are
