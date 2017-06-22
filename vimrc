@@ -151,6 +151,7 @@ set scrolloff=5  " Lines to keep visible around the cursor when scrolling
 
 set ttyfast  " Faster terminal redrawing
 set timeoutlen=500  " Shorter timeout default
+set updatetime=250
 "set lazyredraw  " Don't redraw while running macros
 set ruler  " Show cursor position
 "set virtualedit=all  " Cursor can go out of bounds
