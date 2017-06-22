@@ -30,7 +30,7 @@ git config --global alias.ds "diff --patience --staged"
 git config --global alias.b "branch"
 
 # Update both branches and tags
-git config --global alias.f '!'"printf 'branches: '; git fetch --all --prune; printf 'tags: ';  git fetch --all --prune --tags"
+git config --global alias.f "!git fetch --all --prune 2>&1 | sed 's/^/branches: /'; git fetch --all --prune --tags 2>&1 | sed 's/^/tags: /'"
 
 # Add color to git output
 git config --global color.ui auto
