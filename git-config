@@ -70,6 +70,12 @@ git config --global transfer.fsckObjects true
 git config --global instaweb.local true
 git config --global instaweb.httpd webrick
 
+# Fix git rebases on mac
+# https://www.git-tower.com/blog/make-git-rebase-safe-on-osx/
+if [[ "$(uname)" = "Darwin" ]]; then
+    git config --global core.trustctime false
+fi
+
 # Update sandbox branch
 # Old, but maybe a useful reference for shell functions in git aliases
 # * origin/master is merged into your branch
