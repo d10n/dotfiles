@@ -14,6 +14,10 @@ let g:syntastic_enable_signs = 1
 Plug 'mbbill/undotree'
 nnoremap <F5> :UndotreeToggle<cr>
 
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
+"Plug 'junegunn/fzf.vim'
+nnoremap <C-p> :FZF<CR>
+
 Plug 'Rip-Rip/clang_complete'
 let g:clang_use_library = 1
 if g:uname == 'Darwin'
