@@ -49,6 +49,12 @@ let g:clang_hl_errors = 1
 Plug 'dlwicksell/axiom', {'rtp': 'vim'}
 let g:filetype_m = 'mumps'
 
+" Signify has to save the file automatically to work (yuck)
+" Use gitgutter instead
+"Plug 'mhinz/vim-signify'
+"let g:signify_vcs_list = ['git', 'svn', 'hg']
+"let g:signify_sign_change = '~'
+"let g:signify_realtime = 1
 
 "function! BuildYCM(info)
 "  " info is a dictionary with 3 fields
