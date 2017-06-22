@@ -18,6 +18,13 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
 "Plug 'junegunn/fzf.vim'
 nnoremap <C-p> :FZF<CR>
 
+Plug 'vim-airline/vim-airline'
+" Setting a theme is required for vi to exit 0 if you don't
+" add the vim-airline-themes plugin. Otherwise, git commands fail.
+let g:airline_theme = 'dark'
+"Plug 'vim-airline/vim-airline-themes'
+"let g:airline#extensions#tabline#enabled = 1
+
 Plug 'Rip-Rip/clang_complete'
 let g:clang_use_library = 1
 if g:uname == 'Darwin'
