@@ -1,23 +1,16 @@
 " vim: set ts=2 sw=2:et:
 
 Plug 'fatih/vim-go'
-Plug 'Rip-Rip/clang_complete'
+
 Plug 'jdonaldson/vaxe'
+let g:vaxe_completion_write_compiler_ouput = 1
+
 Plug 'scrooloose/syntastic'
-Plug 'dlwicksell/axiom', {'rtp': 'vim'}
+let g:syntastic_check_on_open = 1
+let g:syntastic_enable_signs = 1
 
-"function! BuildYCM(info)
-"  " info is a dictionary with 3 fields
-"  " - name:   name of the plugin
-"  " - status: 'installed', 'updated', or 'unchanged'
-"  " - force:  set on PlugInstall! or PlugUpdate!
-"  if a:info.status == 'installed' || a:info.force
-"    !./install.py
-"  endif
-"endfunction
-"Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
 
-" clang_complete
+Plug 'Rip-Rip/clang_complete'
 let g:clang_use_library = 1
 if g:uname == 'Darwin'
   let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib/'
@@ -38,12 +31,17 @@ let g:clang_hl_errors = 1
 "" try for completions after '.', '(', etc.
 "let g:neocomplcache_omni_patterns.haxe = '\v([\]''"\)]|\w|(^\s*))(\.|\()'
 
-" vaxe
-let g:vaxe_completion_write_compiler_ouput = 1
-
-" syntastic
-let g:syntastic_check_on_open = 1
-let g:syntastic_enable_signs = 1
-
-" axiom
+Plug 'dlwicksell/axiom', {'rtp': 'vim'}
 let g:filetype_m = 'mumps'
+
+
+"function! BuildYCM(info)
+"  " info is a dictionary with 3 fields
+"  " - name:   name of the plugin
+"  " - status: 'installed', 'updated', or 'unchanged'
+"  " - force:  set on PlugInstall! or PlugUpdate!
+"  if a:info.status == 'installed' || a:info.force
+"    !./install.py
+"  endif
+"endfunction
+"Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }

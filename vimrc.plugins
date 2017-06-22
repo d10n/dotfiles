@@ -5,12 +5,11 @@ Plug 'ervandew/supertab'
 Plug 'flazz/vim-colorschemes', {'do': ':colorscheme badwolf'}
 Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region'
-Plug 'bkad/CamelCaseMotion'
 Plug 'Shougo/neocomplcache'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/PreserveNoEOL'
 
-" CamelCaseMotion
+Plug 'bkad/CamelCaseMotion'
 " w/b/e through camelCase and under_score
 map <silent> <S-W> <Plug>CamelCaseMotion_w
 map <silent> <S-B> <Plug>CamelCaseMotion_b
