@@ -171,6 +171,7 @@ set splitright
 
 set autochdir  " Set the cwd to the file's basedir
 "set clipboard+=unnamed  " Share windows clipboard
+set history=5000  " Number of commands to save in history
 set backup  " Make a backup before overwriting a file
 set undofile  " Save and restore undo history when saving files
 execute 'set backupdir='.root.'/backup'
