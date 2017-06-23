@@ -157,6 +157,8 @@ __git_info() {
     remote_ref=$(git rev-parse --verify "${branch}@{upstream}" --symbolic-full-name 2>/dev/null)
     remote=${remote_ref/refs\/remotes\/}
     commit_hash=$(git rev-parse --verify --short=7 HEAD 2>/dev/null)
+    staged_changes="$(git diff-index --cached --quiet HEAD -- || echo 'C')"
+    unstaged_changes="$(git diff-files --quiet || echo 'U')"
     if [[ -z ${branch} ]] ; then
         detached_tag=$(git describe --tags --exact-match 2>/dev/null)
         detached_from=${detached_tag:-${commit_hash}}
@@ -174,6 +176,8 @@ __git_info() {
     fi
     message="(git)"
     [[ -n "${commit_hash}" ]] && message+=" ${commit_hash}"
+    [[ -n "${staged_changes}" ]] && message+=" ${staged_changes}"
+    [[ -n "${unstaged_changes}" ]] && message+=" ${unstaged_changes}"
     [[ -n "${branch}" ]] && message+=" ${branch}"
     [[ -n "${tracking}" ]] && message+=" ${tracking}"
     [[ -n "${stash_message}" ]] && message+=" ${stash_message}"
