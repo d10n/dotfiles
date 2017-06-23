@@ -319,7 +319,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
 +vi-git-stash() {
     local -a stashes
     if [[ -s ${hook_com[base]}/.git/refs/stash ]] ; then
-        stashes=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+        stashes=$(git for-each-ref refs/stash | wc -l | tr -d ' ')
         hook_com[misc]+=" (${stashes} stashed)"
     fi
 }
