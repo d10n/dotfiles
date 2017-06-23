@@ -97,7 +97,10 @@ pws() {
     # /usr/local/bin -> /u/l/bin
     # ~/code/srv/src -> ~/c/s/src
     # Edge case: ~/._.foo/bar -> ~/._.f/b
-    pwd | sed s\0^"$HOME"\0~\0 | awk '{
+    pwd | awk -v home="$HOME" '{
+        if(substr($0,0,length(home)) == home) {
+            $0 = "~" substr($0,length(home))
+        }
         len = split($0,dirs,"/");
         for(i = 1; i <= len; i++) {
             if(i < len) {
@@ -109,8 +112,9 @@ pws() {
         }
     }'
 
-    ## 8 times slower than awk
-    #pwd | sed s\0^"$HOME"\0~\0 | perl -ne '
+    ## 55% slower than awk
+    #pwd | HOME="$HOME" perl -ne '
+    #    $_ =~ s/^\Q$ENV{HOME}\E/~/;
     #    my @dirs = split("/", $_);
     #    my $basename = pop @dirs;
     #    foreach $dir (@dirs) {
@@ -120,8 +124,8 @@ pws() {
     #    print $basename;
     #'
 
-    # 10 times slower than awk
-    #pwd|sed s\0\^'$HOME'\0~\0||perl -ne "s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;"
+    ## 53% slower than awk
+    #pwd|HOME="$HOME" perl -ne 's/^\Q$ENV{HOME}\E/~/;s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;'
 }
 
 [[ -f ~/.bash.colors ]] && . ~/.bash.colors
@@ -136,7 +140,7 @@ else
     BGUC=$'\e[46m'
 fi
 
-PROMPT_COMMAND='echo -en "\033]0;$(pwd|sed s\0\^'$HOME'\0~\0|perl -ne "s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;")\007"'
+PROMPT_COMMAND='echo -en "\033]0;$(pwd|HOME="$HOME" perl -ne '"'"'s/^\Q$ENV{HOME}\E/~/;s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;'"'"')\007"'
 
 PS1="\u@\h:\w"'$(__git_info)'$'\n'"\$ "
 PS1="\[$UC$BGUC\][\[$K$BGUC\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\$\[$X\] "
