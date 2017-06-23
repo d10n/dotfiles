@@ -180,7 +180,7 @@ pws() {
         }
     }'
 
-    ## 8 times slower than awk
+    ## 55% slower than awk
     #print -Pn %~ | perl -ne '
     #    my @dirs = split("/", $_);
     #    my $basename = pop @dirs;
@@ -191,7 +191,7 @@ pws() {
     #    print $basename;
     #'
 
-    ## 10 times slower than awk
+    ## 53% slower than awk
     #print -Pn %~ |perl -ne "s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;"
 }
 
