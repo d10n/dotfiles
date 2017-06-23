@@ -15,7 +15,7 @@ let root = '~/.vim'
 " Make vim dir if it's missing (for brand-new setups)
 for dir in ['backup', 'tmp', 'undo', 'autoload']
   if !isdirectory(expand(root.'/'.dir, 1))
-    exec 'silent !mkdir -p '.root.'/'.dir
+    call mkdir(expand(root.'/'.dir, 1), 'p')
   endif
 endfor
 
