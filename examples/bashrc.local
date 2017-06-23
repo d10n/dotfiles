@@ -172,7 +172,7 @@ __git_info() {
     fi
     if [[ -s "$base/.git/refs/stash" ]] ; then
         stashes=$(git for-each-ref refs/stash | wc -l | tr -d ' ')
-        stash_message="(${stashes} stashed)"
+        stash_message=" (${stashes} stashed)"
     fi
     message="(git)"
     [[ -n "${commit_hash}" ]] && message+=" ${commit_hash}"
