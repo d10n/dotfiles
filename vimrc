@@ -125,6 +125,8 @@ set shortmess=atI  " Disable vim intro message
 set textwidth=0  " Autowrap at this column (0 does not wrap, default)
 set colorcolumn=80  " Vertical stripe at this column
 
+set nojoinspaces  " Don't double-space after punctuation when joining lines
+
 " Tab completion list
 "set wildmode=longest,list,full  " Multi-line completion menu
 set wildmode=longest:full,full  " Single-line completion menu
