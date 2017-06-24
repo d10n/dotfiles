@@ -211,6 +211,10 @@ map 0 <Home>
 " Move the original 0 functionality to ^ since the new 0 replaces ^
 noremap ^ 0
 
+" CTRL-U in insert mode deletes a lot.  Use CTRL-G u to first break undo,
+" so that you can undo CTRL-U after inserting a line break.
+inoremap <C-U> <C-G>u<C-U>
+
 " Clear search highlights with ^c
 " Remapping Esc can cause vim to start in Replace mode
 if has('gui_running')
