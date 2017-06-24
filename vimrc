@@ -215,6 +215,11 @@ noremap ^ 0
 " so that you can undo CTRL-U after inserting a line break.
 inoremap <C-U> <C-G>u<C-U>
 
+if !exists(":DiffOrig")
+  command DiffOrig vert new | set bt=nofile | r ++edit # | 0d_ | diffthis
+                  \ | wincmd p | diffthis
+endif
+
 " Clear search highlights with ^c
 " Remapping Esc can cause vim to start in Replace mode
 if has('gui_running')
