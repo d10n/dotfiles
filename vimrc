@@ -261,7 +261,7 @@ endif
 " Jump to the last cursor position when reopening a file
 " If it doesn't work, check permissions on ~/.viminfo
 if has('autocmd')
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
 endif
 
 function! ToggleGutter()
