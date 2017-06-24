@@ -9,6 +9,10 @@ Plug 'Shougo/neocomplcache'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/PreserveNoEOL'
 
+Plug 'd10n/vim-toggle-help'
+nnoremap <F1> :ToggleHelp<CR>
+cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'ToggleHelp' : 'h'
+
 Plug 'bkad/CamelCaseMotion'
 " w/b/e through camelCase and under_score
 map <silent> <S-W> <Plug>CamelCaseMotion_w
