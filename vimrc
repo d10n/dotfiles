@@ -258,6 +258,12 @@ endif
 "  inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 "endif
 
+" Jump to the last cursor position when reopening a file
+" If it doesn't work, check permissions on ~/.viminfo
+if has('autocmd')
+  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g'\"" | endif
+endif
+
 function! ToggleGutter()
   "if &signcolumn == 'auto'
   if &number
