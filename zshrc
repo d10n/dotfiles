@@ -75,6 +75,7 @@ is_iterm() (
 zstyle ':compinstall' filename "$HOME/.zshrc"
 zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # case-insensitive tab completion
 zstyle ':completion:*' insert-tab pending  # paste with tabs doesn't start completion
+zstyle ':completion:*' use-cache on
 zstyle ':completion:*' menu select  # complete with arrow key selection
 #zstyle ':completion:*:*:gradle:*' gradle-inspect no  # just use simple gradle completion
 autoload -Uz compinit && compinit -i > /dev/null
