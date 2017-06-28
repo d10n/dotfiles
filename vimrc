@@ -261,7 +261,7 @@ if empty(findfile('plugin/scriptease.vim', &rtp))
 endif
 
 " Smart home key
-noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
+noremap <expr> <silent> <Home> xor(col('.') == match(getline('.'),'\S')+1, getline('.')=~'^\s*$' && col('.') == strlen(getline('.'))) ? '0' : '^'
 inoremap <silent> <Home> <C-O><Home>
 " 0 is also smart home
 map 0 <Home>
