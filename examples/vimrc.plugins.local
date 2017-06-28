@@ -1,35 +1,135 @@
-" vim: set ts=2 sw=2:et:
+" vim: set ts=2 sw=2 et fdm=marker:
 
-Plug 'airblade/vim-gitgutter'
-
-Plug 'fatih/vim-go'
-
-Plug 'jdonaldson/vaxe'
-let g:vaxe_completion_write_compiler_ouput = 1
-
-Plug 'scrooloose/syntastic'
-let g:syntastic_check_on_open = 1
-let g:syntastic_enable_signs = 1
-
-Plug 'mbbill/undotree'
-nnoremap <F5> :UndotreeToggle<cr>
-
-Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' }
-"Plug 'junegunn/fzf.vim'
-nnoremap <C-p> :FZF<CR>
-
-"" Warning: >60MB download!
-"Plug 'vim-ctrlspace/vim-ctrlspace'
-"set hidden  " Required by ctrlspace
-
+Plug 'tpope/vim-commentary'
+Plug 'tpope/vim-eunuch'
+Plug 'tpope/vim-scriptease'
+Plug 'tpope/vim-surround'
+Plug 'tpope/vim-unimpaired'
+Plug 'mbbill/undotree'  " Browse through undo history
+Plug 'majutsushi/tagbar' ", { 'on': 'TagbarToggle' }
 Plug 'vim-airline/vim-airline'
-" Setting a theme is required for vi to exit 0 if you don't
-" add the vim-airline-themes plugin. Otherwise, git commands fail.
-let g:airline_theme = 'dark'
-"Plug 'vim-airline/vim-airline-themes'
-"let g:airline#extensions#tabline#enabled = 1
+Plug 'vim-airline/vim-airline-themes'
+Plug 'easymotion/vim-easymotion'
+Plug 'rhysd/clever-f.vim'  " Jump to 'a' by pressing fa and keep pressing f to go to the next occurrence
+"Plug 'vim-scripts/ZoomWin' " git clone --config transfer.fsckObjects=false 'https://github.com/vim-scripts/ZoomWin.git' ~/.vim/bundle/ZoomWin
+Plug 'scrooloose/syntastic'  " Syntax checking
+Plug 'airblade/vim-gitgutter'
+"Plug 'mhinz/vim-signify'  " Signify has to save the file automatically to work (yuck)
+Plug 'lucc/vim-tip'  " Tip of the day
+
+" Fuzzy searching
+" Pick one:
+"Plug 'ctrlpvim/ctrlp.vim'
+Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } | Plug 'junegunn/fzf.vim'
+
+" File manager
+" Pick one:
+"Plug 'scrooloose/nerdtree'  " - to open and close
+"Plug 'justinmk/vim-dirvish'  " - to open, q to close *
+"Plug 'jeetsukumaran/vim-filebeagle'  " - to open, q to close
+"Plug 'Shougo/vimproc.vim', {'do' : 'make'} | Plug 'Shougo/unite.vim' | Plug 'Shougo/vimfiler.vim'  " - to open and close
+Plug 'tpope/vim-vinegar'  " - to open, q to close
+
+" Languages
+Plug 'jdonaldson/vaxe'
+Plug 'pangloss/vim-javascript'
+Plug 'fatih/vim-go'
+Plug 'dlwicksell/axiom', {'rtp': 'vim'}
 
 Plug 'Rip-Rip/clang_complete'
+"Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+
+" Warning: >60MB download!
+"Plug 'vim-ctrlspace/vim-ctrlspace'
+
+
+"
+" Press zR to open all folds and zM to close all folds
+" Press zo to open one fold and zc to close one fold
+"
+
+" file manager: nerdtree {{{1
+if has_key(g:plugs, 'nerdtree')
+  nnoremap - :NERDTreeToggle<CR>
+  "nnoremap <silent> - :NERDTreeFind<CR>
+  let NERDTreeQuitOnOpen = 1
+  let NERDTreeHijackNetrw = 1
+  augroup ProjectDrawer
+    autocmd!
+    autocmd StdinReadPre * let s:std_in=1
+    autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | NERDTree | endif
+    autocmd BufEnter * if (winnr("$") == 1 && exists("b:NERDTree") && b:NERDTree.isTabTree()) | q | endif
+  augroup END
+endif
+
+" file manager: vimfiler {{{1
+if has_key(g:plugs, 'vimfiler.vim')
+  nnoremap - :VimFilerBufferDir<CR>
+  set noautochdir  " Required by vimfiler
+  let g:vimfiler_as_default_explorer = 1
+endif
+
+" file manager: vim-vinegar {{{1
+if has_key(g:plugs, 'vim-vinegar')
+  augroup netrw_custom_close
+    autocmd!
+    autocmd filetype netrw call s:netrw_custom_close()
+  augroup END
+  function! s:netrw_custom_close()
+    noremap <buffer> q :Rexplore<CR>
+  endfunction
+endif
+
+" vim-ctrlspace {{{1
+if has_key(g:plugs, 'vim-ctrlspace')
+  set hidden  " Required by ctrlspace
+endif
+
+" vim-airline {{{1
+" Setting a theme is required for vi to exit 0 if you don't
+" add the vim-airline-themes plugin. Otherwise, git commands fail.
+if !has_key(g:plugs, 'vim-airline-themes')
+  let g:airline_theme = 'dark'
+endif
+let g:airline#extensions#tabline#enabled = 1
+
+" vim-javascript {{{1
+let g:javascript_plugin_jsdoc = 1
+
+" undotree {{{1
+nnoremap <F5> :UndotreeToggle<cr>
+
+" Signify {{{1
+let g:signify_vcs_list = ['git', 'svn', 'hg']
+let g:signify_sign_change = '~'
+let g:signify_realtime = 1
+
+" fuzzy searching: fzf {{{1
+if has_key(g:plugs, 'fzf')
+  nnoremap <C-p> :FZF<CR>
+endif
+
+" fuzzy searching: ctrlp {{{1
+if has_key(g:plugs, 'ctrlp.vim')
+  let g:ctrlp_map = '<c-p>'
+  let g:ctrlp_cmd = 'CtrlP'
+  let g:ctrlp_working_path_mode = 'ra'
+endif
+
+" YouCompleteMe {{{1
+if has_key(g:plugs, 'YouCompleteMe')
+  function! BuildYCM(info)
+    " info is a dictionary with 3 fields
+    " - name:   name of the plugin
+    " - status: 'installed', 'updated', or 'unchanged'
+    " - force:  set on PlugInstall! or PlugUpdate!
+    if a:info.status == 'installed' || a:info.force
+      !./install.py
+    endif
+  endfunction
+endif
+
+" clang_complete {{{1
 let g:clang_use_library = 1
 if g:uname == 'Darwin'
   let g:clang_library_path = '/Library/Developer/CommandLineTools/usr/lib/'
@@ -41,7 +141,7 @@ let g:clang_complete_macros = 1
 let g:clang_auto_select=1
 let g:clang_hl_errors = 1
 
-"" neocomplcache
+" neocomplcache {{{1
 "let g:neocomplcache_enable_at_startup = 1 " always load neocc
 "let g:neocomplcache_enable_auto_select = 1 " auto-popup!
 "if !exists('g:neocomplcache_omni_patterns')
@@ -50,23 +150,15 @@ let g:clang_hl_errors = 1
 "" try for completions after '.', '(', etc.
 "let g:neocomplcache_omni_patterns.haxe = '\v([\]''"\)]|\w|(^\s*))(\.|\()'
 
-Plug 'dlwicksell/axiom', {'rtp': 'vim'}
-let g:filetype_m = 'mumps'
+" vaxe {{{1
+let g:vaxe_completion_write_compiler_ouput = 1
 
-" Signify has to save the file automatically to work (yuck)
-" Use gitgutter instead
-"Plug 'mhinz/vim-signify'
-"let g:signify_vcs_list = ['git', 'svn', 'hg']
-"let g:signify_sign_change = '~'
-"let g:signify_realtime = 1
+" syntastic {{{1
+let g:syntastic_check_on_open = 1
+let g:syntastic_enable_signs = 1
 
-"function! BuildYCM(info)
-"  " info is a dictionary with 3 fields
-"  " - name:   name of the plugin
-"  " - status: 'installed', 'updated', or 'unchanged'
-"  " - force:  set on PlugInstall! or PlugUpdate!
-"  if a:info.status == 'installed' || a:info.force
-"    !./install.py
-"  endif
-"endfunction
-"Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+" axiom {{{1
+if has_key(g:plugs, 'axiom')
+  let g:filetype_m = 'mumps'
+endif
+
