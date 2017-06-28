@@ -34,6 +34,9 @@ git config --global alias.b "branch"
 # Update both branches and tags
 git config --global alias.f "!git fetch --all --prune 2>&1 | sed 's/^/branches: /'; git fetch --all --prune --tags 2>&1 | sed 's/^/tags: /'"
 
+# Set a global gitignore file
+git config --global core.excludesfile ~/.gitignore_global
+
 # Add color to git output
 git config --global color.ui auto
 
