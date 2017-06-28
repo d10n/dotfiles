@@ -9,6 +9,7 @@ if has('unix')
   else
     set shell=sh
   endif
+  let g:is_posix=1  " Better syntax highlighting - :h ft-sh-syntax
 endif
 
 let root = '~/.vim'
