@@ -231,6 +231,10 @@ vnoremap > >gv
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
+" Keep search matches in the middle of the window.
+nnoremap n nzzzv
+nnoremap N Nzzzv
+
 " Smart home key
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 inoremap <silent> <Home> <C-O><Home>
