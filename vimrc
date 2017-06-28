@@ -352,13 +352,8 @@ endif
 "endif
 
 function! ToggleGutter()
-  "if &signcolumn == 'auto'
-  if &number
-    set signcolumn=no
-  else
-    set signcolumn=auto
-  endif
   set invnumber
+  let &signcolumn=(&number?'auto':'no')
 endfunction
 command! ToggleGutter call ToggleGutter()
 command! ToggleGutterAndList call ToggleGutter() | let &list=&number
