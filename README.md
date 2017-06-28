@@ -1,5 +1,9 @@
 # dotfiles
 
+> ![rationale](https://imgs.xkcd.com/comics/is_it_worth_the_time.png)
+> https://xkcd.com/1205/
+
+
 To install:  
 Clone to `~/.config/dotfiles` and run `~/.config/dotfiles/install` or manually symlink the files you want.  
 Executable files are meant to be executed instead of symlinked.
