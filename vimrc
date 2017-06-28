@@ -235,6 +235,25 @@ vnoremap <S-Tab> <gv
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
+if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'vimfiler.vim' && &rtp!~'vim-vinegar'
+  " If no other file manager is present, configure netrw
+  nnoremap - :Lexplore<CR>
+  " Make netrw behave more like other file managers
+  "let g:netrw_banner = 0
+  let g:netrw_liststyle = 3
+  let g:netrw_browse_split = 4
+  let g:netrw_altv = 1
+  let g:netrw_winsize = 25
+  augroup ProjectDrawer
+    autocmd!
+    " Start with browser open if no file was opened
+    "autocmd VimEnter * if @% == '' | Lexplore | endif
+    autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | Lexplore | endif
+    " Close vim if only the netrw toggle browser is open
+    autocmd BufEnter * if (winnr("$") == 1 && exists("b:netrw_browser_active") && exists("t:netrw_lexbufnr")) | q | endif
+  augroup END
+endif
+
 " Smart home key
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 inoremap <silent> <Home> <C-O><Home>
