@@ -128,6 +128,10 @@ set shortmess=atI  " Disable vim intro message
 " Make it obvious where 80 characters is
 set textwidth=0  " Autowrap at this column (0 does not wrap, default)
 set colorcolumn=80  " Vertical stripe at this column
+"" alternative approach for lines that are too long
+"set colorcolumn=
+"highlight OverLength ctermbg=red ctermfg=white guibg=#592929
+"match OverLength /\%81v.\+/
 
 set nojoinspaces  " Don't double-space after punctuation when joining lines
 set formatoptions+=j  " Merge comment lines
