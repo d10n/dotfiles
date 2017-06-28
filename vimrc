@@ -154,6 +154,8 @@ set incsearch  " Search while typing
 set hlsearch  " Highlight results
 set showmatch  " Highlight matching brackets
 
+set nrformats-=octal  " Don't increment/decrement using octal numbers  with Ctrl-A and Ctrl-X
+
 set noerrorbells  " Stop most audio bells
 set visualbell  " Enable visual bell to stop all audio bells
 set t_vb=  " Make the visual bell do nothing
