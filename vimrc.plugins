@@ -19,6 +19,8 @@ Plug 'bkad/CamelCaseMotion'
 
 " vim-toggle-help {{{1
 nnoremap <F1> :ToggleHelp<CR>
+inoremap <F1> <C-o>:call ToggleHelp('', 'i')<CR>
+vnoremap <F1> <esc>:call ToggleHelp('', 'v')<CR>
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'ToggleHelp' : 'h'
 
 " CamelCaseMotion {{{1
