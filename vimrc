@@ -238,6 +238,14 @@ nnoremap N Nzzzv
 " Write current file as root
 cnoremap w!! w !sudo tee > /dev/null %
 
+" (mnemonic: 'co' = change option).
+nnoremap com :set mouse=<C-R>=&mouse == 'a' ? '' : 'a'<CR><CR>
+nnoremap con :set number!<CR>
+nnoremap cop :set paste!<CR>
+nnoremap cos :set spell!<CR>
+nnoremap cow :set wrap!<CR>
+
+
 if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'vimfiler.vim' && &rtp!~'vim-vinegar'
   " If no other file manager is present, configure netrw
   nnoremap - :Lexplore<CR>
