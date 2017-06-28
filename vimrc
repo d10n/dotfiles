@@ -171,8 +171,8 @@ set updatetime=250
 "set lazyredraw  " Don't redraw while running macros
 set ruler  " Show cursor position
 "set virtualedit=all  " Cursor can go out of bounds
-"set listchars=tab:\ \ ,eol:$,trail:~,extends:>,precedes:<
-set listchars=tab:\ \ ,trail:~,extends:>,precedes:<  " What to display whitespace as
+"set listchars=tab:\ \ ,eol:$,trail:~,extends:>,precedes:<,nbsp:+
+set listchars=tab:\ \ ,trail:~,extends:>,precedes:<,nbsp:+  " What to display whitespace as
 set list  " Show whitespace characters
 set number  " Show line numbers
 set numberwidth=5  " Line number column width
