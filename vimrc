@@ -171,9 +171,18 @@ set updatetime=250
 "set lazyredraw  " Don't redraw while running macros
 set ruler  " Show cursor position
 "set virtualedit=all  " Cursor can go out of bounds
+
 "set listchars=tab:\ \ ,eol:$,trail:~,extends:>,precedes:<,nbsp:+
-set listchars=tab:\ \ ,trail:~,extends:>,precedes:<,nbsp:+  " What to display whitespace as
+"set listchars=tab:\ \ ,trail:~,extends:>,precedes:<,nbsp:+  " What to display whitespace as
+set listchars=tab:\ \ ,extends:>,precedes:<,nbsp:+  " What to display whitespace as
 set list  " Show whitespace characters
+
+highlight link sensibleWhitespaceError Error
+augroup whitespace_error
+  " only works with no trail listchars
+  autocmd Syntax * syntax match sensibleWhitespaceError excludenl /\s\+\%#\@<!$\| \+\ze\t/ display containedin=ALL
+augroup END
+
 set number  " Show line numbers
 set numberwidth=5  " Line number column width
 set laststatus=2  " Always show status line
