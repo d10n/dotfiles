@@ -341,6 +341,16 @@ if has('autocmd')
   augroup END
 endif
 
+" Load matchit.vim, but only if the user hasn't installed a newer version.
+if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
+  runtime! macros/matchit.vim
+endif
+
+" E122: Function <SNR>27_EditElsewhere already exists, add ! to replace it
+"if !exists('*EditExisting') && findfile('plugin/editexisting.vim', &rtp) ==# ''
+"  runtime! macros/editexisting.vim
+"endif
+
 function! ToggleGutter()
   "if &signcolumn == 'auto'
   if &number
