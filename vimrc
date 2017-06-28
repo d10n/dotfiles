@@ -189,6 +189,7 @@ set laststatus=2  " Always show status line
 set showcmd  " Show last command
 set display+=lastline  " Display what can be shown of a last line longer than the window
 set showmode  " Show the mode on the last line
+set tabpagemax=50  " Update default max tabs from 10
 
 set splitright
 
