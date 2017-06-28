@@ -248,7 +248,7 @@ nnoremap cow :set wrap!<CR>
 
 if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'vimfiler.vim' && &rtp!~'vim-vinegar'
   " If no other file manager is present, configure netrw
-  nnoremap - :Lexplore<CR>
+  " - opens, q closes
   " Make netrw behave more like other file managers
   "let g:netrw_banner = 0
   let g:netrw_liststyle = 3
@@ -263,6 +263,15 @@ if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'v
     " Close vim if only the netrw toggle browser is open
     autocmd BufEnter * if (winnr("$") == 1 && exists("b:netrw_browser_active") && exists("t:netrw_lexbufnr")) | q | endif
   augroup END
+
+  nnoremap - :Lexplore<CR>
+  augroup netrw_custom_close
+    autocmd!
+    autocmd filetype netrw call s:netrw_custom_close()
+  augroup END
+  function! s:netrw_custom_close()
+    noremap <buffer> q :Lexplore<CR>
+  endfunction
 endif
 
 if empty(findfile('plugin/scriptease.vim', &rtp))
