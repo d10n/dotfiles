@@ -134,7 +134,9 @@ set colorcolumn=80  " Vertical stripe at this column
 "match OverLength /\%81v.\+/
 
 set nojoinspaces  " Don't double-space after punctuation when joining lines
-set formatoptions+=j  " Merge comment lines
+if has('patch-7.3.541')
+  set formatoptions+=j  " Merge comment lines
+endif
 
 " Tab completion list
 "set wildmode=longest,list,full  " Multi-line completion menu
