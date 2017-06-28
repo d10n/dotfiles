@@ -322,10 +322,23 @@ endif
 "  inoremap <silent> <ESC> <ESC>:set iminsert=0<CR>
 "endif
 
-" Jump to the last cursor position when reopening a file
-" If it doesn't work, check permissions on ~/.viminfo
 if has('autocmd')
-  au BufReadPost * if line("'\"") > 1 && line("'\"") <= line("$") | exe "normal! g`\"" | endif
+  " Specific autocmds can only be reverted if they are grouped. Revert with:
+  " ":augroup line_return | au! | augroup END"
+  augroup line_return
+    au!
+    " Jump to the last cursor position when reopening a file
+    " Don't do it when the position is invalid, when inside an event handler
+    " (happens when dropping a file on gvim) and for a commit message (it's
+    " likely a different one than last time).
+    " If it doesn't work, check permissions on ~/.viminfo
+    au BufReadPost *
+      \ if line("'\"") > 1 && line("'\"") <= line("$") |
+      \   exe 'normal! g`"' |
+      \ endif
+    " fold expand doesn't always work in BufReadPost
+    au BufWinEnter * normal! zv
+  augroup END
 endif
 
 function! ToggleGutter()
