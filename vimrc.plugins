@@ -5,7 +5,7 @@ Plug 'ervandew/supertab'
 Plug 'flazz/vim-colorschemes', {'do': ':colorscheme badwolf'}
 Plug 'terryma/vim-multiple-cursors'
 Plug 'terryma/vim-expand-region'
-Plug 'Shougo/neocomplcache'
+Plug 'Shougo/neocomplete.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/PreserveNoEOL'
 
