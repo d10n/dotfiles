@@ -235,6 +235,9 @@ vnoremap <S-Tab> <gv
 nnoremap n nzzzv
 nnoremap N Nzzzv
 
+" Write current file as root
+cnoremap w!! w !sudo tee > /dev/null %
+
 if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'vimfiler.vim' && &rtp!~'vim-vinegar'
   " If no other file manager is present, configure netrw
   nnoremap - :Lexplore<CR>
