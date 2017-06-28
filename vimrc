@@ -254,6 +254,12 @@ if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'v
   augroup END
 endif
 
+if empty(findfile('plugin/scriptease.vim', &rtp))
+  " tpope/vim-scriptease does this better, so only map if that wasn't already loaded
+  " Open the vim help page for the word under the cursor
+  nnoremap <expr> K (&filetype is# 'vim' ? ':help <C-r><C-w><CR>' : 'K')
+endif
+
 " Smart home key
 noremap <expr> <silent> <Home> col('.') == match(getline('.'),'\S')+1 ? '0' : '^'
 inoremap <silent> <Home> <C-O><Home>
