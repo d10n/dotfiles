@@ -161,6 +161,7 @@ set visualbell  " Enable visual bell to stop all audio bells
 set t_vb=  " Make the visual bell do nothing
 
 set scrolloff=5  " Lines to keep visible around the cursor when scrolling
+set sidescrolloff=3  " Keep at least 3 lines left/right
 "set cursorcolumn  " Highlight the column the cursor is at
 "set cursorline  " Highlight the line the cursor is at
 
