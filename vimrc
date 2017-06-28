@@ -298,6 +298,9 @@ if has('gui_running')
   set guioptions-=c  " GUI tabs
   set guioptions-=T  " No toolbar
   set guioptions+=m  " Menu bar
+  if has('win32')
+    set guioptions-=t  " Tearoff menu entries
+  endif
 endif
 
 " Prefer UTF-8 encoding
