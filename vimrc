@@ -1,4 +1,4 @@
-" vim: set ts=2 sw=2:et:
+" vim: set ts=2 sw=2 et fdm=marker:
 
 " vim likes a Bourne compatible shell
 if has('unix')
