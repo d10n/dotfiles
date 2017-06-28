@@ -206,6 +206,10 @@ if exists('&undodir')
   execute 'set undodir='.root.'/undo'
 endif
 
+if has('path_extra')
+  setglobal tags-=./tags tags-=./tags; tags^=./tags;
+endif
+
 silent! set cryptmethod=blowfish2
 
 " Fix arrow keys on Darwin
