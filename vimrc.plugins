@@ -8,12 +8,20 @@ Plug 'terryma/vim-expand-region'
 Plug 'Shougo/neocomplete.vim'
 Plug 'editorconfig/editorconfig-vim'
 Plug 'vim-scripts/PreserveNoEOL'
-
 Plug 'd10n/vim-toggle-help'
+Plug 'bkad/CamelCaseMotion'
+
+
+"
+" Press zR to open all folds and zM to close all folds
+" Press zo to open one fold and zc to close one fold
+"
+
+" vim-toggle-help {{{1
 nnoremap <F1> :ToggleHelp<CR>
 cnoreabbrev <expr> h getcmdtype() == ":" && getcmdline() == 'h' ? 'ToggleHelp' : 'h'
 
-Plug 'bkad/CamelCaseMotion'
+" CamelCaseMotion {{{1
 " w/b/e through camelCase and under_score
 map <silent> <S-W> <Plug>CamelCaseMotion_w
 map <silent> <S-B> <Plug>CamelCaseMotion_b
@@ -25,6 +33,7 @@ map <silent> <S-E> <Plug>CamelCaseMotion_e
 "sunmap b
 "sunmap e
 
+" vimrc.plugins.local {{{1
 if filereadable($HOME . '/.vimrc.plugins.local')
   source ~/.vimrc.plugins.local
 endif
