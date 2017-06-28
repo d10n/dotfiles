@@ -259,7 +259,7 @@ if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'v
     autocmd!
     " Start with browser open if no file was opened
     "autocmd VimEnter * if @% == '' | Lexplore | endif
-    autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | Lexplore | endif
+    "autocmd VimEnter * if argc() == 0 && !exists('s:std_in') | Lexplore | endif
     " Close vim if only the netrw toggle browser is open
     autocmd BufEnter * if (winnr("$") == 1 && exists("b:netrw_browser_active") && exists("t:netrw_lexbufnr")) | q | endif
   augroup END
