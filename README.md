@@ -52,7 +52,7 @@ Notes:
 
  * F2 toggles auto-indenting when pasting, F3 toggles line numbers, F4 toggles line wrapping
  * Home and 0 work like the Home key in Eclipse/Sublime/IntelliJ. ^ always goes to the beginning of the line.
- * It sets up NeoBundle plugins if you make the .vimrc.plugins file
+ * It sets up vim-plug plugins if you make the .vimrc.plugins file
  * Skim through and read the comments for more
 
 To get ctrl-pgup/ctrl-pgdn to switch vim tabs in iTerm: (via https://superuser.com/a/360103)
