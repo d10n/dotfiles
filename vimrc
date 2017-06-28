@@ -193,6 +193,7 @@ set tabpagemax=50  " Update default max tabs from 10
 
 set splitright
 
+set autoread  " Load external file changes when vim made no changes. Press u to undo
 set autochdir  " Set the cwd to the file's basedir
 "set clipboard+=unnamed  " Share windows clipboard
 set history=5000  " Number of commands to save in history
