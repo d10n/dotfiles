@@ -5,12 +5,14 @@
 
 To install:
 
-    git clone https://gitlab.com/d10n/dotfiles.git
+Clone to `~/.config/dotfiles`:
 
-Clone to `~/.config/dotfiles` and run `~/.config/dotfiles/install` or manually symlink the files you want.  
+    git clone https://gitlab.com/d10n/dotfiles.git ~/.config/dotfiles
+
+and run `~/.config/dotfiles/install` or manually symlink the files you want.  
 Executable files are meant to be executed instead of symlinked.
 
-To uninstall:  
+To uninstall:
 
     find ~ -maxdepth 1 -lname ~'/.config/dotfiles/*' -print -delete
 
