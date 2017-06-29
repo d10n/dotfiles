@@ -62,6 +62,14 @@ if has_key(g:plugs, 'nerdtree')
   augroup END
 endif
 
+" file manager: vim-dirvish {{{1
+if has_key(g:plugs, 'vim-dirvish')
+  let g:dirvish_mode = ':sort r /\/$/'
+  augroup override_noautochdir
+    au VimEnter * set noautochdir  " Required by vim-dirvish
+  augroup END
+endif
+
 " file manager: vimfiler {{{1
 if has_key(g:plugs, 'vimfiler.vim')
   nnoremap - :VimFilerBufferDir<CR>
