@@ -11,6 +11,14 @@ typeset +x ORIGINAL_VARS
 [[ -n "${FIX_PATH}" ]] && PATH="$FIX_PATH" && unset FIX_PATH
 [[ -n "${RUN_WITH}" ]] && eval "$RUN_WITH" && unset RUN_WITH
 
+SOURCE="${(%):-%N}"
+while [[ -L "$SOURCE" ]]; do
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DOTFILES_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+
 if [[ -f ~/.histfile ]]; then
     HISTFILE=~/.histfile
 else
@@ -83,7 +91,7 @@ zstyle ':completion:*:man:*' menu yes select
 autoload -Uz compinit && compinit -i > /dev/null
 
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
-[[ -d ~/.config/dotfiles/faster-vcs-info ]] && fpath=(~/.config/dotfiles/faster-vcs-info $fpath)
+[[ -d "$DOTFILES_DIR/faster-vcs-info" ]] && fpath=("$DOTFILES_DIR/faster-vcs-info" $fpath)
 
 mkcd() {
     local dir="$*"
@@ -204,8 +212,8 @@ pws() {
 
 setup_highlighting() {
     local zsh_syntax_highlight
-    if [[ -d ~/.config/dotfiles/zsh-syntax-highlighting ]]; then
-        zsh_syntax_highlight=~/.config/dotfiles/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    if [[ -d "$DOTFILES_DIR/zsh-syntax-highlighting" ]]; then
+        zsh_syntax_highlight="$DOTFILES_DIR/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
     elif [[ "$OSTYPE" == "linux-gnu" ]]; then
         zsh_syntax_highlight=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     elif [[ "$OSTYPE" == "darwin"* ]]; then
@@ -362,8 +370,8 @@ key[Enter]=${terminfo[kent]}  # fix OS X numpad enter
 
 setup_history_search() {
     local zsh_history_substring_search
-    if [[ -d ~/.config/dotfiles/zsh-history-substring-search ]]; then
-        zsh_history_substring_search=~/.config/dotfiles/zsh-history-substring-search/zsh-history-substring-search.zsh
+    if [[ -d "$DOTFILES_DIR/zsh-history-substring-search" ]]; then
+        zsh_history_substring_search="$DOTFILES_DIR/zsh-history-substring-search/zsh-history-substring-search.zsh"
     elif [[ "$OSTYPE" == "linux-gnu" ]]; then
         zsh_history_substring_search=/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
     elif [[ "$OSTYPE" == "darwin"* ]]; then
