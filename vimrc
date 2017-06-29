@@ -353,7 +353,7 @@ if has('autocmd')
     " likely a different one than last time).
     " If it doesn't work, check permissions on ~/.viminfo
     au BufReadPost *
-      \ if line("'\"") > 1 && line("'\"") <= line("$") |
+      \ if line("'\"") > 1 && line("'\"") <= line("$") && &ft !=# 'gitcommit' |
       \   exe 'normal! g`"' |
       \ endif
     " fold expand doesn't always work in BufReadPost
