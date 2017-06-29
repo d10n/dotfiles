@@ -26,9 +26,9 @@ Plug 'junegunn/fzf', { 'dir': '~/.fzf', 'do': './install --bin' } | Plug 'junegu
 " Pick one:
 "Plug 'scrooloose/nerdtree'  " - to open and close
 "Plug 'justinmk/vim-dirvish'  " - to open, q to close *
-"Plug 'jeetsukumaran/vim-filebeagle'  " - to open, q to close
+Plug 'jeetsukumaran/vim-filebeagle'  " - to open, q to close
 "Plug 'Shougo/vimproc.vim', {'do' : 'make'} | Plug 'Shougo/unite.vim' | Plug 'Shougo/vimfiler.vim'  " - to open and close
-Plug 'tpope/vim-vinegar'  " - to open, q to close
+"Plug 'tpope/vim-vinegar'  " - to open, q to close
 
 " Languages
 Plug 'jdonaldson/vaxe'
