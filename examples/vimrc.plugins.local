@@ -73,7 +73,9 @@ endif
 " file manager: vimfiler {{{1
 if has_key(g:plugs, 'vimfiler.vim')
   nnoremap - :VimFilerBufferDir<CR>
-  set noautochdir  " Required by vimfiler
+  augroup override_noautochdir
+    au VimEnter * set noautochdir  " Required by vimfiler
+  augroup END
   let g:vimfiler_as_default_explorer = 1
 endif
 
