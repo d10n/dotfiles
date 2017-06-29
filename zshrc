@@ -2,7 +2,8 @@ setopt PROMPT_SUBST  # variables in prompt
 PS4='%D{%Y-%m-%d %H:%M:%S.%.} '
 #set -x  # for debugging zsh startup time
 #zmodload zsh/zprof  # for debugging zsh startup time
-print -P '%D{%Y-%m-%d %H:%M:%S.%.}' | read __ZSH_STARTUP_LOCAL_START_DATE
+__ZSH_STARTUP_LOCAL_START_DATE=${(%):-%D{%Y-%m-%d %H:%M:%S.%.}}
+#print -P '%D{%Y-%m-%d %H:%M:%S.%.}' | read __ZSH_STARTUP_LOCAL_START_DATE
 
 [[ -z "${ORIGINAL_VARS}" ]] && ORIGINAL_VARS="$(declare -px)"
 ORIGINAL_VARS="$(echo "$ORIGINAL_VARS"|grep -v ZDOTDIR)"  # Fix IntelliJ integration
@@ -400,7 +401,8 @@ print_zsh_startup_time() {
 startup_timer_precmd() {
     precmd_functions=("${(@)precmd_functions:#startup_timer_precmd}")
     if [[ -z "$__ZSH_STARTUP_LOCAL_FINISH_DATE" ]]; then
-        print -P '%D{%Y-%m-%d %H:%M:%S.%.}' | read __ZSH_STARTUP_LOCAL_FINISH_DATE
+        __ZSH_STARTUP_LOCAL_FINISH_DATE=${(%):-%D{%Y-%m-%d %H:%M:%S.%.}}
+        #print -P '%D{%Y-%m-%d %H:%M:%S.%.}' | read __ZSH_STARTUP_LOCAL_FINISH_DATE
         command -v zprof &>/dev/null && zprof
 #        print_zsh_startup_time
     fi
