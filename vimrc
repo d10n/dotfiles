@@ -257,7 +257,7 @@ nnoremap [b :bprevious<CR>
 nnoremap ]l :lnext<CR>
 nnoremap [l :lprevious<CR>
 
-" (mnemonic: 'co' = change option).
+" (mnemonic: 'co' = change option, also provided by vim-unimpaired)
 nnoremap com :set mouse=<C-R>=&mouse == 'a' ? '' : 'a'<CR><CR>
 nnoremap con :set number!<CR>
 nnoremap cop :set paste!<CR>
