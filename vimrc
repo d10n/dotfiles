@@ -345,7 +345,7 @@ endif
 if has('autocmd')
   " Specific autocmds can only be reverted if they are grouped. Revert with:
   " ":augroup line_return | au! | augroup END"
-  augroup line_return
+  augroup reopen_to_last_position
     au!
     " Jump to the last cursor position when reopening a file
     " Don't do it when the position is invalid, when inside an event handler
