@@ -183,6 +183,8 @@ augroup whitespace_error
   autocmd Syntax * syntax match sensibleWhitespaceError excludenl /\s\+\%#\@<!$\| \+\ze\t/ display containedin=ALL
 augroup END
 
+set winminheight=0  " Allow collapsing inactive windows to just the status line
+
 set number  " Show line numbers
 set numberwidth=5  " Line number column width
 set laststatus=2  " Always show status line
