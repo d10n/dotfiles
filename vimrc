@@ -58,7 +58,7 @@ if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.v
 
     autocmd VimEnter *
           \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-          \|   PlugInstall --sync | q
+          \|   PlugInstall --sync | q | doautocmd WinEnter
           \| endif
     call plug#begin(expand(root.'/bundle/'))
     source ~/.vimrc.plugins
