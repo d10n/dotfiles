@@ -345,6 +345,11 @@ endif
 if has('autocmd')
   " Specific autocmds can only be reverted if they are grouped. Revert with:
   " ":augroup line_return | au! | augroup END"
+
+  " If defaults.vim was loaded, clear conflicting vimStartup
+  augroup vimStartup
+    au!
+  augroup END
   augroup reopen_to_last_position
     au!
     " Jump to the last cursor position when reopening a file
