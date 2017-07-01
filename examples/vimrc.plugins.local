@@ -1,21 +1,30 @@
 " vim: set ts=2 sw=2 et fdm=marker:
 
-Plug 'tpope/vim-commentary'
-Plug 'tpope/vim-eunuch'
-Plug 'tpope/vim-scriptease'
-Plug 'tpope/vim-surround'
-Plug 'tpope/vim-unimpaired'
-Plug 'mbbill/undotree'  " Browse through undo history
-Plug 'majutsushi/tagbar' ", { 'on': 'TagbarToggle' }
-Plug 'vim-airline/vim-airline'
-Plug 'vim-airline/vim-airline-themes'
-Plug 'easymotion/vim-easymotion'
+Plug 'tpope/vim-scriptease'  " Open help for vimscript word under cursor with K
+Plug 'tpope/vim-fugitive'  " Git commands
+Plug 'Chiel92/vim-autoformat'  " Integrate external file formatters
+Plug 'scrooloose/syntastic'  " Integrate external linters / syntax checkers
+Plug 'vim-airline/vim-airline'  " Fancy status line
+Plug 'vim-airline/vim-airline-themes'  " Fancy status line themes
+Plug 'easymotion/vim-easymotion'  " Jump to any character on screen with \\s
 Plug 'rhysd/clever-f.vim'  " Jump to 'a' by pressing fa and keep pressing f to go to the next occurrence
+Plug 'ludovicchabant/vim-gutentags'  " Automatically generate tags
+Plug 'majutsushi/tagbar'  " Show file structure/tags
+Plug 'mbbill/undotree'  " Browse through undo history
+Plug 'junegunn/goyo.vim'  " Distraction-free writing
+Plug 'lucc/vim-tip'  " Tip of the day
+
 "Plug 'vim-scripts/ZoomWin' " git clone --config transfer.fsckObjects=false 'https://github.com/vim-scripts/ZoomWin.git' ~/.vim/bundle/ZoomWin
-Plug 'scrooloose/syntastic'  " Syntax checking
+
+" Version control gutter info
+" Pick one:
 Plug 'airblade/vim-gitgutter'
 "Plug 'mhinz/vim-signify'  " Signify has to save the file automatically to work (yuck)
-Plug 'lucc/vim-tip'  " Tip of the day
+
+" Autocomplete brackets
+" Pick one:
+Plug 'jiangmiao/auto-pairs'
+"Plug 'raimondi/delimitmate'
 
 " Fuzzy searching
 " Pick one:
@@ -33,11 +42,16 @@ Plug 'jeetsukumaran/vim-filebeagle'  " - to open, q to close
 " Languages
 Plug 'jdonaldson/vaxe'
 Plug 'pangloss/vim-javascript'
+"Plug 'ternjs/tern_for_vim', { 'do': 'npm install' }  " Improved JavaScript omni completion
 Plug 'fatih/vim-go'
 Plug 'dlwicksell/axiom', {'rtp': 'vim'}
 
-Plug 'Rip-Rip/clang_complete'
+" Completion
+" Pick one:
+"Plug 'Rip-Rip/clang_complete'
 "Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
+"Plug 'ervandew/supertab'
+"Plug 'Shougo/neocomplete.vim'
 
 " Warning: >60MB download!
 "Plug 'vim-ctrlspace/vim-ctrlspace'
@@ -47,6 +61,28 @@ Plug 'Rip-Rip/clang_complete'
 " Press zR to open all folds and zM to close all folds
 " Press zo to open one fold and zc to close one fold
 "
+
+" delimitmate {{{1
+if has_key(g:plugs, 'delimitmate')
+  " delimitMate has a bug - writes gargage when pressing enter at the end of
+  " augroup lines
+  let delimitMate_autoclose = 1
+  let delimitMate_expand_space = 1
+  let delimitMate_expand_cr = 1
+  let delimitMate_excluded_regions = 'Comment,String'
+  augroup delimitMate_vim_quotes
+    autocmd!
+    autocmd FileType vim let b:delimitMate_quotes = "' `"
+  augroup END
+endif
+
+" auto-pairs {{{1
+if has_key(g:plugs, 'auto-pairs')
+  augroup auto_pairs_vim_auotes
+    autocmd!
+    autocmd Filetype vim let b:AutoPairs = {'(':')', '[':']', '{':'}',"'":"'", '`':'`'}
+  augroup END
+endif
 
 " file manager: nerdtree {{{1
 if has_key(g:plugs, 'nerdtree')
@@ -135,6 +171,7 @@ if has_key(g:plugs, 'YouCompleteMe')
     " - force:  set on PlugInstall! or PlugUpdate!
     if a:info.status == 'installed' || a:info.force
       !./install.py
+      "!./install.py --tern-completer
     endif
   endfunction
 endif
