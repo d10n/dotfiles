@@ -7,6 +7,8 @@ tools=(
     https://github.com/funtoo/keychain.git
 )
 
+mkdir -p zsh-libs
+pushd zsh-libs
 for tool in "${tools[@]}"; do
     dir_name="$(basename "${tool/.git}")"
     if [[ ! -d "$dir_name" ]]; then
@@ -17,3 +19,4 @@ for tool in "${tools[@]}"; do
     which make &>/dev/null && [[ -f Makefile ]] && make
     popd
 done
+popd
