@@ -142,6 +142,7 @@ set wildmenu  " Enhanced command-line completion
 
 set tabstop=4  " Number of spaces that a tab counts for
 set shiftwidth=4  " Spaces to use for each step of indent
+set shiftround  " When at 3 spaces and I hit >>, go to 4, not 5 or 7
 set smarttab  " Use shfitwidth instead of tabstop at start of lines
 set expandtab  " Expand tabs to spaces
 
