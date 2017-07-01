@@ -267,6 +267,9 @@ nnoremap cow :set wrap!<CR>
 " Write current file as root (also provided by vim-eunuch with :SudoWrite)
 cnoremap w!! w !sudo tee > /dev/null %
 
+" Copy filename:linenumber to clipboard
+nnoremap <leader>yy :let @+=expand('%:t') . ':' . line(".")<CR>
+
 
 if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'vimfiler.vim' && &rtp!~'vim-vinegar'
   " If no other file manager is present, configure netrw
