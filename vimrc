@@ -237,6 +237,10 @@ vnoremap <S-Tab> <gv
 inoremap <c-e> <c-o>$
 inoremap <c-a> <c-o>^
 
+" Search for trailing spaces and tabs (mnemonic: 'g/' = go search)
+nnoremap g/s /\s\+$<CR>
+nnoremap g/t /\t<CR>
+
 " Keep search matches in the middle of the window
 " Make n always search down and N always search up
 noremap <expr> n 'Nn'[v:searchforward].'zzzv'
