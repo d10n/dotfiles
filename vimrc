@@ -233,6 +233,10 @@ vnoremap > >gv
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
+" Emacs-like beginning and end of line
+inoremap <c-e> <c-o>$
+inoremap <c-a> <c-o>^
+
 " Keep search matches in the middle of the window
 " Make n always search down and N always search up
 noremap <expr> n 'Nn'[v:searchforward].'zzzv'
