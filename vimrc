@@ -246,8 +246,6 @@ nnoremap g/t /\t<CR>
 noremap <expr> n 'Nn'[v:searchforward].'zzzv'
 noremap <expr> N 'nN'[v:searchforward].'zzzv'
 
-" Write current file as root
-cnoremap w!! w !sudo tee > /dev/null %
 
 " (mnemonic: 'co' = change option).
 nnoremap com :set mouse=<C-R>=&mouse == 'a' ? '' : 'a'<CR><CR>
@@ -255,6 +253,9 @@ nnoremap con :set number!<CR>
 nnoremap cop :set paste!<CR>
 nnoremap cos :set spell!<CR>
 nnoremap cow :set wrap!<CR>
+
+" Write current file as root (also provided by vim-eunuch with :SudoWrite)
+cnoremap w!! w !sudo tee > /dev/null %
 
 
 if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'vimfiler.vim' && &rtp!~'vim-vinegar'
