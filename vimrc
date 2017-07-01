@@ -233,9 +233,10 @@ vnoremap > >gv
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
 
-" Keep search matches in the middle of the window.
-nnoremap n nzzzv
-nnoremap N Nzzzv
+" Keep search matches in the middle of the window
+" Make n always search down and N always search up
+noremap <expr> n 'Nn'[v:searchforward].'zzzv'
+noremap <expr> N 'nN'[v:searchforward].'zzzv'
 
 " Write current file as root
 cnoremap w!! w !sudo tee > /dev/null %
