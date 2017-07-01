@@ -96,9 +96,6 @@ set nocompatible  " Use better vim defaults
 set autoindent  " Copy indent from current line when starting a new line
 set smartindent  " Automatically indent C-like syntax
 
-set ignorecase  " Use case insensitive searches
-set smartcase  " When ignorecase is set, be case sensitive when searching with a capital letter
-
 set t_Co=256  " 256 colors
 syntax on  " Syntax highlighting
 if has('gui_running')
@@ -153,6 +150,8 @@ set backspace=indent,eol,start  " Backspace over everything
 set incsearch  " Search while typing
 set hlsearch  " Highlight results
 set showmatch  " Highlight matching brackets
+set ignorecase  " Use case insensitive searches
+set smartcase  " When ignorecase is set, be case sensitive when searching with a capital letter
 
 set nrformats-=octal  " Don't increment/decrement using octal numbers  with Ctrl-A and Ctrl-X
 
