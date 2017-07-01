@@ -222,6 +222,11 @@ if g:uname == 'Darwin'
   execute system('echo noremap $(tput kcuf1) \<Right\>')
 endif
 
+command! Q q  " Alias :Q to :q
+command! E e
+command! W w
+command! Wq wq
+
 " Disable entering Ex mode with Q
 noremap Q <Nop>
 
