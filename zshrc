@@ -219,15 +219,14 @@ pws() {
 
 
 setup_highlighting() {
-    local zsh_syntax_highlight
-    if [[ -d "$DOTFILES_DIR/zsh-libs/zsh-syntax-highlighting" ]]; then
-        zsh_syntax_highlight="$DOTFILES_DIR/zsh-libs/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
-    elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-        zsh_syntax_highlight=/usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        zsh_syntax_highlight=/usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
-    fi
-    [[ -f "$zsh_syntax_highlight" ]] && . "$zsh_syntax_highlight"
+    files=(
+        "$DOTFILES_DIR/zsh-libs/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
+        /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+        /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
+    )
+    for file in $files; do
+        [[ -r "$file" ]] && . "$file" && return
+    done
 }
 setup_highlighting && unset -f setup_highlighting
 
@@ -377,19 +376,19 @@ key[Enter]=${terminfo[kent]}  # fix OS X numpad enter
 [[ -n "${key[Enter]}"    ]]  && bindkey  "${key[Enter]}"    accept-line
 
 setup_history_search() {
-    local zsh_history_substring_search
-    if [[ -d "$DOTFILES_DIR/zsh-libs/zsh-history-substring-search" ]]; then
-        zsh_history_substring_search="$DOTFILES_DIR/zsh-libs/zsh-history-substring-search/zsh-history-substring-search.zsh"
-    elif [[ "$OSTYPE" == "linux-gnu" ]]; then
-        zsh_history_substring_search=/usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
-    elif [[ "$OSTYPE" == "darwin"* ]]; then
-        zsh_history_substring_search=/usr/local/opt/zsh-history-substring-search/zsh-history-substring-search.zsh
-    fi
-    if [[ -f "$zsh_history_substring_search" ]]; then
-        . "$zsh_history_substring_search"
-        [[ -n "${key[Up]}"   ]]  && bindkey  "${key[Up]}"       history-substring-search-up
-        [[ -n "${key[Down]}" ]]  && bindkey  "${key[Down]}"     history-substring-search-down
-    fi
+    files=(
+        "$DOTFILES_DIR/zsh-libs/zsh-history-substring-search/zsh-history-substring-search.zsh"
+        /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
+        /usr/local/opt/zsh-history-substring-search/zsh-history-substring-search.zsh
+    )
+    for file in $files; do
+        if [[ -r "$file" ]]; then
+            . "$file"
+            [[ -n "${key[Up]}"   ]]  && bindkey  "${key[Up]}"    history-substring-search-up
+            [[ -n "${key[Down]}" ]]  && bindkey  "${key[Down]}"  history-substring-search-down
+            return
+        fi
+    done
 }
 setup_history_search && unset -f setup_history_search
 
