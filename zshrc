@@ -33,6 +33,7 @@ setopt NO_NOMATCH
 setopt NOTIFY
 setopt HIST_IGNORE_SPACE
 setopt HIST_IGNORE_DUPS
+setopt HIST_FIND_NO_DUPS  # Ingore dupes in history search
 setopt HIST_VERIFY  # print expanded history command before executing
 setopt HIST_REDUCE_BLANKS
 setopt APPEND_HISTORY
@@ -40,11 +41,18 @@ setopt EXTENDED_HISTORY  # write to HISTFILE with :start:elapsed;command format
 setopt INC_APPEND_HISTORY  # append command to histfile immediately
 setopt COMPLETE_ALIASES
 setopt INTERACTIVE_COMMENTS
+setopt NO_BG_NICE  # no renice background jobs
+setopt LONG_LIST_JOBS  # show job number and pid when suspending
+setopt NO_CLOBBER  # prevent cat foo > bar if bar exists. Use >! instead
+setopt FUNCTION_ARG_ZERO  # fill $0 with function name instead of "zsh"
+setopt NO_BEEP  # no beeps
 setopt PROMPT_SUBST  # variables in prompt
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
 
 setopt NO_FLOW_CONTROL  # disable ^s and ^q
 stty -ixon -ixoff # disable ^s and ^q again
+
+HISTORY_IGNORE="(&|ls|[bf]g|exit|reset|clear|which)"
 
 REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, show its time
 export WORDCHARS=${WORDCHARS/\/}  # Make ctrl-w delete 1 folder at a time
