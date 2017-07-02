@@ -227,6 +227,10 @@ command! E e
 command! W w
 command! Wq wq
 
+" Emacs-like beginning and end of line for insert mode
+inoremap <c-e> <c-o>$
+inoremap <c-a> <c-o>^
+
 " Disable entering Ex mode with Q
 noremap Q <Nop>
 
@@ -237,10 +241,6 @@ vnoremap > >gv
 " Tab indent blocks
 vnoremap <Tab> >gv
 vnoremap <S-Tab> <gv
-
-" Emacs-like beginning and end of line
-inoremap <c-e> <c-o>$
-inoremap <c-a> <c-o>^
 
 " Search for trailing spaces and tabs (mnemonic: 'g/' = go search)
 nnoremap g/s /\s\+$<CR>
