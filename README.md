@@ -49,18 +49,6 @@ To get ctrl-pgup/ctrl-pgdn to switch vim tabs in iTerm: (via https://superuser.c
  * Use shortcut: `^Page Up`, action: "Send Escape sequence", value `[5;5~`
  * Use shortcut: `^Page Down`, action: "Send Escape sequence", value `[6;5~`
 
-### .vimrc.plugins
-
-These plugins are generally useful. If you don't want to install plugins, don't make a .vimrc.plugins file.
-
-Features:
-
- * Tab completion
- * Extra color schemes
- * Sublime Text-like multiple cursors
- * Expand visual selection with `+`, contract with `_`
- * w/b/e through `camelCase` and `under_score` words with shift+w/b/e key
- * EditorConfig
 
 ### .tmux.conf
 
