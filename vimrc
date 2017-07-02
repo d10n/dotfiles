@@ -40,20 +40,20 @@ if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.v
     let vimplug_dst = expand(root, 1).'/autoload/plug.vim'
     if !filereadable(vimplug_dst)
       if executable('curl') == 1
-        exec 'silent !curl -l -o '.shellescape(vimplug_dst).' '.vimplug_src
+        execute 'silent !curl -l -o '.shellescape(vimplug_dst).' '.vimplug_src
       else  " assume wget is available
-        exec 'silent !wget -O '.shellescape(vimplug_dst).' '.vimplug_src
+        execute 'silent !wget -O '.shellescape(vimplug_dst).' '.vimplug_src
       endif
     endif
 
     " Clone vim-plug with git if it's missing (not recommended by vim-plug)
     "let vimplug_src = 'https://github.com/junegunn/vim-plug.git'
     "if !isdirectory(expand(root, 1).'/vim-plug')
-    "  exec 'silent !git clone '.vimplug_src.' '.shellescape(expand(root.'/vim-plug', 1))
-    "  exec 'source '.expand(root, 1).'/vim-plug/plug.vim'
+    "  execute 'silent !git clone '.vimplug_src.' '.shellescape(expand(root.'/vim-plug', 1))
+    "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
     "  autocmd VimEnter * PlugInstall
     "else
-    "  exec 'source '.expand(root, 1).'/vim-plug/plug.vim'
+    "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
     "endif
 
     autocmd VimEnter *
@@ -69,12 +69,12 @@ if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.v
     let neobundle_src = 'https://github.com/Shougo/neobundle.vim'
     " Clone neobundle if it's missing
     if !isdirectory(expand(root, 1).'/bundle/neobundle.vim')
-      exec 'silent !git clone '.neobundle_src.' '.shellescape(expand(root.'/bundle/neobundle.vim', 1))
+      execute 'silent !git clone '.neobundle_src.' '.shellescape(expand(root.'/bundle/neobundle.vim', 1))
     endif
 
     " Immediately make neobundle accessible in the rtp
     if has('vim_starting')
-      exec 'set runtimepath+='.root.'/bundle/neobundle.vim'
+      execute 'set runtimepath+='.root.'/bundle/neobundle.vim'
     endif
 
     " filetype on then off before calling neobundle fixes nonzero exit status on OS X
@@ -374,25 +374,25 @@ endif
 
 if has('autocmd')
   " Specific autocmds can only be reverted if they are grouped. Revert with:
-  " ":augroup line_return | au! | augroup END"
+  " ":augroup line_return | autocmd! | augroup END"
 
   " If defaults.vim was loaded, clear conflicting vimStartup
   augroup vimStartup
-    au!
+    autocmd!
   augroup END
   augroup reopen_to_last_position
-    au!
+    autocmd!
     " Jump to the last cursor position when reopening a file
     " Don't do it when the position is invalid, when inside an event handler
     " (happens when dropping a file on gvim) and for a commit message (it's
     " likely a different one than last time).
     " If it doesn't work, check permissions on ~/.viminfo
-    au BufReadPost *
+    autocmd BufReadPost *
       \ if line("'\"") > 1 && line("'\"") <= line("$") && &ft !=# 'gitcommit' |
       \   exe 'normal! g`"' |
       \ endif
     " fold expand doesn't always work in BufReadPost
-    au BufWinEnter * normal! zv
+    autocmd BufWinEnter * normal! zv
   augroup END
 endif
 
