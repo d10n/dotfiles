@@ -6,12 +6,12 @@ Plug 'tpope/vim-surround'  " Change surroundings
 Plug 'tpope/vim-repeat'  " Enable repeating supported plugin maps with '.'
 Plug 'tpope/vim-commentary'  " Toggle comments: line=gcc, block=gcip, visual=gc
 Plug 'flazz/vim-colorschemes', {'do': ':colorscheme badwolf'}
-Plug 'terryma/vim-multiple-cursors'  " Sublime Text-like multiple selection
-Plug 'terryma/vim-expand-region'  " IntelliJ-like context-aware selection
+Plug 'terryma/vim-multiple-cursors'  " Sublime Text-like multiple selection. next=^n, prev=^p, skip=^x
+Plug 'terryma/vim-expand-region'  " IntelliJ-like context-aware selection. expand=+, contract=_
 Plug 'editorconfig/editorconfig-vim'  " Universal editor config files
 Plug 'vim-scripts/PreserveNoEOL'
 Plug 'd10n/vim-toggle-help'  " Toggle help off and on
-Plug 'bkad/CamelCaseMotion'  " w/b/e through camelCase words
+Plug 'bkad/CamelCaseMotion'  " Shift+(w|b|e) through camelCase words
 
 "
 " Press zR to open all folds and zM to close all folds
