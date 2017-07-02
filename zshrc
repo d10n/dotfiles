@@ -1,4 +1,3 @@
-setopt PROMPT_SUBST  # variables in prompt
 PS4='%D{%Y-%m-%d %H:%M:%S.%.} '
 #set -x  # for debugging zsh startup time
 #zmodload zsh/zprof  # for debugging zsh startup time
@@ -41,6 +40,7 @@ setopt EXTENDED_HISTORY  # write to HISTFILE with :start:elapsed;command format
 setopt INC_APPEND_HISTORY  # append command to histfile immediately
 setopt COMPLETE_ALIASES
 setopt INTERACTIVE_COMMENTS
+setopt PROMPT_SUBST  # variables in prompt
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
 
 setopt NO_FLOW_CONTROL  # disable ^s and ^q
