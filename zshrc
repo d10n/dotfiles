@@ -183,7 +183,7 @@ findexact() {
         echo "Usage: $0 <path> <filename>"
         return 1
     fi
-    find "$1" -name "$(echo $2|sed 's/\(\[\|\]\|\*\|\?\)/\\\1/g')"
+    find "$1" -name "$(echo "$2"|sed 's/\(\[\|\]\|\*\|\?\)/\\\1/g')"
 }
 
 pws() {
