@@ -227,9 +227,21 @@ command! E e
 command! W w
 command! Wq wq
 
+" Swap C-a and C-b for emacs-like beginning of line for command mode
+cnoremap <C-a> <C-b>
+cnoremap <C-b> <C-a>
+
 " Emacs-like beginning and end of line for insert mode
 inoremap <c-e> <c-o>$
 inoremap <c-a> <c-o>^
+
+" Emacs-like beginning and end of line for normal mode
+nnoremap <C-e> $
+nnoremap <C-a> ^
+
+"" Shift viewport faster
+"nnoremap <C-e> 3<C-e>
+"nnoremap <C-y> 3<C-y>
 
 " Disable entering Ex mode with Q
 noremap Q <Nop>
