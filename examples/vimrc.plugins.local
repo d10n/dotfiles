@@ -184,8 +184,8 @@ let g:clang_complete_macros = 1
 let g:clang_auto_select=1
 let g:clang_hl_errors = 1
 
-" neocomplcache {{{1
-"let g:neocomplcache_enable_at_startup = 1 " always load neocc
+" neocomplete {{{1
+"let g:neocomplete#enable_at_startup = 1 " always load neocomplete
 "let g:neocomplcache_enable_auto_select = 1 " auto-popup!
 "if !exists('g:neocomplcache_omni_patterns')
 "  let g:neocomplcache_omni_patterns = {} " set a default pattern dict
