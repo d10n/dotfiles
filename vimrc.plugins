@@ -10,6 +10,7 @@ Plug 'terryma/vim-multiple-cursors'  " Sublime Text-like multiple selection. nex
 Plug 'terryma/vim-expand-region'  " IntelliJ-like context-aware selection. expand=+, contract=_
 Plug 'editorconfig/editorconfig-vim'  " Universal editor config files
 Plug 'vim-scripts/PreserveNoEOL'
+Plug 'mbbill/undotree'  " Browse through undo history
 Plug 'd10n/vim-toggle-help'  " Toggle help off and on
 Plug 'bkad/CamelCaseMotion'  " Shift+(w|b|e) through camelCase words
 
@@ -34,6 +35,9 @@ map <silent> <S-E> <Plug>CamelCaseMotion_e
 "sunmap w
 "sunmap b
 "sunmap e
+
+" undotree {{{1
+nnoremap <F5> :UndotreeToggle<cr>
 
 " vimrc.plugins.local {{{1
 if filereadable($HOME . '/.vimrc.plugins.local')

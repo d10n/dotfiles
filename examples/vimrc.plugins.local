@@ -10,7 +10,6 @@ Plug 'easymotion/vim-easymotion'  " Jump to any character on screen with \\s
 Plug 'rhysd/clever-f.vim'  " Jump to 'a' by pressing fa and keep pressing f to go to the next occurrence
 Plug 'ludovicchabant/vim-gutentags'  " Automatically generate tags
 Plug 'majutsushi/tagbar'  " Show file structure/tags
-Plug 'mbbill/undotree'  " Browse through undo history
 Plug 'junegunn/goyo.vim'  " Distraction-free writing
 Plug 'lucc/vim-tip'  " Tip of the day
 
@@ -141,9 +140,6 @@ let g:airline#extensions#tabline#enabled = 1
 
 " vim-javascript {{{1
 let g:javascript_plugin_jsdoc = 1
-
-" undotree {{{1
-nnoremap <F5> :UndotreeToggle<cr>
 
 " Signify {{{1
 let g:signify_vcs_list = ['git', 'svn', 'hg']
