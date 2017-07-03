@@ -43,7 +43,7 @@ setopt COMPLETE_ALIASES
 setopt INTERACTIVE_COMMENTS
 setopt NO_BG_NICE  # no renice background jobs
 setopt LONG_LIST_JOBS  # show job number and pid when suspending
-setopt NO_CLOBBER  # prevent cat foo > bar if bar exists. Use >! instead
+#setopt NO_CLOBBER  # prevent cat foo > bar if bar exists. Use >! instead
 setopt FUNCTION_ARG_ZERO  # fill $0 with function name instead of "zsh"
 setopt NO_BEEP  # no beeps
 setopt PROMPT_SUBST  # variables in prompt
