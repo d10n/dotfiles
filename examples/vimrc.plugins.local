@@ -49,7 +49,7 @@ Plug 'dlwicksell/axiom', {'rtp': 'vim'}
 " Pick one:
 "Plug 'Rip-Rip/clang_complete'
 "Plug 'Valloric/YouCompleteMe', { 'do': function('BuildYCM') }
-"Plug 'ervandew/supertab'
+Plug 'ervandew/supertab'
 "Plug 'Shougo/neocomplete.vim'
 
 " Warning: >60MB download!
