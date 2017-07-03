@@ -3,6 +3,9 @@
 typeset +x ORIGINAL_VARS
 [[ -n "${FIXPATH}" ]] && PATH="$FIXPATH" && unset FIXPATH
 
+HISTIGNORE="&:ls:[bf]g:exit:reset:clear:which"
+HISTCONTROL="ignoreboth:erasedups"
+
 setup_completion() {
     if [[ -f /usr/share/git/completion/git-completion.bash ]]; then
         . /usr/share/git/completion/git-completion.bash
