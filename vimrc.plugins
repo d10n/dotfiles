@@ -11,7 +11,7 @@ Plug 'terryma/vim-expand-region'  " IntelliJ-like context-aware selection. expan
 Plug 'editorconfig/editorconfig-vim'  " Universal editor config files
 Plug 'vim-scripts/PreserveNoEOL'
 Plug 'mbbill/undotree'  " Browse through undo history
-Plug 'd10n/vim-toggle-help'  " Toggle help off and on
+Plug 'd10n/vim-toggle-help'  " Toggle help off and on with <F1>
 Plug 'bkad/CamelCaseMotion'  " Shift+(w|b|e) through camelCase words
 
 "
