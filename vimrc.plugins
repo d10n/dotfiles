@@ -19,11 +19,6 @@ Plug 'bkad/CamelCaseMotion'  " Shift+(w|b|e) through camelCase words
 " Press zo to open one fold and zc to close one fold
 "
 
-" vim-toggle-help {{{1
-nnoremap <F1> :ToggleHelp<CR>
-inoremap <F1> <C-o>:call ToggleHelp('i')<CR>
-vnoremap <F1> <esc>:call ToggleHelp('v')<CR>
-
 " CamelCaseMotion {{{1
 " w/b/e through camelCase and under_score
 map <silent> <S-W> <Plug>CamelCaseMotion_w
