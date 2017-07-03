@@ -14,7 +14,7 @@ path=($path $HOME/bin)
 #    trap "kill $SSH_AGENT_PID" 0
 #}
 #https://github.com/funtoo/keychain.git
-#alias keychain=~/.config/dotfiles/keychain/keychain
+#alias keychain=~/.config/dotfiles/zsh-libs/keychain/keychain
 # linux & windows:
 #eval $(keychain --eval --agents ssh id_rsa)
 # mac:
