@@ -30,65 +30,35 @@ endif
 
 " Bootstrap plugin manager and plugins
 if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.vimrc.plugins
-  " Only use one of these choices:
-  let use_vimplug = 1
-  let use_neobundle = 0
-
-  if use_vimplug
-    " Download with curl (recommended by vim-plug)
-    let vimplug_src = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
-    let vimplug_dst = expand(root, 1).'/autoload/plug.vim'
-    if !filereadable(vimplug_dst)
-      if executable('curl') == 1
-        execute 'silent !curl -l -o '.shellescape(vimplug_dst).' '.vimplug_src
-      else  " assume wget is available
-        execute 'silent !wget -O '.shellescape(vimplug_dst).' '.vimplug_src
-      endif
+  " Download with curl (recommended by vim-plug)
+  " Use :PlugUpdate to update vim-plug
+  let vimplug_src = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
+  let vimplug_dst = expand(root, 1).'/autoload/plug.vim'
+  if !filereadable(vimplug_dst)
+    if executable('curl') == 1
+      execute 'silent !curl -l -o '.shellescape(vimplug_dst).' '.vimplug_src
+    else  " assume wget is available
+      execute 'silent !wget -O '.shellescape(vimplug_dst).' '.vimplug_src
     endif
-
-    " Clone vim-plug with git if it's missing (not recommended by vim-plug)
-    "let vimplug_src = 'https://github.com/junegunn/vim-plug.git'
-    "if !isdirectory(expand(root, 1).'/vim-plug')
-    "  execute 'silent !git clone '.vimplug_src.' '.shellescape(expand(root.'/vim-plug', 1))
-    "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
-    "  autocmd VimEnter * PlugInstall
-    "else
-    "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
-    "endif
-
-    autocmd VimEnter *
-          \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-          \|   PlugInstall --sync | q | doautocmd WinEnter
-          \| endif
-    call plug#begin(expand(root.'/bundle/'))
-    source ~/.vimrc.plugins
-    call plug#end()
   endif
 
-  if use_neobundle
-    let neobundle_src = 'https://github.com/Shougo/neobundle.vim'
-    " Clone neobundle if it's missing
-    if !isdirectory(expand(root, 1).'/bundle/neobundle.vim')
-      execute 'silent !git clone '.neobundle_src.' '.shellescape(expand(root.'/bundle/neobundle.vim', 1))
-    endif
+  " Clone vim-plug with git if it's missing (not recommended by vim-plug)
+  "let vimplug_src = 'https://github.com/junegunn/vim-plug.git'
+  "if !isdirectory(expand(root, 1).'/vim-plug')
+  "  execute 'silent !git clone '.vimplug_src.' '.shellescape(expand(root.'/vim-plug', 1))
+  "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
+  "  autocmd VimEnter * PlugInstall
+  "else
+  "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
+  "endif
 
-    " Immediately make neobundle accessible in the rtp
-    if has('vim_starting')
-      execute 'set runtimepath+='.root.'/bundle/neobundle.vim'
-    endif
-
-    " filetype on then off before calling neobundle fixes nonzero exit status on OS X
-    filetype on
-    filetype off
-    call neobundle#begin(expand(root.'/bundle/'))
-    filetype plugin indent on  " Required for neobundle
-
-    " Manage neobundle with neobundle - required
-    NeoBundleFetch 'Shougo/neobundle.vim'
-    source ~/.vimrc.plugins
-    call neobundle#end()
-    NeoBundleCheck
-  endif
+  autocmd VimEnter *
+        \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+        \|   PlugInstall --sync | q | doautocmd WinEnter
+        \| endif
+  call plug#begin(expand(root.'/bundle/'))
+  source ~/.vimrc.plugins
+  call plug#end()
 endif
 
 filetype plugin indent on  " Automatically detect filetypes
