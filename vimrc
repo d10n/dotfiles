@@ -185,7 +185,7 @@ endif
 silent! set cryptmethod=blowfish2
 
 " Fix arrow keys on Darwin
-if g:uname == 'Darwin'
+if g:uname == 'Darwin' && exists('$TERM')
   execute system('echo noremap $(tput kcuu1) \<Up\>')
   execute system('echo noremap $(tput kcud1) \<Down\>')
   execute system('echo noremap $(tput kcub1) \<Left\>')
