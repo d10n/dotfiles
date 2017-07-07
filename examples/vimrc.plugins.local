@@ -1,17 +1,20 @@
 " vim: set ts=2 sw=2 et fdm=marker:
 
+Plug 'vimwiki/vimwiki'  " Personal wiki
 Plug 'tpope/vim-scriptease'  " Open help for vimscript word under cursor with K
 Plug 'tpope/vim-fugitive'  " Git commands
+Plug 'sheerun/vim-polyglot'  " Language pack
 Plug 'Chiel92/vim-autoformat'  " Integrate external file formatters
 Plug 'scrooloose/syntastic'  " Integrate external linters / syntax checkers
 Plug 'vim-airline/vim-airline'  " Fancy status line
 Plug 'vim-airline/vim-airline-themes'  " Fancy status line themes
 Plug 'easymotion/vim-easymotion'  " Jump to any character on screen with \\s
-Plug 'rhysd/clever-f.vim'  " Jump to 'a' by pressing fa and keep pressing f to go to the next occurrence
+"Plug 'rhysd/clever-f.vim'  " Jump to 'a' by pressing fa and keep pressing f to go to the next occurrence. Use ; and , instead
 Plug 'ludovicchabant/vim-gutentags'  " Automatically generate tags
 Plug 'majutsushi/tagbar'  " Show file structure/tags
 Plug 'junegunn/goyo.vim'  " Distraction-free writing with :Goyo
 Plug 'lucc/vim-tip'  " Tip of the day
+"Plug 'vim-scripts/YankRing.vim'
 
 "Plug 'vim-scripts/ZoomWin' " git clone --config transfer.fsckObjects=false 'https://github.com/vim-scripts/ZoomWin.git' ~/.vim/bundle/ZoomWin
 
