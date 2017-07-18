@@ -234,8 +234,9 @@ noremap <expr> n 'Nn'[v:searchforward].'zzzv'
 noremap <expr> N 'nN'[v:searchforward].'zzzv'
 
 " Cycle buffers with (shift) tab
-nnoremap <silent> <Tab> :bnext<CR>
-nnoremap <silent> <S-Tab> :bprevious<CR>
+" Conflicts with <C-i>
+"nnoremap <silent> <Tab> :bnext<CR>
+"nnoremap <silent> <S-Tab> :bprevious<CR>
 
 " Navigate buffers (also provided by vim-unimpaired)
 nnoremap ]b :bnext<CR>
