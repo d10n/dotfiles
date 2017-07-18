@@ -25,7 +25,7 @@ Plug 'airblade/vim-gitgutter'
 
 " Autocomplete brackets
 " Pick one:
-Plug 'jiangmiao/auto-pairs'
+"Plug 'jiangmiao/auto-pairs'
 "Plug 'raimondi/delimitmate'
 
 " Fuzzy searching
