@@ -389,17 +389,19 @@ endif
 "  runtime! macros/editexisting.vim
 "endif
 
+let s:original_showbreak = &showbreak
 function! ToggleGutter()
   set invnumber
+  let &list=&number
   let &signcolumn=(&number?'auto':'no')
+  let &showbreak=(&number?s:original_showbreak:"")
 endfunction
 command! ToggleGutter call ToggleGutter()
-command! ToggleGutterAndList call ToggleGutter() | let &list=&number
 
 " Paste, copy, and line wrap toggle
 set pastetoggle=<F2>
- noremap <F3> :ToggleGutterAndList<CR>
-inoremap <F3> <C-o>:ToggleGutterAndList<CR>
+ noremap <F3> :ToggleGutter<CR>
+inoremap <F3> <C-o>:ToggleGutter<CR>
  noremap <F4> :set nowrap!<CR>
 inoremap <F4> <C-o>:set nowrap!<CR>
 
