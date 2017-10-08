@@ -146,6 +146,7 @@ set ruler  " Show cursor position
 "set listchars=tab:\ \ ,trail:~,extends:>,precedes:<,nbsp:+  " What to display whitespace as
 set listchars=tab:\ \ ,extends:>,precedes:<,nbsp:+  " What to display whitespace as
 set list  " Show whitespace characters
+set showbreak=""  " Do not add wrapped long line indicators
 
 highlight link sensibleWhitespaceError Error
 augroup whitespace_error
