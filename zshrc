@@ -339,8 +339,8 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
 # Show count of stashed changes
 +vi-git-stash() {
     local -a stashes
-    if [[ -s ${hook_com[base]}/.git/refs/stash ]] ; then
-        stashes=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+    if git rev-parse --quiet --verify refs/stash &>/dev/null; then
+        stashes=$(git rev-list --walk-reflogs --count refs/stash)
         hook_com[misc]+=" (${stashes} stashed)"
     fi
 }

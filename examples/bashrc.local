@@ -173,8 +173,8 @@ __git_info() {
         (( $behind )) && gitstatus="${gitstatus:+$gitstatus/}-${behind}"
         tracking="[${remote}${gitstatus:+ ${gitstatus}}]"
     fi
-    if [[ -s "$base/.git/refs/stash" ]] ; then
-        stashes=$(git stash list 2>/dev/null | wc -l | tr -d ' ')
+    if git rev-parse --quiet --verify refs/stash &>/dev/null; then
+        stashes=$(git rev-list --walk-reflogs --count refs/stash)
         stash_message=" (${stashes} stashed)"
     fi
     message="(git)"
