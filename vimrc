@@ -404,6 +404,15 @@ inoremap <F3> <C-o>:ToggleGutter<CR>
  noremap <F4> :set nowrap!<CR>
 inoremap <F4> <C-o>:set nowrap!<CR>
 
+function! AnalyzeProfile()
+  let timings=[]
+  g/^SCRIPT/call add(timings, [getline('.')[len('SCRIPT  '):], matchstr(getline(line('.')+1), '^Sourced \zs\d\+')]+map(getline(line('.')+2, line('.')+3), 'matchstr(v:val, ''\d\+\.\d\+$'')'))
+  normal! gg
+  enew
+  call setline('.', ['count total (s)   self (s)  script']+map(copy(timings), 'printf("%5u %9s   %8s  %s", v:val[1], v:val[2], v:val[3], v:val[0])'))
+  2,$!sort -k3,3 -r
+endfunction
+
 " Local config
 if filereadable($HOME . '/.vimrc.local')
   source ~/.vimrc.local
