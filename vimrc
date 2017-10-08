@@ -233,8 +233,7 @@ nnoremap g/t /\t<CR>
 noremap <expr> n 'Nn'[v:searchforward].'zzzv'
 noremap <expr> N 'nN'[v:searchforward].'zzzv'
 
-" Cycle buffers with (shift) tab
-" Conflicts with <C-i>
+"" Cycle buffers with (shift) tab (<Tab> conflicts with <C-i>)
 "nnoremap <silent> <Tab> :bnext<CR>
 "nnoremap <silent> <S-Tab> :bprevious<CR>
 
