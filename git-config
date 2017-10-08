@@ -69,7 +69,9 @@ git config --global status.showUntrackedFiles all
 
 # Verify transferred objects in exchange for slower transfer
 # If you have errors cloning or fetching, use --config transfer.fsckObjects=false
-git config --global transfer.fsckObjects true
+#git config --global transfer.fsckObjects true
+# (disable for now)
+git config --global transfer.fsckObjects false
 
 # easy git instaweb
 git config --global instaweb.local true
