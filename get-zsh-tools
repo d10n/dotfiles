@@ -7,6 +7,25 @@ tools=(
     https://github.com/funtoo/keychain.git
 )
 
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+    echo 'Execute this file instead of sourcing it'
+    return 1
+fi
+
+if [[ $UID = 0 ]] && [[ "$1" != '-f' ]]; then
+    echo 'Pass the -f flag to allow running this script as root'
+    exit 1
+fi
+
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "$SOURCE" ]]; do
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DOTFILES_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+cd $DOTFILES_DIR
+
 mkdir -p zsh-libs
 pushd zsh-libs
 for tool in "${tools[@]}"; do
