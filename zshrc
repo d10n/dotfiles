@@ -111,6 +111,16 @@ cd() {
     builtin cd "$@"
 }
 
+git() {
+    if [[ "$1" = "commit" && "$2" = "-a"* ]]; then
+        if ! git diff-index --cached --quiet HEAD --; then
+            echo >&2 'Changes are already staged. Preventing git commit -a'
+            return 1
+        fi
+    fi
+    command git "$@"
+}
+
 set_iterm_tab_rgb() {
     [[ "$TERM_PROGRAM" != "iTerm.app" ]] && return
     [[ -n "${NO_ITERM_TAB_COLOR+set}" ]] && return
