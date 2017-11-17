@@ -24,7 +24,7 @@ while [[ -L "$SOURCE" ]]; do
     [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
 done
 DOTFILES_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
-cd $DOTFILES_DIR
+cd "$DOTFILES_DIR" || { echo >&2 'Error finding dotfiles dir'; exit 1; }
 
 mkdir -p zsh-libs
 pushd zsh-libs
