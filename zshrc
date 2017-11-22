@@ -114,7 +114,8 @@ cd() {
 git() {
     if [[ "$1" = "commit" && "$2" = "-a"* ]]; then
         if ! git diff-index --cached --quiet HEAD --; then
-            echo >&2 'Changes are already staged. Preventing git commit -a'
+            echo >&2 $'\e[0;31mERROR!\e[0m Changes are already staged. Preventing git commit -a'
+            echo >&2 $'\e[0;31mERROR!\e[0m Run git commit without -a or run git reset HEAD first'
             return 1
         fi
     fi
