@@ -8,8 +8,15 @@ set -x
 # Find the branching point http://stackoverflow.com/a/4991675
 git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old-line-format= --new-line-format= <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1)"'"' -"
 
-# Sort branch by date (run git bs -a to include remote branches and tags)
-git config --global alias.bs $'!f() { [[ "$1" = "-a" ]] && refs="--" || refs="refs/heads/"; git for-each-ref --format="%(committerdate:raw)%(taggerdate:raw)%(committerdate:relative)%(taggerdate:relative)\t%(refname:short) %(color:red)%(subject) %(color:blue)%(authorname)" "$refs" | sort -k1,1 | cut -c17-; }; f'
+# Sort branch by date
+# Usage: git bs [-a] [-<line_limit>]
+#     -a             include remote branches and tags
+#     -<line_limit>  number of lines to tail
+# Example: git bs
+# Example: git bs -3
+# Example: git bs -a
+# Example: git bs -a -20
+git config --global alias.bs $'!f() { [[ "$1" = "-a" ]] && shift && refs="--" || refs="refs/heads/"; git for-each-ref --format="%(committerdate:raw)%(taggerdate:raw)%(committerdate:relative)%(taggerdate:relative)\t%(refname:short) %(color:red)%(subject) %(color:blue)%(authorname)" "$refs" | sort -k1,1 | cut -c17- | if [[ -n "$1" ]]; then tail "$@"; else cat; fi; }; f'
 
 # Short log
 git config --global alias.l "!git --no-pager log --graph --format='%C(auto)%h%C(reset) - %cr %d %C(red)%s%C(reset) %C(blue)%cn%C(reset)' -5"
