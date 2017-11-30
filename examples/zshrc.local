@@ -262,6 +262,11 @@ ansicolors() {
     echo
 }
 
+#codegrep() {
+#    find ~/code/* -maxdepth 1 -type d -name .git \
+#        -execdir sh -o pipefail -c 'git grep --color "$@" | dir="$(basename "$PWD")" awk "NR==1{print ENVIRON[\"dir\"]}1" && echo' - "$@" \;
+#}
+
 #gtm() {
 #    if [[ "$#" -ne 1 ]]; then
 #        echo $'Usage: gtm <meeting-id>\nExample: gtm 123-456-543'
