@@ -108,6 +108,7 @@ mkcd() {
 
 cd() {
     [[ -z "$@" ]] && set_iterm_tab_rgb
+    { [[ -f "$1" ]] && builtin cd "$(dirname "$1")"; } || \
     builtin cd "$@"
 }
 
