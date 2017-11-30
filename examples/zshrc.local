@@ -104,7 +104,7 @@ fi
 
 
 ## Miscellaneous aliases
-#alias workfetch="find ~/code/{dotfiles,qemu,borg} -type d -maxdepth 1 -name .git -execdir sh -c 'basename \$PWD;git f' \;"
+#alias workfetch="find ~/code/{dotfiles,qemu,borg} -maxdepth 1 -type d -name .git -execdir sh -c 'basename \$PWD;git f' \;"
 #alias curl-srv="bash <(cd ~/code/srv; git show curl-srv:./curl-srv)"
 #alias curl-srv-dev="bash -x <(cd ~/code/srv; git show curl-srv:./curl-srv)"
 #alias gen-aws='jq -r '\''.[] | select(.tags[] | select(.key == "Name").value | contains("build")) | {ip: .publicIpAddress, name: (.tags[] | select(select(.key == "Name").value | contains("build")).value)} | select(.ip != null) | "Host \(.name)\n  HostName \(.ip)\n  User me\n"'\'' /tmp/aws.txt > ~/.ssh/config.d/aws'
