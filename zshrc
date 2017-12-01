@@ -108,8 +108,7 @@ unalias run-help
 alias help=run-help
 
 mkcd() {
-    local dir="$*"
-    mkdir -p "$dir" && cd "$dir"
+    [[ ! -z "$1" ]] && mkdir -p "$1" && builtin cd "$1"
 }
 
 mvcd() {
