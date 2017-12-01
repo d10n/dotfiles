@@ -358,8 +358,8 @@ fi
 #PROMPT="${PROMPT_ROOT_FLAG}%n@%m:%~"'${vcs_info_msg_0_}'$'\n'"%# "  # no color + vcs_info
 #PROMPT="${PROMPT_ROOT_FLAG}%{%B%}%n@%m:%~ "'${vcs_info_msg_0_}'$'\n'"%#%{$reset_color%} "  # bold + vcs_info
 #PROMPT="${PROMPT_ROOT_FLAG}%{%B$HOSTBGTEXT$HOSTFGCOLOR%}%n@%m%{$reset_color%B%}:%~ "'${vcs_info_msg_0_}'$'\n'"%#%{$reset_color%} "  # user@host color + bold + vcs_info
-PROMPT="${PROMPT_ROOT_FLAG}%{$HOSTFGCOLOR$HOSTBGCOLOR%}[%{$HOSTFGTEXT$HOSTBGCOLOR%}%n %{$K$BGW%} %m%{$W$BGW%}]%{$X$HIBGK$(printf "\e[37m")%} %~ %{$X%}"'${vcs_info_msg_0_}'$'\n'"%{$X$EMW%}%#%{$X%} "  # bash.colors color + vcs_info
-#PROMPT="${PROMPT_ROOT_FLAG}%{$HOSTFGCOLOR$HOSTBGCOLOR%}[%{$HOSTFGTEXT$HOSTBGCOLOR%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"$fg[white]%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "  # zsh color + vcs_info
+#PROMPT="${PROMPT_ROOT_FLAG}%{$HOSTFGCOLOR$HOSTBGCOLOR%}[%{$HOSTFGTEXT$HOSTBGCOLOR%}%n %{$K$BGW%} %m%{$W$BGW%}]%{$X$HIBGK$(printf "\e[37m")%} %~ %{$X%}"'${vcs_info_msg_0_}'$'\n'"%{$X$EMW%}%#%{$X%} "  # bash.colors color + vcs_info
+PROMPT="${PROMPT_ROOT_FLAG}%{$HOSTFGCOLOR$HOSTBGCOLOR%}[%{$HOSTFGTEXT$HOSTBGCOLOR%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"$fg[white]%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "  # zsh color + vcs_info
 autoload -Uz vcs_info
 print_long_command_duration_precmd() {
     _date_end="$(date -u +%s)"
