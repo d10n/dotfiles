@@ -102,6 +102,11 @@ autoload -Uz compinit && compinit -i > /dev/null
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
 [[ -d "$DOTFILES_DIR/zsh-libs/faster-vcs-info" ]] && fpath=("$DOTFILES_DIR/zsh-libs/faster-vcs-info" $fpath)
 
+# By default, the zsh help command does not show help for builtins
+autoload -Uz run-help
+unalias run-help
+alias help=run-help
+
 mkcd() {
     local dir="$*"
     mkdir -p "$dir" && cd "$dir"
