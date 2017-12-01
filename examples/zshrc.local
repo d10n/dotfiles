@@ -113,11 +113,6 @@ fi
 #alias solrsniff="ssh -o StrictHostKeyChecking=no $SSH_OPTS vagrant@solr sudo -i \"tcpdump -A -i eth1 host 10.0.0.2|grep --line-buffered -o 'GET.*HTTP/1\.1'\"|perl -pe '\$|=1;s/%([[:xdigit:]]{2})/chr hex \$1/ge'"
 
 
-## Prompt
-#BGUC="$bg[blue]"
-#PROMPT="%{$X$UC%}%n@%m%{$X%}:%{$Y%}%~ %{$X%}"'${vcs_info_msg_0_}'$'\n'"%{$X$EMW%}%#%{$X%} "  # bash.colors color + vcs_info
-#PROMPT=" %{$fg[black]$BGUC%}%n%{$fg[black]$bg[black]%}@%{$fg[black]$bg[white]%}%m%{$fg[black]$bg[black]%}:%{$reset_color"$'\e[0;100m'"$fg[white]%}%~%{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} "
-PROMPT="%{$UC$BGUC%}[%{$fg[black]$BGUC%}%n %{$fg[black]$bg[white]%} %m%{$fg[white]$bg[white]%}]%{$reset_color"$'\e[0;100m'"$fg[white]%} %~ %{$reset_color%}"'${vcs_info_msg_0_}'$'\n'"%{$reset_color%B%}%#%{$reset_color%} " # zsh color + vcs_info
 ZSH_HIGHLIGHT_STYLES[default]='fg=39'
 ZSH_HIGHLIGHT_STYLES[unknown-token]='fg=red,bold'
 ZSH_HIGHLIGHT_STYLES[reserved-word]='fg=yellow'
