@@ -104,7 +104,7 @@ autoload -Uz compinit && compinit -i > /dev/null
 
 # By default, the zsh help command does not show help for builtins
 autoload -Uz run-help
-unalias run-help
+unalias run-help &>/dev/null
 alias help=run-help
 
 mkcd() {
