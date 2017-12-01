@@ -112,6 +112,10 @@ mkcd() {
     mkdir -p "$dir" && cd "$dir"
 }
 
+mvcd() {
+    (( $# > 1 )) && [[ -d "${@: -1}" ]] && mv "$@" && builtin cd "${@: -1}"
+}
+
 cd() {
     [[ -z "$@" ]] && set_iterm_tab_rgb
     { [[ -f "$1" ]] && builtin cd "$(dirname "$1")"; } || \
