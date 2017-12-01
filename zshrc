@@ -96,6 +96,7 @@ zstyle ':completion:*' use-cache on
 zstyle ':completion:*' menu select  # complete with arrow key selection
 #zstyle ':completion:*:*:gradle:*' gradle-inspect no  # just use simple gradle completion
 zstyle ':completion:*:man:*' menu yes select
+zstyle ':completion:*' rehash true  # automatically detect new executables
 autoload -Uz compinit && compinit -i > /dev/null
 
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
