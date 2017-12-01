@@ -4,6 +4,14 @@
 >
 > https://xkcd.com/1205/
 
+To try without installing:
+
+    docker build -t dotfiles .
+    docker run --rm -it dotfiles
+    # cd ~/.config/dotfiles, git l, vim, tmux, etc.
+
+To install:
+
     git clone https://gitlab.com/d10n/dotfiles.git ~/.config/dotfiles
     ~/.config/dotfiles/install
 
