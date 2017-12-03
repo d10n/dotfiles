@@ -17,6 +17,7 @@ RUN apk add --no-cache \
     vim \
     wget \
     zsh \
+    zsh-doc \
     zsh-vcs
 
 RUN chsh -s /bin/zsh && \
