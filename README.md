@@ -7,8 +7,14 @@
 To try without installing:
 
     docker build -t dotfiles .
+
     docker run --rm -it dotfiles
-    # cd ~/.config/dotfiles, git l, vim, tmux, etc.
+    # cd ~/.config/dotfiles; git l; vim; tmux; etc.
+
+    # Or use the --volume flag to access files on your host
+    docker run --rm -it --volume "$HOME":/mnt/ dotfiles
+    # cd /mnt/; ls
+
 
 To install:
 
