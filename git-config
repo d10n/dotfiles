@@ -57,6 +57,9 @@ git config --global merge.conflictstyle diff3
 # Show other changes when doing git pull --rebase
 git config --global rebase.stat true
 
+# Automatically set fixup and squash for commits made with --fixup and --squash
+git config --global rebase.autoSquash true
+
 # Enable git rerere
 git config --global rerere.enabled true
 
