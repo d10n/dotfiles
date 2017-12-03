@@ -1,45 +1,37 @@
-FROM ubuntu:latest
+FROM alpine:latest
 
 ENV TERM xterm-256color
 
-#RUN apt-get-update && \
-#    apt-get install -y \
-
-RUN apt-get update && \
-    apt-get install -y \
-    locales \
-    lsb-release \
-    software-properties-common
-
-ENV LANG en_US.UTF-8
-RUN localedef -i en_US -f UTF-8 en_US.UTF-8 && \
-/usr/sbin/update-locale LANG=$LANG
-
-RUN apt-get update && \
-    apt-get install -y \
+RUN apk add --no-cache \
+    shadow \
     sudo \
-    build-essential \
+    bash \
     curl \
     git \
+    less \
     man \
+    ncurses \
+    perl \
     python \
     tmux \
     vim \
     wget \
-    zsh
+    zsh \
+    zsh-vcs
 
-RUN chsh -s /bin/zsh
+RUN chsh -s /bin/zsh && \
+    useradd -m -s /bin/zsh tester && \
+    echo 'tester  ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
-RUN useradd -m -s /bin/zsh tester && \
-    echo 'tester  ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers && \
-    bash -c 'rm -f /{root,home/tester}/{.bashrc,.profile}'
+# COPY --chown is too new and chown -R hangs on mac,
+# so use a temporary folder and cp instead
+COPY . /opt/dotfiles
+RUN sudo -u tester -i mkdir -p ~tester/.config && \
+    sudo -u tester -i cp -R /opt/dotfiles ~tester/.config/dotfiles && \
+    rm -rf /opt/dotfiles && \
+    sudo -u tester -i sh -c 'rm -f /home/tester/.config/dotfiles/.*.skip' && \
+    sudo -u tester -i sh -c 'cd ~/.config/dotfiles; cp ./examples/* .' && \
+    sudo -u tester -i sh -c 'yes | ~tester/.config/dotfiles/install' && \
+    sh -c 'yes | ~tester/.config/dotfiles/install'
 
-COPY . /home/tester/.config/dotfiles
-RUN chown -R tester:tester ~tester && \
-    sh -c 'rm -f /home/tester/.config/dotfiles/.*.skip'
-
-RUN sudo -u tester -i sh -c 'cd ~/.config/dotfiles; cp ./examples/* .' && \
-    sudo -u tester -i sh -c 'yes | /home/tester/.config/dotfiles/install' && \
-    sh -c 'yes | /home/tester/.config/dotfiles/install'
-
-CMD sudo -u tester -i
+CMD ["/usr/bin/sudo", "-u", "tester", "-i"]
