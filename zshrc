@@ -105,7 +105,7 @@ autoload -Uz compinit && compinit -i > /dev/null
 # By default, the zsh help command does not show help for builtins
 autoload -Uz run-help
 unalias run-help &>/dev/null
-alias help=run-help
+alias help='PAGER="less -FX" run-help'
 
 mkcd() {
     [[ ! -z "$1" ]] && mkdir -p "$1" && builtin cd "$1"
