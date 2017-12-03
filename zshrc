@@ -424,7 +424,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
     local -a stashes
     if git rev-parse --quiet --verify refs/stash &>/dev/null; then
         stashes=$(git rev-list --walk-reflogs --count refs/stash)
-        hook_com[misc]+="(${stashes} stashed)"
+        hook_com[misc]="${hook_com[misc]}${hook_com[misc]:+ }(${stashes} stashed)"
     fi
 }
 
