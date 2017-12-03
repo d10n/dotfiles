@@ -274,7 +274,7 @@ pretty_print_date_difference() {
     local date_start_iso
     local date_end_iso
     (( $date_end - $date_start < 5 )) && return
-    if date --version 2>/dev/null | grep -q GNU; then
+    if ( date --version 2>&1; true; ) | grep -q -e GNU -e BusyBox; then
         date_start_iso="$(date -u -d @"$date_start" +%FT%TZ)"
         date_end_iso="$(date -u -d @"$date_end" +%FT%TZ)"
     else
