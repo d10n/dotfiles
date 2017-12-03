@@ -25,6 +25,7 @@ Make local customizations with:
     ~/.vimrc.plugins.local
     ~/.zshrc.local
     ~/.bashrc.local
+    ~/.tmux.conf.local
 
 Sample local files are in the example directory.
 
@@ -32,6 +33,7 @@ Sample local files are in the example directory.
 
 ### .zshrc
 
+ * Color for the prompt is automatically chosen based on the computer's hostname
  * `zsh-syntax-highlighting` adds colors while you type
  * `zsh-history-substring-search` lets you type part of a previous command and press the up and down arrow keys to cycle through command history with that part
  * The full path is shown in the prompt so you can stop typing `pwd`
@@ -39,10 +41,21 @@ Sample local files are in the example directory.
  * iTerm tab color can be set with `set_iterm_tab_rgb`. Type `cd` by itself to remove the tab color
  * The prompt is bold to act as an eye magnet so you can find it quickly when scrolling up a lot
  * The prompt is multi-line to let every command you type start at the same column
- * `mkcd` makes a folder and `cd`s into it
+ * `mkcd` makes a folder and `cd`s into it. `mvcd` moves a file and `cd`s to the destination.
  * Tab completion is powerful. Type `cd /u/l/b<tab>` and it will expand to `cd /usr/local/bin/`.
  * Tab completion is case-insensitive if you start with a lowercase letter. For example, `cd /u/u` expands to `cd /Users/username`
+ * `git commit -a` is prevented if you already have staged changes
+ * `git cdroot` `cd`s to the root of the repository
 
+### git
+
+ * `git l` for short log
+ * `git d` for diff of unstaged changes
+ * `git ds` for diff of staged changes
+ * `git s` for short status
+ * `git b` for git branch
+ * `git bs` for branches, sorted by date
+ * `git f` to fetch branches and tags
 
 ### .vimrc
 
