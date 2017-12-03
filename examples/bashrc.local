@@ -229,7 +229,7 @@ __git_info() {
     remote_ref=$(git rev-parse --verify "${branch}@{upstream}" --symbolic-full-name 2>/dev/null)
     remote=${remote_ref/refs\/remotes\/}
     commit_hash=$(git rev-parse --verify --short=7 HEAD 2>/dev/null)
-    staged_changes="$(git diff-index --cached --quiet HEAD -- || echo 'C')"
+    staged_changes="$(git diff-index --cached --quiet HEAD -- || echo 'S')"
     unstaged_changes="$(git diff-files --quiet || echo 'U')"
     if [[ -z ${branch} ]] ; then
         detached_tag=$(git describe --tags --exact-match 2>/dev/null)
@@ -244,7 +244,7 @@ __git_info() {
     fi
     if git rev-parse --quiet --verify refs/stash &>/dev/null; then
         stashes=$(git rev-list --walk-reflogs --count refs/stash)
-        stash_message=" (${stashes} stashed)"
+        stash_message="(${stashes} stashed)"
     fi
     message="(git)"
     [[ -n "${commit_hash}" ]] && message+=" ${commit_hash}"

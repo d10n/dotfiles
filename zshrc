@@ -390,7 +390,7 @@ zstyle ':vcs_info:*' enable git  #hg svn
 zstyle ':vcs_info:*' check-for-changes true
 zstyle ':vcs_info:git*' formats $'\n'"(%s) %7.7i%c%u %b %m"
 zstyle ':vcs_info:git*' actionformats $'\n'"(%s|%a) %7.7i%c%u %b %m"
-zstyle ':vcs_info:git*' stagedstr ' C'
+zstyle ':vcs_info:git*' stagedstr ' S'
 zstyle ':vcs_info:git*' unstagedstr ' U'
 zstyle ':vcs_info:git*:*' get-revision true
 zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
@@ -424,7 +424,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
     local -a stashes
     if git rev-parse --quiet --verify refs/stash &>/dev/null; then
         stashes=$(git rev-list --walk-reflogs --count refs/stash)
-        hook_com[misc]+=" (${stashes} stashed)"
+        hook_com[misc]+="(${stashes} stashed)"
     fi
 }
 
