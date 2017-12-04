@@ -144,10 +144,11 @@ ZSH_HIGHLIGHT_STYLES[assign]='none'
 
 cmdfu() {
     local tempfile="$(mktemp)" || return 1
-    echo -e "\n# $1 {{{1" >> $tempfile
-    curl -s "https://www.commandlinefu.com/commands/matching/$1/$(echo -n "$1" | base64)/plaintext" | sed '1,2d;s/^#.*/& {{{2/g' >> $tempfile
-    vim -c "setlocal ft=sh fdm=marker fdl=1 noswapfile buftype=nofile bufhidden=hide" -M $tempfile
-    rm $tempfile
+    echo -e "\n# press za to toggle a fold" >> "$tempfile"
+    echo -e "\n# $1 {{{1" >> "$tempfile"
+    curl -s "https://www.commandlinefu.com/commands/matching/$1/$(echo -n "$1" | base64)/plaintext" | sed '1,2d;s/^#.*/& {{{2/g' >> "$tempfile"
+    vim -c "setlocal ft=sh fdm=marker fdl=1 noswapfile buftype=nofile bufhidden=hide" -M "$tempfile"
+    rm "$tempfile"
 }
 
 adb-paste() {
