@@ -20,6 +20,7 @@ To install:
 
     git clone https://gitlab.com/d10n/dotfiles.git ~/.config/dotfiles
     ~/.config/dotfiles/install
+    # Or manually symlink the files and execute the executable files
 
 To uninstall:
 
