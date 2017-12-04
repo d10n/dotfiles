@@ -21,9 +21,9 @@ path=($path $HOME/bin)
 #    unset keys
 #fi
 # linux & windows:
-#eval $(keychain --eval --agents ssh id_rsa)
+#(( UID != 0 )) && eval $(keychain --eval --agents ssh id_rsa)
 # mac:
-#eval $(keychain --eval --agents ssh --inherit any id_rsa)
+#(( UID != 0 )) && eval $(keychain --eval --agents ssh --inherit any id_rsa)
 
 
 ## Default programs
