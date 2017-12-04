@@ -16,6 +16,11 @@ Plug 'junegunn/goyo.vim'  " Distraction-free writing with :Goyo
 Plug 'lucc/vim-tip'  " Tip of the day
 "Plug 'vim-scripts/YankRing.vim'
 
+Plug 'jceb/vim-orgmode'  " emacs orgmode for vim
+Plug 'vim-scripts/utl.vim'  " Universal Text Linking - dependency of vim-orgmode
+Plug 'tpope/vim-speeddating'  " Increment dates - dependency of vim-orgmode
+Plug 'inkarkat/vim-SyntaxRange'  " Support syntax regions - dependency of vim-orgmode
+
 "Plug 'vim-scripts/ZoomWin' " git clone --config transfer.fsckObjects=false 'https://github.com/vim-scripts/ZoomWin.git' ~/.vim/bundle/ZoomWin
 
 " Version control gutter info
