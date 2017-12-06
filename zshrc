@@ -181,6 +181,7 @@ apply_aliases() {
     alias lz="ls -rS"  # sort by size
     alias lt="ls -rT"  # sort by timestamp
     alias lathr="ls -lathr"
+    alias althr="ls -lathr"
 
     # modified commands
     which gtar &>/dev/null && alias tar="gtar"
