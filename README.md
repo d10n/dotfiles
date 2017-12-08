@@ -64,6 +64,7 @@ Sample local files are in the example directory.
  * `git b` for git branch
  * `git bs` for branches, sorted by date
  * `git f` to fetch branches and tags
+ * `git fp` to fetch branches and tags then pull
 
 ### .vimrc
 

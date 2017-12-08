@@ -42,6 +42,9 @@ git config --global alias.b "branch"
 # Update both branches and tags
 git config --global alias.f "!git fetch --all --prune 2>&1 | sed 's/^/branches: /'; git fetch --all --prune --tags 2>&1 | sed 's/^/tags: /'"
 
+# Update both branches and tags, then pull.
+git config --global alias.fp '!f() { git fetch --all --prune 2>&1 | sed "s/^/branches: /"; git fetch --all --prune --tags 2>&1 | sed "s/^/tags: /"; [[ "$1" = "--rebase" ]] && action=rebase || action=merge; git "$action" FETCH_HEAD; }; f'
+
 # Set a global gitignore file
 git config --global core.excludesfile ~/.gitignore_global
 
