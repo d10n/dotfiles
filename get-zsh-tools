@@ -35,7 +35,7 @@ for tool in "${tools[@]}"; do
     fi
     pushd "$dir_name"
     git pull
-    which make &>/dev/null && [[ -f Makefile ]] && make
+    command -v make &>/dev/null && [[ -f Makefile ]] && make
     popd
 done
 popd

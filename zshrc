@@ -151,9 +151,9 @@ reset_env() {
     local command="$1"
     # assume login shell for now
     # OS X messes with the path in /etc/profile and /etc/zprofile. FIX_PATH works around this
-    exec env -i ORIGINAL_VARS="$ORIGINAL_VARS" RUN_WITH="$command" "$(which zsh)" -d -c '
+    exec env -i ORIGINAL_VARS="$ORIGINAL_VARS" RUN_WITH="$command" "$(command -v zsh)" -d -c '
         eval "$ORIGINAL_VARS"
-        FIX_PATH="$PATH" RUN_WITH="$RUN_WITH" $(which zsh) -l'
+        FIX_PATH="$PATH" RUN_WITH="$RUN_WITH" $(command -v zsh) -l'
 }
 
 apply_aliases() {
@@ -184,10 +184,10 @@ apply_aliases() {
     alias althr="ls -lathr"
 
     # modified commands
-    which gtar &>/dev/null && alias tar="gtar"
-    which colordiff &>/dev/null && alias diff="colordiff"
-    which wget &>/dev/null && alias wget="wget --content-disposition"
-    which pygmentize &>/dev/null && alias ccat="pygmentize -g"  # pip install Pygments
+    command -v gtar &>/dev/null && alias tar="gtar"
+    command -v colordiff &>/dev/null && alias diff="colordiff"
+    command -v wget &>/dev/null && alias wget="wget --content-disposition"
+    command -v pygmentize &>/dev/null && alias ccat="pygmentize -g"  # pip install Pygments
     alias more="less"
     alias df="df -h"
     alias du="du -ch"

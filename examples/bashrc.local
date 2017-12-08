@@ -73,10 +73,10 @@ work_on_repository() {
     # set.env.sh borks out if run twice, so reset the environment
     # assume it's a login shell for now
     # OS X messes with the path in /etc/profile and /etc/zprofile. FIXPATH works around this
-    exec env -i ORIGINAL_VARS="$ORIGINAL_VARS" "$(which bash)" --noprofile -c '
+    exec env -i ORIGINAL_VARS="$ORIGINAL_VARS" "$(command -v bash)" --noprofile -c '
         eval "$ORIGINAL_VARS"
         '"$main_command"'
-        FIXPATH="$PATH" exec $(which bash) -l'
+        FIXPATH="$PATH" exec $(command -v bash) -l'
 }
 
 apply_aliases() {
@@ -107,10 +107,10 @@ apply_aliases() {
     alias althr="ls -lathr"
 
     # modified commands
-    which gtar &>/dev/null && alias tar="gtar"
-    which colordiff &>/dev/null && alias diff="colordiff"
-    which wget &>/dev/null && alias wget="wget --content-disposition"
-    which pygmentize &>/dev/null && alias ccat="pygmentize -g"  # pip install Pygments
+    command -v gtar &>/dev/null && alias tar="gtar"
+    command -v colordiff &>/dev/null && alias diff="colordiff"
+    command -v wget &>/dev/null && alias wget="wget --content-disposition"
+    command -v pygmentize &>/dev/null && alias ccat="pygmentize -g"  # pip install Pygments
     alias more="less"
     alias df="df -h"
     alias du="du -ch"
