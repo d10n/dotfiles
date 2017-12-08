@@ -385,6 +385,7 @@ set_terminal_title_short_path() {
 }
 [[ -z "$precmd_functions" ]] && precmd_functions=()
 precmd_functions+=(
+    'hash -r'
     print_long_command_duration_precmd
     vcs_info
     set_terminal_title_short_path)
