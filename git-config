@@ -2,7 +2,7 @@
 # Execute this script, or run individual lines you want. Don't symlink this to ~/.gitconfig.
 set -x
 
-# NeoBundle makes vim bork out when run as vi (command -v is git default)
+# NeoBundle makes vim bork out when run as vi (which is git default)
 #git config --global core.editor $(command -v vim)
 
 # Add a no-op alias just for tab completion
