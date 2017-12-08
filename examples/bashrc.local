@@ -3,8 +3,50 @@
 typeset +x ORIGINAL_VARS
 [[ -n "${FIXPATH}" ]] && PATH="$FIXPATH" && unset FIXPATH
 
-HISTIGNORE="&:ls:[bf]g:exit:reset:clear:which"
+# Don't add these commands to the history
+HISTIGNORE="&:[ ]*:ls:bg:fg:exit:reset:clear:which"
+
+# Avoid duplicate history entries
 HISTCONTROL="ignoreboth:erasedups"
+
+# Huge history. Doesn't appear to slow things down, so why not?
+HISTSIZE=500000
+HISTFILESIZE=100000
+
+# Use standard ISO 8601 timestamp
+# %F equivalent to %Y-%m-%d
+# %T equivalent to %H:%M:%S (24-hours format)
+HISTTIMEFORMAT='%F %T '
+
+# Save multi-line commands as one command
+shopt -s cmdhist
+
+# Append to the history file, don't overwrite it
+shopt -s histappend
+
+# Disable ^s and ^q
+stty -ixon -ixoff
+bind -r '\C-s'
+bind -r '\C-q'
+
+# Turn on recursive globbing (enables ** to recurse all directories)
+# Requires Bash >= 4
+shopt -s globstar 2> /dev/null
+
+# Not set because having cd be in front of every directory change is useful for searching history
+# cd to a directory by typing just the directory
+# Requires Bash >= 4
+#shopt -s autocd 2> /dev/null
+
+# This defines where cd looks for targets
+# Add the directories you want to have fast access to, separated by colon
+# Ex: CDPATH=".:~:~/projects" will look for targets in the current working directory, in home and in the ~/projects folder
+CDPATH="."
+
+# Not set because I don't want it set in zsh and I want consistency
+# cd to variables; with foo=~/code/foo, `cd foo` works from any folder that doesn't contain its own foo folder
+#shopt -s cdable_vars
+#dotfiles="$HOME/.config/dotfiles"
 
 setup_completion() {
     if [[ -f /usr/share/git/completion/git-completion.bash ]]; then
@@ -218,7 +260,7 @@ else
     PROMPT_ROOT_FLAG=''
 fi
 
-PROMPT_COMMAND='echo -en "\033]0;$(pwd|HOME="$HOME" perl -ne '"'"'s/^\Q$ENV{HOME}\E/~/;s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;'"'"')\007"'
+PROMPT_COMMAND='history -a;echo -en "\033]0;$(pwd|HOME="$HOME" perl -ne '"'"'s/^\Q$ENV{HOME}\E/~/;s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;'"'"')\007"'
 
 PS1="\u@\h:\w"'$(__git_info)'$'\n'"\\\$ "
 PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\\\$\[$X\] "
