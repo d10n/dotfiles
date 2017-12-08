@@ -52,7 +52,7 @@ setopt PROMPT_SUBST  # variables in prompt
 setopt NO_FLOW_CONTROL  # disable ^s and ^q
 stty -ixon -ixoff # disable ^s and ^q again
 
-HISTORY_IGNORE="(&|ls|[bf]g|exit|reset|clear|which)"
+HISTORY_IGNORE="(&|[ ]*|ls|bg|fg|exit|reset|clear|which)"
 
 REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, show its time
 export WORDCHARS=${WORDCHARS/\/}  # Make ctrl-w delete 1 folder at a time
