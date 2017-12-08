@@ -127,7 +127,7 @@ git() {
         root_path="$(git rev-parse --show-cdup)." || return $?
         builtin cd "$root_path"; return $?
     fi
-    if [[ "$1" = "commit" && "$2" = "-a"* ]]; then
+    if [[ "$1" = "commit" ]] && [[ "$2" = "-a"* ]]; then
         if ! git diff-index --cached --quiet HEAD -- && \
             ! git diff-files --quiet; then
             echo >&2 $'\e[0;31mERROR!\e[0m Changes are already staged. Preventing git commit -a'
