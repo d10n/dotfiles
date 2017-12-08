@@ -90,7 +90,8 @@ is_iterm() (
 [[ -e "${HOME}/.iterm2_shell_integration.zsh" ]] && is_iterm && . "${HOME}/.iterm2_shell_integration.zsh"
 
 zstyle ':compinstall' filename "$HOME/.zshrc"
-zstyle ':completion:*' matcher-list 'm:{a-z}={A-Z}'  # case-insensitive tab completion
+# case-insensitive underscore-dash-insensitive tab completion
+zstyle ':completion:*' matcher-list 'm:{a-z-_}={A-Z_-}'
 zstyle ':completion:*' insert-tab pending  # paste with tabs doesn't start completion
 zstyle ':completion:*' use-cache on
 zstyle ':completion:*' menu select  # complete with arrow key selection
