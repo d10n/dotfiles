@@ -32,6 +32,7 @@ Make local customizations with:
     ~/.vimrc.plugins.local
     ~/.zshrc.local
     ~/.bashrc.local
+    ~/.inputrc.local
     ~/.tmux.conf.local
 
 Sample local files are in the example directory.
