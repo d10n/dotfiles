@@ -56,7 +56,7 @@ path=($path $HOME/bin)
 
 
 ## Ruby
-#which rbenv &>/dev/null && eval "$(rbenv init -)"
+#command -v rbenv &>/dev/null && eval "$(rbenv init -)"
 #export RBENV_ROOT=/usr/local/var/rbenv
 
 
