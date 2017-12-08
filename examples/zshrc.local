@@ -2,6 +2,20 @@ typeset -U path  # Keep only the first occurrence of each duplicated value
 path=($path /usr/local/bin)
 path=($path $HOME/bin)
 
+## Zsh options
+
+# Not set because having cd be in front of every directory change is useful for searching history
+#setopt AUTO_CD  # cd to a directory by typing just the directory
+
+# Not set because I don't want items in cdpath to be shown in tab completion
+#cdpath=(~/Projects)  # extra directories where cd looks for targets
+
+# Not set because it turns ~/.config/dotfiles to ~dotfiles in the prompt
+# I only want a directory shown as ~foo when it is the home directory of the foo user
+# cd to variables; with foo=~/code/foo, `cd foo` works from any folder that doesn't contain its own foo folder
+#setopt CDABLE_VARS
+#dotfiles="$HOME/.config/dotfiles"
+
 
 ## API tokens
 #export HOMEBREW_GITHUB_API_TOKEN="31337deadbeef101e57124263d012133fee15b4d"
