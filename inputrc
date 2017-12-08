@@ -1,2 +1,33 @@
+$include /etc/inputrc
+
+# Enable incremental history searching with up and down arrow keys
 "\e[A": history-search-backward
 "\e[B": history-search-forward
+
+# Just ensure that the left and right arrow keys continue working
+"\e[C": forward-char
+"\e[D": backward-char
+
+# Enable history expansion with space
+# E.g. typing !!<space> will replace the !! with your last command
+Space: magic-space
+
+# Case insensitive path completion
+set completion-ignore-case on
+
+# Treat dash and underscore as equivalent in completion
+set completion-map-case on
+
+# Display matches for ambiguous patterns at first tab press
+set show-all-if-ambiguous on
+
+# Immediately add a trailing slash when autocompleting symlinks to directories
+set mark-symlinked-directories on
+
+# Colorize completion prompts
+set colored-stats on
+
+# Append char to indicate type
+set visible-stats on
+
+$include ~/.inputrc.local
