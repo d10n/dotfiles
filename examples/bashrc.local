@@ -163,6 +163,7 @@ apply_aliases && unset -f apply_aliases
 
 command -v lesspipe.sh &>/dev/null && export LESSOPEN="|lesspipe.sh %s" LESS_ADVANCED_PREPROCESSOR=1
 
+command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 
 pws() {
     # /usr/local/bin -> /u/l/bin
