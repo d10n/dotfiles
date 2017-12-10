@@ -273,6 +273,15 @@ print_long_command_duration_preexec() {
 [[ -z "$preexec_functions" ]] && preexec_functions=()
 preexec_functions+=print_long_command_duration_preexec
 
+print_prompt_duration_zle_accept_line() {
+    # if the command was empty (just pressed enter) and if ZSH_PROMPT_PRINT_DURATION is set
+    if [[ "$BUFFER" = "" ]] && [[ -n "$ZSH_PROMPT_PRINT_DURATION" ]]; then
+        _prompt_date_start=${(%):-%D{%s%.}}
+    fi
+    zle .accept-line
+}
+zle -N accept-line print_prompt_duration_zle_accept_line
+
 pretty_print_date_difference() {
     local date_end="$1"
     local date_start="$2"
@@ -377,6 +386,19 @@ print_long_command_duration_precmd() {
     unset _date_start
     unset _date_end
 }
+
+print_prompt_duration_precmd() {
+    if [[ -z "$ZSH_PROMPT_PRINT_DURATION" ]] ||
+        [[ -z "$_prompt_date_start" ]] ||
+        [[ "$_prompt_last_date_start" = "$_prompt_date_start" ]]; then
+        return
+    fi
+    _prompt_last_date_start="$_prompt_date_start"
+    _prompt_date_end=${(%):-%D{%s%.}}
+    _prompt_duration="$(( _prompt_date_end - _prompt_date_start ))"
+    echo "Wall time: $_prompt_duration\tStart: $_prompt_date_start\tStop: $_prompt_date_end"
+}
+
 set_terminal_title_short_path() {
     echo -en "\e]0;$(pws)\a"
     #print -Pn "\e]0;%C\a"
@@ -387,7 +409,8 @@ precmd_functions+=(
     'hash -r'
     print_long_command_duration_precmd
     vcs_info
-    set_terminal_title_short_path)
+    set_terminal_title_short_path
+    print_prompt_duration_precmd)
 
 zstyle ':vcs_info:*' enable git  #hg svn
 zstyle ':vcs_info:*' check-for-changes true
