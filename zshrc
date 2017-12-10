@@ -298,10 +298,7 @@ if d[0] > 0:
     sys.stdout.write("{}d ".format(d[0]))
 sys.stdout.write("{:0>2}:{:0>2}:{:0>2}".format(h[0], m[0], s))
 ' $date_end $date_start)
-    echo -n "Wall time: $wall_time\t"
-    echo -n "Start: $date_start_iso\t"
-    echo -n "Stop: $date_end_iso"
-    echo
+    echo "Wall time: $wall_time\tStart: $date_start_iso\tStop: $date_end_iso"
 }
 
 
