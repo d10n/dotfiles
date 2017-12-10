@@ -34,31 +34,39 @@ if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.v
   " Use :PlugUpdate to update vim-plug
   let vimplug_src = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
   let vimplug_dst = expand(root, 1).'/autoload/plug.vim'
+  let download_error = 0
   if !filereadable(vimplug_dst)
     if executable('curl') == 1
       execute 'silent !curl -l -o '.shellescape(vimplug_dst).' '.vimplug_src
     else  " assume wget is available
       execute 'silent !wget -O '.shellescape(vimplug_dst).' '.vimplug_src
     endif
+    let download_error = v:shell_error
   endif
 
-  " Clone vim-plug with git if it's missing (not recommended by vim-plug)
-  "let vimplug_src = 'https://github.com/junegunn/vim-plug.git'
-  "if !isdirectory(expand(root, 1).'/vim-plug')
-  "  execute 'silent !git clone '.vimplug_src.' '.shellescape(expand(root.'/vim-plug', 1))
-  "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
-  "  autocmd VimEnter * PlugInstall
-  "else
-  "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
-  "endif
+  if download_error
+    echohl ErrorMsg
+    echomsg 'Unable to download vim-plug. Not installing plugins.'
+    echohl NONE
+  else
+    " Clone vim-plug with git if it's missing (not recommended by vim-plug)
+    "let vimplug_src = 'https://github.com/junegunn/vim-plug.git'
+    "if !isdirectory(expand(root, 1).'/vim-plug')
+    "  execute 'silent !git clone '.vimplug_src.' '.shellescape(expand(root.'/vim-plug', 1))
+    "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
+    "  autocmd VimEnter * PlugInstall
+    "else
+    "  execute 'source '.expand(root, 1).'/vim-plug/plug.vim'
+    "endif
 
-  autocmd VimEnter *
-        \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
-        \|   PlugInstall --sync | q | doautocmd WinEnter
-        \| endif
-  call plug#begin(expand(root.'/bundle/'))
-  source ~/.vimrc.plugins
-  call plug#end()
+    autocmd VimEnter *
+          \  if len(filter(values(g:plugs), '!isdirectory(v:val.dir)'))
+          \|   PlugInstall --sync | q | doautocmd WinEnter
+          \| endif
+    call plug#begin(expand(root.'/bundle/'))
+    source ~/.vimrc.plugins
+    call plug#end()
+  endif
 endif
 
 filetype plugin indent on  " Automatically detect filetypes
