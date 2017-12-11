@@ -1,0 +1,82 @@
+#!/bin/bash
+
+# Automatically add the JIRA issue key to the commit message
+# Assuming that the issue key is in the branch name
+# Issue key is added to the first line if it fits within 50 characters
+# Otherwise, it is appended as the last line of the body
+# Example branch name: feature/SRC-1234-short-description
+
+jira_prefix="SRC"
+
+# This gets added with git commit -v or git commit --cleanup=scissors
+cut_line='------------------------ >8 ------------------------'
+
+# Strip comments and cut line
+message="$(awk "/$cut_line/{exit} !/^#/{print}" "$1")"
+
+if ! echo "$message" | grep -q .; then
+    exit # empty commit message
+fi
+
+branch="$(git symbolic-ref --short -q HEAD)"
+
+has_jira() {
+    grep -q "\b${jira_prefix}-[0-9][0-9]*\b"
+}
+
+show_jira() {
+    grep -o "\b${jira_prefix}-[0-9][0-9]*\b"
+}
+
+capitalize_jira() {
+    perl -pe "s/\b${jira_prefix}-(\d+)\b/${jira_prefix}-\1/ig"
+}
+
+capitalized="$(echo "$message" | capitalize_jira)"
+if ! cmp -s <(echo "$message") <(echo "$capitalized"); then
+    echo "$capitalized" > "$1"
+    echo >&2 ${jira_prefix} numbers in the commit message have been capitalized.
+    exit
+fi
+
+jira_added=0
+
+if ! echo "$message" | has_jira ; then
+    if ! echo "$branch" | capitalize_jira | has_jira; then
+        printf >&2 "\e[0;31mERROR\e[0m NOT COMMITTED\n"
+        printf >&2 "\e[0;31mERROR\e[0m JIRA $jira_prefix ticket number not found in commit message or branch name.\n"
+        printf >&2 "Bypass with --no-verify\n"
+        exit 1
+    fi
+
+    # If the ticket number fits on the commit message subject, add it there
+    prefixed_message="$(echo "$branch" | capitalize_jira | show_jira) $message"
+    if (( $(printf "$prefixed_message" | head -1 | tr -d $'\n' | wc -m) <= 50 )); then
+        message="$prefixed_message"
+        jira_added=1
+    fi
+
+    # Add a blank line to the end of the message
+    if echo "$message" | tail -1 | grep -q .; then
+        message="$message"$'\n'
+    fi
+    message="$message"$'\n'
+
+    # If the ticket number is lowercase in the branch name
+    # and if the ticket number has not already been added
+    # then add the ticket number
+    if ! echo "$branch" | has_jira && ! (( jira_added )); then
+        message="$message"$'\n'"$(echo "$branch" | capitalize_jira | show_jira)"
+        jira_added=1
+    fi
+
+    # Add the branch name to the commit message
+    if ! (( jira_added )); then
+        message="$message"$'\n'"$(echo "$branch" | show_jira)"
+        jira_added=1
+    fi
+
+    # Save
+    echo "$message" > "$1"
+    echo >&2 JIRA ${jira_prefix} ticket number added from git branch name.
+fi
