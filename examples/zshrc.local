@@ -42,9 +42,9 @@ path=($path $HOME/bin)
 
 ## Default programs
 #export BROWSER=firefox
-#export VISUAL=vim
-#export EDITOR="$VISUAL"
-#export SYSTEMD_EDITOR=vim
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export SYSTEMD_EDITOR=vim
 
 
 ## Docker/Kubernetes
