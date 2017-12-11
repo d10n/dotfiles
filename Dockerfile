@@ -8,6 +8,7 @@ RUN apk add --no-cache \
     bash \
     curl \
     git \
+    git-perl \
     less \
     man \
     ncurses \
