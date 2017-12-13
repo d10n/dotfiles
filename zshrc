@@ -278,9 +278,19 @@ print_prompt_duration_zle_accept_line() {
     if [[ "$BUFFER" = "" ]] && [[ -n "$ZSH_PROMPT_PRINT_DURATION" ]]; then
         _prompt_date_start=${(%):-%D{%s%.}}
     fi
+}
+
+zle_accept_line_hooks=(
+    print_prompt_duration_zle_accept_line
+    '[[ "$BUFFER" != "" ]] && hash -r')
+
+zle_accept_line_function() {
+    for command_hook in "${zle_accept_line_hooks[@]}"; do
+        eval "$command_hook"
+    done
     zle .accept-line
 }
-zle -N accept-line print_prompt_duration_zle_accept_line
+zle -N accept-line zle_accept_line_function
 
 pretty_print_date_difference() {
     local date_end="$1"
@@ -406,7 +416,6 @@ set_terminal_title_short_path() {
 }
 [[ -z "$precmd_functions" ]] && precmd_functions=()
 precmd_functions+=(
-    'hash -r'
     print_long_command_duration_precmd
     vcs_info
     set_terminal_title_short_path
