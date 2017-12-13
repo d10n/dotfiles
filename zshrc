@@ -391,7 +391,7 @@ PROMPT="${PROMPT_ROOT_FLAG}%{$HOSTFGCOLOR$HOSTBGCOLOR%}[%{$HOSTFGTEXT$HOSTBGCOLO
 
 autoload -Uz vcs_info
 print_long_command_duration_precmd() {
-    _date_start=${(%):-%D{%s}}
+    _date_end=${(%):-%D{%s}}
     pretty_print_date_difference "$_date_end" "${_date_start:-$_date_end}"
     unset _date_start
     unset _date_end
