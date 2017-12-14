@@ -57,7 +57,7 @@ def symlink_dotfiles(dotfiles):
         dotfile_name = os.path.basename(dotfile)
         install_location = os.path.join(
             os.path.expanduser('~'), '.' + dotfile_name)
-        if os.path.exists(install_location):
+        if os.path.exists(install_location) or os.path.islink(install_location):
             short_install_location = substitute_home(install_location)
             short_dotfile = substitute_home(dotfile)
             if os.path.realpath(install_location) != dotfile:
