@@ -10,7 +10,10 @@ $include /etc/inputrc
 
 # Enable history expansion with space
 # E.g. typing !!<space> will replace the !! with your last command
-Space: magic-space
+# https://bugs.python.org/issue9748
+$if Bash
+  Space: magic-space
+$endif
 
 # Case insensitive path completion
 set completion-ignore-case on
