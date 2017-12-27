@@ -77,6 +77,9 @@ git config --global alias.m "merge"
 # Rebase
 git config --global alias.r "rebase"
 
+# Subject length
+git config --global alias.subject-length '!f() { git log -1 --format="%s" | tr -d "\n" | wc -m; }; f'
+
 # Set a global gitignore file
 git config --global core.excludesfile ~/.gitignore_global
 
