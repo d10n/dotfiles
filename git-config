@@ -77,6 +77,9 @@ git config --global alias.m "merge"
 # Rebase
 git config --global alias.r "rebase"
 
+# Grep with blame
+git config --global alias.grep-blame '!f() { git grep -n "$@" | while IFS=: read file line text; do git --no-pager blame -L $line,$line $file; done; }; f'
+
 # Subject length
 git config --global alias.subject-length '!f() { git log -1 --format="%s" | tr -d "\n" | wc -m; }; f'
 
