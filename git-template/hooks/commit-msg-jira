@@ -7,6 +7,7 @@
 # Example branch name: feature/SRC-1234-short-description
 
 jira_prefix="${JIRA_PREFIX:-SRC}"
+honor_subject_length_convention="${HONOR_SUBJECT_LENGTH_CONVENTION:-yes}"
 
 # This gets added with git commit -v or git commit --cleanup=scissors
 cut_line='------------------------ >8 ------------------------'
@@ -51,6 +52,10 @@ if ! echo "$message" | has_jira ; then
 
     # If the ticket number fits on the commit message subject, add it there
     prefixed_message="$(echo "$branch" | capitalize_jira | show_jira) $message"
+    if [[ "$honor_subject_length_convention" != "yes" ]]; then
+        message="$prefixed_message"
+        jira_added=1
+    fi
     if (( $(printf "$prefixed_message" | head -1 | tr -d $'\n' | wc -m) <= 50 )); then
         message="$prefixed_message"
         jira_added=1
