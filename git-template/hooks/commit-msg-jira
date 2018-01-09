@@ -6,7 +6,7 @@
 # Otherwise, it is appended as the last line of the body
 # Example branch name: feature/SRC-1234-short-description
 
-jira_prefix="SRC"
+jira_prefix="${JIRA_PREFIX:-SRC}"
 
 # This gets added with git commit -v or git commit --cleanup=scissors
 cut_line='------------------------ >8 ------------------------'
