@@ -68,6 +68,7 @@ export SYSTEMD_EDITOR=vim
 
 
 ## Node
+command -v node &>/dev/null && alias npx='eval "$({ type -w type &>/dev/null && type -aw npx || type -at npx; } | grep -qv alias && printf %s \\npx || printf %s PATH="$(npm bin):$PATH")"'
 #. $(brew --prefix nvm)/nvm.sh  # brew --prefix nvm is too slow
 #. /usr/local/opt/nvm/nvm.sh  # nvm installed from brew is unsupported
 ## nvm adds a second of load time
