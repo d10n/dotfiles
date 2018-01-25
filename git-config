@@ -56,8 +56,14 @@ git config --global alias.s "status -s"
 # More readable diff
 git config --global alias.d "diff --patience"
 
+# Word diff
+git config --global alias.dw "diff --word-diff=color"
+
 # Diff staged
 git config --global alias.ds "diff --patience --staged"
+
+# Word diff staged
+git config --global alias.dsw "diff --word-diff=color --staged"
 
 # Show branches
 git config --global alias.b "branch"
