@@ -55,7 +55,8 @@ stty -ixon -ixoff # disable ^s and ^q again
 HISTORY_IGNORE="(&|[ ]*|ls|bg|fg|exit|reset|clear|which)"
 
 REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, show its time
-export WORDCHARS=${WORDCHARS/\/}  # Make ctrl-w delete 1 folder at a time
+WORDCHARS=${WORDCHARS//\/}  # Make ctrl-w delete 1 folder at a time
+WORDCHARS=${WORDCHARS//[\*\?\.\[\]\~\=\/\&\;\!\#\$\%\^\(\)\{\}\<\>]}  # Make ctrl-w stop deleting at these characters
 
 bindkey -e
 
