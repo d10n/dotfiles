@@ -15,54 +15,54 @@ cut_line='------------------------ >8 ------------------------'
 # Strip comments and cut line
 message="$(awk "/$cut_line/{exit} !/^#/{print}" "$1")"
 
-if ! echo "$message" | grep -q .; then
+if ! printf %s "$message" | grep -q .; then
     exit # empty commit message
 fi
 
 branch="$(git symbolic-ref --short -q HEAD)"
 
 has_jira() {
-    grep -q "\b${jira_prefix}-[0-9][0-9]*\b"
+    grep -q "\\b${jira_prefix}-[0-9][0-9]*\\b"
 }
 
 show_jira() {
-    grep -o "\b${jira_prefix}-[0-9][0-9]*\b"
+    grep -o "\\b${jira_prefix}-[0-9][0-9]*\\b"
 }
 
 capitalize_jira() {
-    perl -pe "s/\b${jira_prefix}-(\d+)\b/${jira_prefix}-\1/ig"
+    perl -pe "s/\\b${jira_prefix}-(\\d+)\\b/${jira_prefix}-\\1/ig"
 }
 
-capitalized="$(echo "$message" | capitalize_jira)"
-if ! cmp -s <(echo "$message") <(echo "$capitalized"); then
-    echo "$capitalized" > "$1"
-    echo >&2 ${jira_prefix} numbers in the commit message have been capitalized.
+capitalized="$(printf %s "$message" | capitalize_jira)"
+if ! cmp -s <(printf %s "$message") <(printf %s "$capitalized"); then
+    printf %s "$capitalized" > "$1"
+    printf >&2 '%s numbers in the commit message have been capitalized.' "$jira_prefix"
     exit
 fi
 
 jira_added=0
 
-if ! echo "$message" | has_jira ; then
-    if ! echo "$branch" | capitalize_jira | has_jira; then
-        printf >&2 "\e[0;31mERROR\e[0m NOT COMMITTED\n"
-        printf >&2 "\e[0;31mERROR\e[0m JIRA $jira_prefix ticket number not found in commit message or branch name.\n"
-        printf >&2 "Bypass with --no-verify\n"
+if ! printf %s "$message" | has_jira ; then
+    if ! printf %s "$branch" | capitalize_jira | has_jira; then
+        printf >&2 '\e[0;31mERROR\e[0m NOT COMMITTED\n'
+        printf >&2 '\e[0;31mERROR\e[0m JIRA %s ticket number not found in commit message or branch name.\n' "$jira_prefix"
+        printf >&2 'Bypass with --no-verify\n'
         exit 1
     fi
 
     # If the ticket number fits on the commit message subject, add it there
-    prefixed_message="$(echo "$branch" | capitalize_jira | show_jira) $message"
+    prefixed_message="$(printf %s "$branch" | capitalize_jira | show_jira) $message"
     if [[ "$honor_subject_length_convention" != "yes" ]]; then
         message="$prefixed_message"
         jira_added=1
     fi
-    if (( $(printf "$prefixed_message" | head -1 | tr -d $'\n' | wc -m) <= 50 )); then
+    if (( $(printf %s "$prefixed_message" | head -1 | tr -d $'\n' | wc -m) <= 50 )); then
         message="$prefixed_message"
         jira_added=1
     fi
 
     # Add a blank line to the end of the message
-    if echo "$message" | tail -1 | grep -q .; then
+    if printf %s "$message" | tail -1 | grep -q .; then
         message="$message"$'\n'
     fi
     message="$message"$'\n'
@@ -70,18 +70,18 @@ if ! echo "$message" | has_jira ; then
     # If the ticket number is lowercase in the branch name
     # and if the ticket number has not already been added
     # then add the ticket number
-    if ! echo "$branch" | has_jira && ! (( jira_added )); then
-        message="$message"$'\n'"$(echo "$branch" | capitalize_jira | show_jira)"
+    if ! printf %s "$branch" | has_jira && ! (( jira_added )); then
+        message="$message"$'\n'"$(printf %s "$branch" | capitalize_jira | show_jira)"
         jira_added=1
     fi
 
     # Add the branch name to the commit message
     if ! (( jira_added )); then
-        message="$message"$'\n'"$(echo "$branch" | show_jira)"
+        message="$message"$'\n'"$(printf %s "$branch" | show_jira)"
         jira_added=1
     fi
 
     # Save
-    echo "$message" > "$1"
-    echo >&2 JIRA ${jira_prefix} ticket number added from git branch name.
+    printf %s "$message" > "$1"
+    printf >&2 'JIRA %s ticket number added from git branch name.' "$jira_prefix"
 fi
