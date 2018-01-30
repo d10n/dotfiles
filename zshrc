@@ -123,6 +123,19 @@ cd() {
     builtin cd "$@"
 }
 
+which() {
+    which_out="$(builtin which "$@")"
+    which_exit="$?"
+    echo -E "$which_out" | while IFS=$'\n' read -r line; do
+        if [[ "$line" = "/"* ]] && [[ -x "$line" ]]; then
+            ls -la "$line"
+        else
+            echo -E "$line"
+        fi
+    done
+    return "$which_exit"
+}
+
 git() {
     if [[ "$1" = "cdroot" ]]; then
         root_path="$(git rev-parse --show-cdup)." || return $?

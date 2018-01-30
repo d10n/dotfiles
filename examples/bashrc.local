@@ -78,6 +78,20 @@ cd() {
     builtin cd "$@"
 }
 
+which() {
+    which_out="$(builtin type -a "$@")"
+    which_exit="$?"
+    echo -E "$which_out" | while IFS=$'\n' read -r line; do
+        if [[ "$line" = *" is /"* ]] && [[ -x "${line/#* is /}" ]]; then
+            echo -En "${line%% is *} is "
+            ls -la "${line/#* is /}"
+        else
+            echo -E "$line"
+        fi
+    done
+    return "$which_exit"
+}
+
 git() {
     if [[ "$1" = "cdroot" ]]; then
         root_path="$(git rev-parse --show-cdup)." || return $?
