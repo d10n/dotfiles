@@ -119,6 +119,9 @@ git config --global stash.showPatch true
 # Automatically stash and unstash before and after a rebase
 git config --global rebase.autoStash true
 
+# Do not try to guess user and email when committing
+git config --global user.useConfigOnly true
+
 # Show ref names in git log
 git config --global log.decorate full
 
