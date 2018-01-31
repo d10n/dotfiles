@@ -12,14 +12,14 @@ git config --global alias.cdroot 'echo You need the shell function for this to w
 git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old-line-format= --new-line-format= <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1)"'"' -"
 
 # Sort branch by date
-# Usage: git bs [-a] [-<line_limit>]
+# Usage: git bd [-a] [-<line_limit>]
 #     -a             include remote branches and tags
 #     -<line_limit>  number of lines to tail
-# Example: git bs
-# Example: git bs -3
-# Example: git bs -a
-# Example: git bs -a -20
-git config --global alias.bs '!f() {
+# Example: git bd
+# Example: git bd -3
+# Example: git bd -a
+# Example: git bd -a -20
+git config --global alias.bd '!f() {
     case "$1" in
         -a) refs="--"; shift;;
         -a*) refs="--"; one="${1/-a/-}"; shift; set -- "$one" "$@";;
