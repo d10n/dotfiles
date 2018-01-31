@@ -89,6 +89,12 @@ git config --global alias.grep-blame '!f() { git grep -n "$@" | while IFS=: read
 # Subject length
 git config --global alias.subject-length '!f() { git log -1 --format="%s" | tr -d "\n" | wc -m; }; f'
 
+# Stash only staged changes
+git config --global alias.stash-staged '!f() { printf "This is a potentially destructive command.\nBe sure you understand it before running it.\nContinue? [y/N]: "; IFS= read -r cont; [ "$cont" != "y" ] && [ "$cont" != "Y" ] && echo "Not continuing." && return 1; staged="$(git diff --staged --unified=0)"; unstaged="$(git diff --unified=0)"; git reset --hard && echo -E "$staged" | git apply --unidiff-zero - && git stash "$@" && echo -E "$unstaged" | git apply --unidiff-zero - || { top="$(git rev-parse --git-dir)"; echo -E "$staged" >"$top/LAST_STAGED.diff"; echo -E "$unstaged" >"$top/LAST_UNSTAGED.diff"; printf "\x1b[0;31mERROR:\x1b[0m Could not stash staged.\nDiffs saved: try git apply --unidiff-zero .git/LAST_STAGED.diff .git/LAST_UNSTAGED.diff\n"; }; }; f'
+
+# Stash only unstaged changes
+git config --global alias.stash-unstaged '!f() { printf "This is a potentially destructive command.\nBe sure you understand it before running it.\nContinue? [y/N]: "; IFS= read -r cont; [ "$cont" != "y" ] && [ "$cont" != "Y" ] && echo "Not continuing." && return 1; staged="$(git diff --staged --unified=0)"; unstaged="$(git diff --unified=0)"; git reset --hard && echo -E "$unstaged" | git apply --unidiff-zero - && git stash "$@" && echo -E "$staged" | git apply --unidiff-zero - || { top="$(git rev-parse --git-dir)"; echo -E "$staged" >"$top/LAST_STAGED.diff"; echo -E "$unstaged" >"$top/LAST_UNSTAGED.diff"; printf "\x1b[0;31mERROR:\x1b[0m Could not stash unstaged.\nDiffs saved: try git apply --unidiff-zero .git/LAST_STAGED.diff .git/LAST_UNSTAGED.diff\n"; }; }; f'
+
 # Set a global gitignore file
 git config --global core.excludesfile ~/.gitignore_global
 
