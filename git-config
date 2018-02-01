@@ -93,7 +93,7 @@ git config --global alias.grep-blame '!perl -e "
             /^([^\\)]*\\))/;
             my \$final = \"\$1 \$file \$text\\n\";
             if (length(\$final) > 500) {
-                \$final =~ s/^((?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){500})(?=(?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){14}).*/\$1...(truncated)/;
+                \$final =~ s/^((?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){500})(?=(?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){14}).*/\$1\\e\\[m...(truncated)/;
             }
             print \$final;
         }
