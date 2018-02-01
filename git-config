@@ -85,22 +85,36 @@ git config --global alias.r "rebase"
 
 # Grep with blame
 git config --global alias.grep-blame '!perl -e "
+    my \$truncate = 500;
     open grep_fh, \"-|\", \"/usr/bin/git\", \"grep\", \"-n\", \"--color\", @ARGV;
+    my \$last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
-        my (\$file, \$line, \$text) = /^(.*?)(?:\\e\\[[^m]*m):(?:\\e\\[[^m]*m)(.*?)(?:\\e\\[[^m]*m):(?:\\e\\[[^m]*m)(.*)/;
-        open blame_fh, \"-|\", \"/usr/bin/git\", \"--no-pager\", \"blame\", \"-L\", \"\$line,\$line\", \$file;
+        if (/^Binary file .* matches\$/) { print; next; }
+        my (\$file, \$line, \$text) = /^(.*?)(?:\\e\\[[^m]*m):(?:\\e\\[[^m]*m)(.*?)(?:\\e\\[[^m]*m):(?:\\e\\[[^m]*m)(.*)$/;
+        if (\$file eq \"\") { print; next; }
+        if (defined(\$last_file) && \$file ne \$last_file) {
+            do_blame() if (@lines);
+            @lines = (); @texts = ();
+        }
+        \$last_file = \$file; push @lines, \$line; push @texts, \$text;
+    }
+    do_blame() if (@lines);
+    close grep_fh;
+    exit \$? >> 8;
+    sub do_blame {
+        open blame_fh, \"-|\", \"git\", \"--no-pager\", \"blame\", (map {\"-L\$_,\$_\"} @lines), \"--\", \$last_file;
         while (<blame_fh>) {
             /^([^\\)]*\\))/;
-            my \$final = \"\$1 \$file \$text\\n\";
-            if (length(\$final) > 500) {
-                \$final =~ s/^((?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){500})(?=(?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){14}).*/\$1\\e\\[m...(truncated)/;
+            shift @lines;
+            my \$text = shift @texts;
+            my \$out = \"\$1 \$last_file \$text\\n\";
+            if (length(\$out) > \$truncate) {
+                \$out =~ s/^((?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){\$truncate})(?=(?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){14}).*/\$1\\e\\[m...(truncated)/;
             }
-            print \$final;
+            print \$out;
         }
         close blame_fh;
     }
-    close grep_fh;
-    exit \$? >> 8;
 " -- '
 
 # Subject length
