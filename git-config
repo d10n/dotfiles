@@ -84,38 +84,41 @@ git config --global alias.m "merge"
 git config --global alias.r "rebase"
 
 # Grep with blame
-git config --global alias.grep-blame '!perl -e "
-    my \$truncate = 500;
-    open grep_fh, \"-|\", \"/usr/bin/git\", \"grep\", \"-n\", \"--color\", @ARGV;
-    my \$last_file; my @lines = (); my @texts = ();
+git config --global alias.grep-blame "$(cat <<'EOF'
+!perl -e '
+    my $truncate = 500;
+    open grep_fh, "-|", "/usr/bin/git", "grep", "-n", "--color", @ARGV;
+    my $last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
-        if (/^Binary file .* matches\$/) { print; next; }
-        my (\$file, \$line, \$text) = /^(.*?)(?:\\e\\[[^m]*m):(?:\\e\\[[^m]*m)(.*?)(?:\\e\\[[^m]*m):(?:\\e\\[[^m]*m)(.*)$/;
-        if (\$file eq \"\") { print; next; }
-        if (defined(\$last_file) && \$file ne \$last_file) {
+        if (/^Binary file .* matches$/) { print; next; }
+        my ($file, $line, $text) = /^(.*?)(?:\e\[[^m]*m):(?:\e\[[^m]*m)(.*?)(?:\e\[[^m]*m):(?:\e\[[^m]*m)(.*)$/;
+        if ($file eq "") { print; next; }
+        if (defined($last_file) && $file ne $last_file) {
             do_blame() if (@lines);
             @lines = (); @texts = ();
         }
-        \$last_file = \$file; push @lines, \$line; push @texts, \$text;
+        $last_file = $file; push @lines, $line; push @texts, $text;
     }
     do_blame() if (@lines);
     close grep_fh;
-    exit \$? >> 8;
+    exit $? >> 8;
     sub do_blame {
-        open blame_fh, \"-|\", \"git\", \"--no-pager\", \"blame\", (map {\"-L\$_,\$_\"} @lines), \"--\", \$last_file;
+        open blame_fh, "-|", "git", "--no-pager", "blame", (map {"-L$_,$_"} @lines), "--", $last_file;
         while (<blame_fh>) {
-            /^([^\\)]*\\))/;
+            /^([^\)]*\))/;
             shift @lines;
-            my \$text = shift @texts;
-            my \$out = \"\$1 \$last_file \$text\\n\";
-            if (length(\$out) > \$truncate) {
-                \$out =~ s/^((?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){\$truncate})(?=(?:\\e\\[[^m]*m(?:.|\$)|.|\$(*SKIP)(*FAIL)){14}).*/\$1\\e\\[m...(truncated)/;
+            my $text = shift @texts;
+            my $out = "$1 $last_file $text\n";
+            if (length($out) > $truncate) {
+                $out =~ s/^((?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){$truncate})(?=(?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){14}).*/$1\e\[m...(truncated)/;
             }
-            print \$out;
+            print $out;
         }
         close blame_fh;
     }
-" -- '
+' --
+EOF
+)"
 
 # Subject length
 git config --global alias.subject-length '!f() { git log -1 --format="%s" | tr -d "\n" | wc -m; }; f'
