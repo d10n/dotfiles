@@ -74,6 +74,7 @@ mvcd() {
 
 cd() {
     [[ -z "$@" ]] && set_iterm_tab_rgb
+    { [[ "$1" = ":/" ]] && top="$(git rev-parse --show-cdup)." && builtin cd "$top"; } || \
     { [[ -f "$1" ]] && builtin cd "$(dirname "$1")"; } || \
     builtin cd "$@"
 }
