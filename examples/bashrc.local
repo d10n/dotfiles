@@ -101,6 +101,9 @@ git() {
     if [[ "$1" = "checkout" ]] && [[ "$2" = "-i"* ]]; then
         git-checkout-i "$@"; return
     fi
+    if [[ "$1" = "browse" ]]; then
+        git-browse "$@"; return
+    fi
     if [[ "$1" = "commit" ]] && [[ "$2" = "-a"* ]]; then
         if ! git diff-index --cached --quiet HEAD -- && \
             ! git diff-files --quiet; then
@@ -116,6 +119,23 @@ git() {
         command git log -1 --format="%s" | tr -d '\n' | wc -m | awk '{print $1}'
     fi
     return "$code"
+}
+
+git-browse() {
+    # Press enter to view a commit's diff, q to exit the diff pager, and esc to exit fzf
+    if ! command -v fzf &>/dev/null; then
+        printf >&2 "\e[0;31mCan't git browse without installation of fzf\e[0m\n\n"
+        command git "$@"
+        return
+    fi
+    shift
+    command git log --graph --color=always \
+        --format='%C(auto)%h %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset)%C(auto)%d %s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)' "$@" |
+        fzf --ansi --no-sort --reverse --tiebreak=index \
+        --bind 'enter:execute: echo {} |
+            sed "s#^[* /|\]*\([a-f0-9]*\).*#\1#" | head -1 |
+            xargs -I % sh -c "git show --color=always % | less -R"'
+    return 0
 }
 
 git-checkout-i() {
