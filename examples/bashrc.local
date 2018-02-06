@@ -221,8 +221,7 @@ pws() {
 # Inspired by http://zork.net/~st/jottings/Per-Host_Prompt_Colouring.html
 # rgb2short function derived from https://gist.github.com/MicahElliott/719710
 HOSTHASH=$(hostname | if command -v md5sum &>/dev/null; then md5sum; else md5; fi)
-COLORCOUNT=$(tput colors)
-HOSTCOLORNUMBER=$(hosthash=${HOSTHASH:0:6} color_count=$COLORCOUNT python -c '
+{ IFS= read -r HOSTCOLORNUMBER; IFS= read -r HOSTTEXTNUMBER; } <<<"$(hosthash=${HOSTHASH:0:6} color_count=$(tput colors) python -c '
 import os
 import colorsys
 def linear_map(n, min, max, tmin, tmax):
@@ -237,37 +236,21 @@ cubelevels = [0x00, 0x5f, 0x87, 0xaf, 0xd7, 0xff]
 snaps = [(x+y)/2 for x, y in list(zip(cubelevels, [0]+cubelevels))[1:]]
 def rgb2short256(r, g, b):
     r, g, b = map(lambda x: len(tuple(s for s in snaps if s<x)), (r, g, b))
-    return r*36 + g*6 + b + 16
+    print(r*36 + g*6 + b + 16)
+    print(15 if l < 0x6c / 0xff or ( 0x95 / 0xff < h < 0xc0 / 0xff and l < 0xa6 / 0xff ) else 0)
 hues = [1, 3, 2, 6, 4, 5, 1]
 def hl2short(h, l, color_count):
     h = hues[int(round(linear_map(h, 0, 1, 0, 6)))]
-    return h + 8 if l > .6 and color_count == 16 else h
+    color = h + 8 if l > .6 and color_count == 16 else h
+    print(color)
+    print(7 if color == 4 and color_count == 8 else 15 if color == 4 else 0)
 color_count = int(os.environ["color_count"])
-if color_count >= 256:
-    print(rgb2short256(*rgb))
-else:
-    print(hl2short(h, l, color_count))
-')
-HOSTBGCOLOR=$(tput setab $HOSTCOLORNUMBER)
-HOSTFGCOLOR=$(tput setaf $HOSTCOLORNUMBER)
-if (( COLORCOUNT == 256 && 0x${HOSTHASH:4:2} < 0x5f )) ||
-   # special case for blue because it's dark   HUE                         HUE                         LIGHTNESS
-   (( COLORCOUNT == 256 && 0x${HOSTHASH:0:2} > 0x95 && 0x${HOSTHASH:0:2} < 0xc0 && 0x${HOSTHASH:4:2} < 0xc0 )) ||
-   (( COLORCOUNT == 16 && HOSTCOLORNUMBER == 4 )) ||
-   (( COLORCOUNT == 8 && HOSTCOLORNUMBER == 4 )); then
-    # dark host color, light text color
-    if (( COLORCOUNT == 8 )); then
-        HOSTFGTEXT=$(tput setaf 7)
-        HOSTBGTEXT=$(tput setab 7)
-    else
-        HOSTFGTEXT=$(tput setaf 15)
-        HOSTBGTEXT=$(tput setab 15)
-    fi
-else
-    # light host color, dark text color
-    HOSTFGTEXT=$(tput setaf 0)
-    HOSTBGTEXT=$(tput setab 0)
-fi
+rgb2short256(*rgb) if color_count >= 256 else hl2short(h, l, color_count)
+')"
+HOSTBGCOLOR=$(tput setab "$HOSTCOLORNUMBER")
+HOSTFGCOLOR=$(tput setaf "$HOSTCOLORNUMBER")
+HOSTBGTEXT=$(tput setab "$HOSTTEXTNUMBER")
+HOSTFGTEXT=$(tput setaf "$HOSTTEXTNUMBER")
 
 if [[ $EUID == '0' ]]; then
     # running as root or with privileges
