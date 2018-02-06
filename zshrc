@@ -151,6 +151,12 @@ git() {
         fi
     fi
     command git "$@"
+    code="$?"
+    if [[ "$1" = "commit" ]] && (( ! code )); then
+        printf 'Commit subject length: '
+        command git log -1 --format="%s" | tr -d '\n' | wc -m | awk '{print $1}'
+    fi
+    return "$code"
 }
 
 set_iterm_tab_rgb() {
