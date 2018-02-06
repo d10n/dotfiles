@@ -98,6 +98,9 @@ git() {
         root_path="$(git rev-parse --show-cdup)." || return $?
         builtin cd "$root_path"; return $?
     fi
+    if [[ "$1" = "checkout" ]] && [[ "$2" = "-i"* ]]; then
+        git-checkout-i "$@"; return
+    fi
     if [[ "$1" = "commit" ]] && [[ "$2" = "-a"* ]]; then
         if ! git diff-index --cached --quiet HEAD -- && \
             ! git diff-files --quiet; then
@@ -113,6 +116,46 @@ git() {
         command git log -1 --format="%s" | tr -d '\n' | wc -m | awk '{print $1}'
     fi
     return "$code"
+}
+
+git-checkout-i() {
+    if ! command -v fzf &>/dev/null; then
+        printf >&2 "\e[0;31mCan't git checkout -i without installation of fzf\e[0m\n\n"
+        command git "$@"
+        return
+    fi
+
+    shift
+    one="${1/#-i/-}"; shift; [[ "$one" != "-" ]] && set -- "$one" "$@"
+    case "$1" in
+        -h | --help)
+            printf >&2 'Usage:\n  git checkout -i [-a] [TAIL_ARGS...]\n  git checkout -i -h\n\n'
+            printf >&2 'Press enter to select a branch to check out.\nThe selected branch to check out will be added to history.\n\n'
+            printf >&2 'Arguments:\n  -i: Interactive checkout\n  -a: Include non-local refs\n  TAIL_ARGS: Arguments passed to tail to limit checkout choices\n  -h: This message\n\n'
+            printf >&2 'Examples:\n  git checkout -i\n  git checkout -ia\n  git checkout -i -a -10\n  git checkout -ia10\n'
+            return;;
+        -a) refs="--"; shift;;
+        -a*) refs="--"; one="${1/#-a/-}"; shift; set -- "$one" "$@";;
+        *) refs="refs/heads/"; one="${1/#-i/-}"; [[ "$#" -gt 0 ]] && shift && [[ "$one" != "-" ]] && set -- "$one" "$@";;
+    esac
+    # old git for-each-ref does not accept --color flag, new git for-each-ref only accepts --color flag
+    command git for-each-ref --color --count=1 &>/dev/null && cmd=( git for-each-ref --color ) || cmd=( git -c color.ui=always for-each-ref )
+    format="--format=%(refname) %00%(committerdate:format:%s)%(taggerdate:format:%s)%(color:red)%(committerdate:relative)%(taggerdate:relative)%(color:reset)%09%00%(color:yellow)%(refname:short)%(color:reset) %00%(subject)%00 %(color:reset)%(color:dim cyan)<%(color:reset)%(color:cyan)%(authorname)%(taggername)%(color:reset)%(color:dim cyan)>%(color:reset)"
+    branches="$(command "${cmd[@]}" "$format" "$refs" |
+        perl -ne 'next if /^refs\/stash /; s/^refs\/tags\/[^\x00]*\x00([^\x00]*)\x00([^\x00]*)/\1(tag) \2/ || s/^[^\x00]*\x00([^\x00]*)\x00/$1/; s/\x00([^\x00]{0,50})([^\x00]*)\x00/$1\x1b[1;30m$2\x1b[0m/; print' |
+        sort -k1,1 | cut -c11- | tail "${@:-+0}")" &&
+        line_count=$(( $(wc -l <<< "$branches") )) &&
+        term_height=$(tput lines) &&
+        fzf_height=$(( line_count + 2 < term_height / 2 ? line_count + 2 : term_height / 2 )) &&
+        branch=$(echo "$branches" |
+        fzf-tmux -d "$fzf_height" -- --no-multi --reverse --tac --ansi --no-sort --height="$fzf_height") &&
+        branch="$(echo "$branch" | REMOTES="$(git remote)" perl -pe 's/\x1b\[[0-9;]*m//g; s/^([^\t]*\t)\(tag\) (.*)$/$1refs\/tags\/$2/; s/^[^\t]*\t([^ ]*).*$/$1/; my @remotes = split /\n/, $ENV{REMOTES}; foreach my $remote (@remotes) { s/^$remote\///; }')" &&
+        checkout_command="$(printf 'git checkout %q\n' "$branch")" &&
+        echo "$checkout_command" &&
+        { { builtin history -a && builtin history -s "git checkout -i" && builtin history -s "$checkout_command" && builtin history -a; } &>/dev/null ||
+            builtin print -S "$checkout_command" &>/dev/null ||
+            echo "Could not save git checkout command to history"; } &&
+        command git checkout "$branch"
 }
 
 set_iterm_tab_rgb() {
