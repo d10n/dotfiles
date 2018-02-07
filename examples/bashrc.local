@@ -104,6 +104,11 @@ git() {
     if [[ "$1" = "browse" ]]; then
         git-browse "$@"; return
     fi
+    if [[ "$1" = "stash" ]] && [[ "$2" = "list" ]]; then
+        shift;shift;
+        command git stash list --format='%C(auto)%h %gd %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset) %C(auto)%<(70,trunc)%s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)' "$@"
+        return
+    fi
     if [[ "$1" = "commit" ]] && [[ "$2" = "-a"* ]]; then
         if ! git diff-index --cached --quiet HEAD -- && \
             ! git diff-files --quiet; then
