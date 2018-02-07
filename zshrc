@@ -118,7 +118,7 @@ mvcd() {
 }
 
 cd() {
-    [[ -z "$@" ]] && set_iterm_tab_rgb
+    [[ "$#" -eq 0 ]] && set_iterm_tab_rgb
     { [[ "$1" = ":/" ]] && top="$(git rev-parse --show-cdup)." && builtin cd "$top"; } || \
     { [[ -f "$1" ]] && builtin cd "$(dirname "$1")"; } || \
     builtin cd "$@"
@@ -245,7 +245,7 @@ git-checkout-i() {
 set_iterm_tab_rgb() {
     [[ "$TERM_PROGRAM" != "iTerm.app" ]] && return
     [[ -n "${NO_ITERM_TAB_COLOR+set}" ]] && return
-    if [[ -z "$@" ]]; then
+    if [[ "$#" -eq 0 ]]; then
         echo -ne "\e]6;1;bg;*;default\a"  # reset
     else
         echo -ne "\e]6;1;bg;red;brightness;${1}\a\e]6;1;bg;green;brightness;${2}\a\e]6;1;bg;blue;brightness;${3}\a"
@@ -361,7 +361,7 @@ setup_highlighting() {
         /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
         /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
     )
-    for file in $files; do
+    for file in "${files[@]}"; do
         [[ -r "$file" ]] && . "$file" && return
     done
 }
@@ -375,7 +375,7 @@ print_long_command_duration_preexec() {
     _date_start=${(%):-%D{%s}}
 }
 [[ -z "$preexec_functions" ]] && preexec_functions=()
-preexec_functions+=print_long_command_duration_preexec
+preexec_functions+=(print_long_command_duration_preexec)
 
 print_prompt_duration_zle_accept_line() {
     # if the command was empty (just pressed enter) and if ZSH_PROMPT_PRINT_DURATION is set
@@ -386,7 +386,7 @@ print_prompt_duration_zle_accept_line() {
 
 zle_accept_line_hooks=(
     print_prompt_duration_zle_accept_line
-    '[[ "$BUFFER" != "" ]] && hash -r')
+    $'[[ "$BUFFER" != "" ]] && hash -r')
 
 zle_accept_line_function() {
     for command_hook in "${zle_accept_line_hooks[@]}"; do
@@ -401,7 +401,7 @@ pretty_print_date_difference() {
     local date_start="$2"
     local date_start_iso
     local date_end_iso
-    (( $date_end - $date_start < 5 )) && return
+    (( date_end - date_start < 5 )) && return
     if ( date --version 2>&1; true; ) | grep -q -e GNU -e BusyBox; then
         date_start_iso="$(date -u -d @"$date_start" +%FT%TZ)"
         date_end_iso="$(date -u -d @"$date_end" +%FT%TZ)"
@@ -420,8 +420,8 @@ s = m[1]  # seconds
 if d[0] > 0:
     sys.stdout.write("{}d ".format(d[0]))
 sys.stdout.write("{:0>2}:{:0>2}:{:0>2}".format(h[0], m[0], s))
-' $date_end $date_start)
-    echo "Wall time: $wall_time\tStart: $date_start_iso\tStop: $date_end_iso"
+' "$date_end" "$date_start")
+    echo -e "Wall time: $wall_time\tStart: $date_start_iso\tStop: $date_end_iso"
 }
 
 
@@ -492,13 +492,13 @@ print_prompt_duration_precmd() {
     _prompt_last_date_start="$_prompt_date_start"
     _prompt_date_end=${(%):-%D{%s%.}}
     _prompt_duration="$(( _prompt_date_end - _prompt_date_start ))"
-    echo "Wall time: $_prompt_duration\tStart: $_prompt_date_start\tStop: $_prompt_date_end"
+    echo -e "Wall time: $_prompt_duration\tStart: $_prompt_date_start\tStop: $_prompt_date_end"
 }
 
 set_terminal_title_short_path() {
     echo -en "\e]0;$(pws)\a"
-    #print -Pn "\e]0;%C\a"
-    #print -Pn "\e]0;%~\a"
+    #print -Pn '\e]0;%C\a'
+    #print -Pn '\e]0;%~\a'
 }
 [[ -z "$precmd_functions" ]] && precmd_functions=()
 precmd_functions+=(
@@ -533,9 +533,9 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
         hook_com[branch]="[detached from ${detached_from}]"
     elif [[ -n ${remote} ]] ; then
         ahead=$(git rev-list "${hook_com[branch]}@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
-        (( $ahead )) && gitstatus+=( "+${ahead}" )
+        (( ahead )) && gitstatus+=( "+${ahead}" )
         behind=$(git rev-list "HEAD..${hook_com[branch]}@{upstream}" 2>/dev/null | wc -l | tr -d ' ')
-        (( $behind )) && gitstatus+=( "-${behind}" )
+        (( behind )) && gitstatus+=( "-${behind}" )
         hook_com[branch]="${hook_com[branch]} [${remote}${gitstatus:+ ${(j:/:)gitstatus}}]"
     fi
 }
@@ -585,7 +585,7 @@ setup_history_search() {
         /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
         /usr/local/opt/zsh-history-substring-search/zsh-history-substring-search.zsh
     )
-    for file in $files; do
+    for file in "${files[@]}"; do
         if [[ -r "$file" ]]; then
             . "$file"
             [[ -n "${key[Up]}"   ]]  && bindkey  "${key[Up]}"    history-substring-search-up
@@ -614,7 +614,7 @@ fi
 [[ -f ~/.zshrc.local ]] && . ~/.zshrc.local
 
 print_zsh_startup_time() {
-    echo "startup begin  \t$__ZSH_STARTUP_LOCAL_START_DATE\nstartup finish \t$__ZSH_STARTUP_LOCAL_FINISH_DATE"
+    echo -e "startup begin  \t$__ZSH_STARTUP_LOCAL_START_DATE\nstartup finish \t$__ZSH_STARTUP_LOCAL_FINISH_DATE"
 }
 [[ -z "$precmd_functions" ]] && precmd_functions=()
 startup_timer_precmd() {
@@ -626,4 +626,4 @@ startup_timer_precmd() {
 #        print_zsh_startup_time
     fi
 }
-precmd_functions+=startup_timer_precmd
+precmd_functions+=(startup_timer_precmd)
