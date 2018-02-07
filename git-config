@@ -84,7 +84,7 @@ git config --global alias.m "merge"
 git config --global alias.r "rebase"
 
 # Grep with blame
-git config --global alias.grep-blame "$(cat <<'EOF'
+git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//'
 !perl -e '
     my $truncate = 500;
     open grep_fh, "-|", "/usr/bin/git", "grep", "-n", "--color", @ARGV;
