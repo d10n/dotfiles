@@ -433,7 +433,7 @@ sys.stdout.write("{:0>2}:{:0>2}:{:0>2}".format(h[0], m[0], s))
 # Choose a unique color based on the hostname
 # Inspired by http://zork.net/~st/jottings/Per-Host_Prompt_Colouring.html
 # rgb2short function derived from https://gist.github.com/MicahElliott/719710
-HOSTHASH=$(hostname | if command -v md5sum &>/dev/null; then md5sum; else md5; fi)
+HOSTHASH=$(uname -n | if command -v md5sum &>/dev/null; then md5sum; else md5; fi)
 { IFS= read -r HOSTCOLORNUMBER; IFS= read -r HOSTTEXTNUMBER; } <<<"$(hosthash=${HOSTHASH:0:6} color_count=$(tput colors) python -c '
 import os
 import colorsys
