@@ -7,6 +7,7 @@ set -x
 
 # Add a no-op alias just for tab completion
 git config --global alias.cdroot '!echo You need the shell function for this to work'
+git config --global alias.browse '!echo You need the shell function for this to work'
 
 # Find the branching point http://stackoverflow.com/a/4991675
 git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old-line-format= --new-line-format= <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1)"'"' -"
