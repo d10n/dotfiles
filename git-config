@@ -6,7 +6,6 @@ set -x
 #git config --global core.editor $(command -v vim)
 
 # Add a no-op alias just for tab completion
-git config --global alias.cdroot '!echo You need the shell function for this to work'
 git config --global alias.browse '!echo You need the shell function for this to work'
 
 # Find the branching point http://stackoverflow.com/a/4991675

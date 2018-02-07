@@ -138,10 +138,6 @@ which() {
 }
 
 git() {
-    if [[ "$1" = "cdroot" ]]; then
-        root_path="$(git rev-parse --show-cdup)." || return $?
-        builtin cd "$root_path"; return $?
-    fi
     if [[ "$1" = "checkout" ]] && [[ "$2" = "-i"* ]]; then
         git-checkout-i "$@"; return
     fi
