@@ -167,6 +167,7 @@ cmdfu() {
 }
 
 adb-paste() {
+    local TEXT ESCAPED_TEXT
     if [[ "$1" != "" ]]; then
         TEXT=$1
     else
@@ -179,6 +180,7 @@ adb-paste() {
 }
 
 adb-escape() {
+    local i C
     # https://android.stackexchange.com/a/176590
     # Encapsulate the string in $'', which enables interpretation of
     # \xnn escapes in the string. This is not POSIX-sh, but an extension
@@ -206,6 +208,7 @@ adb-escape() {
 
 if [[ "$OSTYPE" == "linux-gnu" ]]; then
     vfiobind() {
+        local dev
         for dev in "$@"; do
             if [ -e /sys/bus/pci/devices/$dev/driver ]; then
                 echo vfio-pci > /sys/bus/pci/devices/$dev/driver_override
@@ -216,6 +219,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     }
 
     vfiounbind() {
+        local dev
         for dev in "$@"; do
             if [ -e /sys/bus/pci/devices/$dev/driver ]; then
                 echo > /sys/bus/pci/devices/$dev/driver_override
@@ -226,6 +230,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
     }
 
     lsiommu() {
+        local iommu_group device
         for iommu_group in $(find /sys/kernel/iommu_groups/ -maxdepth 1 -mindepth 1 -type d); do
             echo "IOMMU group $(basename "$iommu_group")"
             for device in $(ls -1 "$iommu_group"/devices/); do
@@ -236,6 +241,7 @@ if [[ "$OSTYPE" == "linux-gnu" ]]; then
 fi
 
 npm-installed-publish-dates() {
+    local line name version
     npm ls --depth=0 --json |
     jq -r '.dependencies | to_entries | map("\(.key) \(.value.version)") | .[]' |
     while read line; do
@@ -249,6 +255,7 @@ npm-installed-publish-dates() {
 }
 
 ansicolors() {
+    local T FGs FG BG
     # http://tldp.org/HOWTO/Bash-Prompt-HOWTO/x329.html
     #
     #   This file echoes a bunch of color codes to the
@@ -287,6 +294,7 @@ ansicolors() {
 #}
 
 #sshjenkins() {
+#    local default_user user host auto ip org ssh_command password
 #    default_user=your.username
 #    if [[ "$1" = "-h" || -z "$1" ]]; then
 #        echo "usage: sshjenkins [user@]machine-build"

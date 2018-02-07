@@ -118,6 +118,7 @@ mvcd() {
 }
 
 cd() {
+    local top
     [[ "$#" -eq 0 ]] && set_iterm_tab_rgb
     { [[ "$1" = ":/" ]] && top="$(git rev-parse --show-cdup)." && builtin cd "$top"; } || \
     { [[ -f "$1" ]] && builtin cd "$(dirname "$1")"; } || \
@@ -125,6 +126,7 @@ cd() {
 }
 
 which() {
+    local which_out which_exit
     which_out="$(builtin which "$@")"
     which_exit="$?"
     echo -E "$which_out" | while IFS=$'\n' read -r line; do
@@ -138,6 +140,7 @@ which() {
 }
 
 git() {
+    local code
     if [[ "$1" = "checkout" ]] && [[ "$2" = "-i"* ]]; then
         git-checkout-i "$@"; return
     fi
@@ -203,6 +206,7 @@ git-stash-list-i() {
 }
 
 git-checkout-i() {
+    local one refs cmd format branches line_count term_height fzf_height branch checkout_command
     if ! command -v fzf &>/dev/null; then
         printf >&2 "\e[0;31mCan't git checkout -i without installation of fzf\e[0m\n\n"
         command git "$@"
@@ -356,6 +360,7 @@ pws() {
 
 
 setup_highlighting() {
+    local files file
     files=(
         "$DOTFILES_DIR/zsh-libs/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
         /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
@@ -580,6 +585,7 @@ key[Enter]=${terminfo[kent]}  # fix OS X numpad enter
 [[ -n "${key[Enter]}"    ]]  && bindkey  "${key[Enter]}"    accept-line
 
 setup_history_search() {
+    local files file
     files=(
         "$DOTFILES_DIR/zsh-libs/zsh-history-substring-search/zsh-history-substring-search.zsh"
         /usr/share/zsh/plugins/zsh-history-substring-search/zsh-history-substring-search.zsh
