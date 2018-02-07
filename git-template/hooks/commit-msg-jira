@@ -83,5 +83,5 @@ if ! printf %s "$message" | has_jira ; then
 
     # Save
     printf %s "$message" > "$1"
-    printf >&2 'JIRA %s ticket number added from git branch name.' "$jira_prefix"
+    printf >&2 'JIRA %s ticket number added from git branch name.\n' "$jira_prefix"
 fi
