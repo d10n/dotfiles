@@ -147,8 +147,8 @@ git() {
     if [[ "$1" = "browse" ]]; then
         git-browse "$@"; return
     fi
-    if [[ "$1" = "stash" ]] && [[ "$2" = "list" ]] && [[ "$3" = "-i" ]]; then
-        git-stash-list-i "$@"; return
+    if [[ "$1" = "stash" ]] && [[ "$2" = "browse" ]]; then
+        git-stash-browse "$@"; return
     fi
     if [[ "$1" = "stash" ]] && [[ "$2" = "list" ]]; then
         shift;shift;
@@ -189,10 +189,10 @@ git-browse() {
     return 0
 }
 
-git-stash-list-i() {
+git-stash-browse() {
     # Press enter to view a stash's diff, q to exit the diff pager, and esc to exit fzf
     if ! command -v fzf &>/dev/null; then
-        printf >&2 "\e[0;31mCan't git stash list -i without installation of fzf\e[0m\n\n"
+        printf >&2 "\e[0;31mCan't git stash browse without installation of fzf\e[0m\n\n"
         command git "$@"
         return
     fi
