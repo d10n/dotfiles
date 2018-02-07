@@ -5,9 +5,6 @@ set -x
 # NeoBundle makes vim bork out when run as vi (which is git default)
 #git config --global core.editor $(command -v vim)
 
-# Add a no-op alias just for tab completion
-git config --global alias.browse '!echo You need the shell function for this to work'
-
 # Find the branching point http://stackoverflow.com/a/4991675
 git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old-line-format= --new-line-format= <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1)"'"' -"
 
@@ -128,6 +125,29 @@ git config --global alias.stash-staged '!f() { staged="$(git diff --staged --uni
 
 # Stash only unstaged changes
 git config --global alias.stash-unstaged '!f() { staged="$(git diff --staged --unified=0)"; unstaged="$(git diff --unified=0)"; [ "$staged" = "" ] && { git stash "$@"; return "$?"; }; [ "$unstaged" = "" ] && return; printf "This is a potentially destructive command.\nBe sure you understand it before running it.\nContinue? [y/N]: "; IFS= read -r cont; echo "$cont" | grep -iq "^y" || { echo "Not continuing."; return 1; }; git reset --hard && echo -E "$unstaged" | git apply --unidiff-zero - && git stash "$@" && echo -E "$staged" | git apply --unidiff-zero - || { top="$(git rev-parse --git-dir)"; echo -E "$staged" >"$top/LAST_STAGED.diff"; echo -E "$unstaged" >"$top/LAST_UNSTAGED.diff"; printf "\x1b[0;31mERROR:\x1b[0m Could not stash unstaged.\nDiffs saved: try git apply --unidiff-zero .git/LAST_STAGED.diff .git/LAST_UNSTAGED.diff\n"; }; }; f'
+
+# Press enter to view a stash's diff, q to exit the diff pager, and esc to exit fzf
+git config --global alias.stash-browse '!f() {
+    command -v fzf &>/dev/null || { printf >&2 "\e[0;31mgit stash-browse requires fzf to be installed\e[0m\n"; return 1; }
+    git stash list --color=always \
+        --format="%C(auto)%h %gd %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset) %C(auto)%<(70,trunc)%s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)" |
+        fzf --ansi --no-sort --reverse --tiebreak=index \
+        --bind "enter:execute: echo {} | sed \"s#\([a-f0-9]*\).*#\1#\" | head -1 |
+        xargs -I % sh -c \"git show --color=always % | less -R\""
+    return 0
+}; f'
+
+# Press enter to view a commit's diff, q to exit the diff pager, and esc to exit fzf
+git config --global alias.browse '!f() {
+    command -v fzf &>/dev/null || { printf >&2 "\e[0;31mgit browse requires fzf to be installed\e[0m\n"; return 1; }
+    git log --graph --color=always \
+        --format="%C(auto)%h %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset)%C(auto)%d %s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)" "$@" |
+        fzf --ansi --no-sort --reverse --tiebreak=index \
+        --bind "enter:execute: echo {} |
+            sed \"s#^[* /|\-]*\([a-f0-9]*\).*#\1#\" | head -1 |
+            xargs -I % sh -c \"git show --color=always % | less -R\""
+    return 0
+}; f'
 
 # Set a global gitignore file
 git config --global core.excludesfile ~/.gitignore_global
