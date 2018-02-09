@@ -84,7 +84,7 @@ git config --global alias.r "rebase"
 git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//'
 !perl -e '
     my $truncate = 500;
-    open grep_fh, "-|", "/usr/bin/git", "grep", "-n", "--color", @ARGV;
+    open grep_fh, "-|", "git", "grep", "-n", "--color", @ARGV;
     my $last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
         if (/^Binary file .* matches$/) { print; next; }
