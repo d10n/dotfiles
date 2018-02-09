@@ -281,7 +281,7 @@ ansicolors() {
 }
 
 #codegrep() {
-#    find ~/code/* -maxdepth 1 -type d -name .git \
+#    find ~/code -maxdepth 2 -mindepth 2 -type d -name .git \
 #        -execdir sh -o pipefail -c 'git grep --color "$@" | perl -pe "s/^([^:]*?)(?:\e\[[^:]*m)?:.{500,}/\1 matches/" | dir="$(basename "$PWD")" awk "NR==1{print ENVIRON[\"dir\"]}1" && echo' - "$@" \;
 #}
 
