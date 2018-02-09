@@ -133,7 +133,7 @@ git config --global alias.stash-browse '!f() {
         --format="%C(auto)%h %gd %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset) %C(auto)%<(70,trunc)%s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)" |
         fzf --ansi --no-sort --reverse --tiebreak=index \
         --bind "enter:execute: echo {} | sed \"s#\([a-f0-9]*\).*#\1#\" | head -1 |
-        xargs -I % sh -c \"git show --color=always % | less -R\""
+        xargs -I % sh -c \"git show --patch --stat --color=always % | less -R\""
     return 0
 }; f'
 
@@ -145,7 +145,7 @@ git config --global alias.browse '!f() {
         fzf --ansi --no-sort --reverse --tiebreak=index \
         --bind "enter:execute: echo {} |
             sed \"s#^[* /|\-]*\([a-f0-9]*\).*#\1#\" | head -1 |
-            xargs -I % sh -c \"git show --color=always % | less -R\""
+            xargs -I % sh -c \"git show --patch --stat --color=always % | less -R\""
     return 0
 }; f'
 
