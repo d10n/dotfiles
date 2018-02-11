@@ -103,6 +103,15 @@ autoload -Uz compinit && compinit -i > /dev/null
 
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
 [[ -d "$DOTFILES_DIR/zsh-libs/faster-vcs-info" ]] && fpath=("$DOTFILES_DIR/zsh-libs/faster-vcs-info" $fpath)
+if [[ "$OSTYPE" == "darwin"* ]] && (( ${(@)fpath[(I)/usr/local/share/zsh/site-functions]} )); then
+    # On mac with zsh and git installed from homebrew:
+    # git's git completion installs to /usr/local/share/zsh/site-functions_git
+    # zsh's git completion installs to /usr/local/share/zsh/functions/_git
+    # git's git completion is bugged and can't handle completing long multiline aliases
+    # Work around it by prioritizing zsh's built-in completions
+    fpath=("${(@)fpath:#/usr/local/share/zsh/site-functions}" /usr/local/share/zsh/site-functions)
+fi
+
 
 # By default, the zsh help command does not show help for builtins
 autoload -Uz run-help
