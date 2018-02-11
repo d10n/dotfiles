@@ -426,7 +426,7 @@ def hl2short(h, l, color_count):
     h = hues[int(round(linear_map(h, 0, 1, 0, 6)))]
     color = h + 8 if l > .6 and color_count == 16 else h
     print(color)
-    print(7 if color == 4 and color_count == 8 else 15 if color == 4 else 0)
+    print((color == 4) * (((color_count != 8) * 8) + 7))
 color_count = int(os.environ["color_count"])
 rgb2short256(*rgb) if color_count >= 256 else hl2short(h, l, color_count)
 ')"
