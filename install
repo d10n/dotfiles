@@ -165,9 +165,13 @@ def symlink_dotfiles(default, local, unknown):
 
 
 def execute_executables(default, local, unknown):
-    # configured = default['execute'].union(local['execute'])
-    configured = set(default['execute'].keys()).union(set(local['execute'].keys()))
+    local = execute_configured_executables(default, local)
+    local = execute_unknown_executables(local, unknown)
+    return local
 
+
+def execute_configured_executables(default, local):
+    configured = set(default['execute'].keys()).union(set(local['execute'].keys()))
     for executable in sorted(configured):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
@@ -188,6 +192,10 @@ def execute_executables(default, local, unknown):
             continue
         print('Execute ' + executable)
         subprocess.Popen([executable], cwd=dotfile_directory).wait()
+    return local
+
+
+def execute_unknown_executables(local, unknown):
     for executable in sorted(set(unknown['execute'].keys())):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
