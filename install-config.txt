@@ -8,6 +8,7 @@ bashrc.local
 gitignore_global
 inputrc
 irbrc
+lesskey
 nvim = ~/.config/nvim
 profile
 tmux.conf
@@ -23,6 +24,7 @@ zshrc.local
 
 get-zsh-tools
 git-config
+run-lesskey
 
 [ignore]
 
