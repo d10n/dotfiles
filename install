@@ -6,6 +6,7 @@ import signal
 import sys
 import textwrap
 import re
+import errno
 import subprocess
 
 # Python 2/3 compatibility
@@ -15,86 +16,224 @@ except NameError:
     pass
 
 dotfile_directory = os.path.dirname(os.path.realpath(__file__))
-dotfile_directory_files = glob.glob(dotfile_directory + '/*')
-file_blacklist = [os.path.basename(__file__),
-    'README.md',
-    'Makefile',
-    'Dockerfile',
-    'tags',
-]
+config_default_file = os.path.join(dotfile_directory, 'install-config.txt')
+config_local_file = os.path.join(dotfile_directory, 'install-config.local.txt')
 
 
 def main():
+    config_default, config_local = read_config()
+    unknown = find_unknown(config_default, config_local)
+    config_local = symlink_dotfiles(config_default, config_local, unknown)
+    config_local = execute_executables(config_default, config_local, unknown)
+    save_config(config_local_file, config_local)
+    warn_config_overlap(config_local)
+
     print(textwrap.dedent("""
-        Update the dotfiles by running "git pull" in {}
-        Check README.md for changes when you update.
-        """).strip().format(dotfile_directory))
-    dotfiles, executables = gather_dotfiles()
-    symlink_dotfiles(dotfiles)
-    execute_executables(executables)
+        Update the dotfiles by running "git pull" and "./install" in {}
+        Check git log and README.md for changes when you update.
+        """).format(dotfile_directory))
 
 
-def gather_dotfiles():
-    dotfiles = []
-    executables = []
-    for dotfile in dotfile_directory_files:
-        dotfile_name = os.path.basename(dotfile)
-        if not os.path.isfile(dotfile):
-            continue
-        if dotfile_name in file_blacklist:
-            continue
-        if dotfile_name.endswith('.disabled'):
-            continue
-        if os.access(dotfile, os.X_OK):
-            executables.append(dotfile)
+def read_config():
+    config_default = parse_config_file(config_default_file)
+    config_default['ignore'][os.path.basename(__file__)] = None
+    config_default['ignore'][os.path.basename(config_default_file)] = None
+    config_default['ignore'][os.path.basename(config_local_file)] = None
+    config_local = parse_config_file(config_local_file)
+    return config_default, config_local
+
+
+def save_config(file_path, config):
+    with open(file_path, 'w') as file:
+        for section in 'symlink', 'execute', 'ignore':
+            file.write('[' + section + ']\n\n')
+            section_items = ''
+            for src, dest in sorted(config[section].items()):
+                if dest:
+                    section_items += src + ' = ' + dest
+                else:
+                    section_items += src
+                section_items += '\n'
+            if section_items:
+                file.write(section_items + '\n')
+
+
+def warn_config_overlap(config):
+    symlink_execute = sorted(set(config['symlink'].keys()).intersection(set(config['execute'].keys())))
+    symlink_ignore = sorted(set(config['symlink'].keys()).intersection(set(config['ignore'].keys())))
+    execute_ignore = sorted(set(config['execute'].keys()).intersection(set(config['ignore'].keys())))
+    if symlink_execute:
+        print('\nWarning: these entries are configured to both symlink and execute:')
+        print(symlink_execute)
+    if symlink_ignore:
+        print('\nWarning: these entries are configured to both symlink and ignore:')
+        print(symlink_ignore)
+    if execute_ignore:
+        print('\nWarning: these entries are configured to both execute and ignore:')
+        print(execute_ignore)
+
+
+def parse_config_file(name):
+    items = {
+        'symlink': {},
+        'execute': {},
+        'ignore': {},
+    }
+    if not os.path.exists(name):
+        return items
+    state = None
+    with open(name) as file:
+        for line in file:
+            line = line.rstrip('\n')
+            section = re.findall(r'^\[(.*)\]$', line)
+            if section:
+                state = section[0]
+            elif state in items.keys() and line:
+                srcdest = re.findall(r'^([^=]*) = (.*)$', line)
+                if srcdest:
+                    src, dest = srcdest[0]
+                    items[state][src] = dest or None
+                else:
+                    items[state][line] = None
+    return items
+
+
+def find_unknown(default, local):
+    unknown = {
+        'symlink': {},
+        'execute': {},
+        'ignore': {},  # always empty
+    }
+    configured_items = {}
+    for section in 'symlink', 'execute', 'ignore':
+        configured_items.update(default[section])
+        configured_items.update(local[section])
+    dotfile_directory_files = glob.glob(dotfile_directory + '/*')
+    for file in dotfile_directory_files:
+        dotfile_name = os.path.basename(file)
+        if dotfile_name not in configured_items:
+            if os.access(file, os.X_OK) and not os.path.isdir(file):
+                unknown['execute'][dotfile_name] = None
+            else:
+                unknown['symlink'][dotfile_name] = None
+    return unknown
+
+
+def symlink_dotfiles(default, local, unknown):
+    symlinks = {}
+    symlinks.update(default['symlink'])
+    symlinks.update(local['symlink'])
+    symlinks.update(unknown['symlink'])
+    for dotfile_name, dotfile_dest in sorted(symlinks.items()):
+        dotfile = os.path.join(dotfile_directory, dotfile_name)
+        if dotfile_dest:
+            user = re.findall(r'^~[^/]*', dotfile_dest)
+            if user:
+                install_location = dotfile_dest.replace(user[0], os.path.expanduser(user[0]), 1)
+            else:
+                install_location = dotfile_dest
         else:
-            dotfiles.append(dotfile)
-    return dotfiles, executables
-
-
-def symlink_dotfiles(dotfiles):
-    for dotfile in dotfiles:
-        dotfile_name = os.path.basename(dotfile)
-        install_location = os.path.join(
-            os.path.expanduser('~'), '.' + dotfile_name)
+            install_location = os.path.join(
+                os.path.expanduser('~'), '.' + dotfile_name)
         if os.path.exists(install_location) or os.path.islink(install_location):
             short_install_location = substitute_home(install_location)
             short_dotfile = substitute_home(dotfile)
             if os.path.realpath(install_location) != dotfile:
-                print(short_install_location + ' already exists and is not symlinked to ' + short_dotfile + ', skipping')
+                print(short_install_location + ' already exists and is not symlinked to ' +
+                      short_dotfile + ', skipping')
             else:
                 print(short_install_location + ' already exists, skipping')
             continue
-        skip_file = os.path.join(
-                os.path.dirname(dotfile),
-                '.{}.skip'.format(os.path.basename(dotfile)))
-        if os.path.exists(skip_file):
-            short_skip_file = substitute_home(skip_file)
-            print(short_skip_file + ' exists, skipping')
+        if dotfile_name in local['ignore']:
+            print(dotfile_name + ' is ignored; skipping')
             continue
-        install = input('Symlink ' + dotfile_name + '? [Y/n]: ')
+        if dotfile_dest:
+            prompt = 'Symlink ' + dotfile_name + ' to ' + dotfile_dest + '? y=yes n=no q=quit [Y/n/q]: '
+        else:
+            prompt = 'Symlink ' + dotfile_name + '? y=yes n=no q=quit [Y/n/q]: '
+        install = input(prompt)
+        if install.lower() == 'q':
+            save_config(config_local_file, local)
+            exit(0)
         if not (install == '' or install.lower() == 'y'):
-            create_empty_file(skip_file)
+            if dotfile_name in local['symlink']:
+                continue
+            local['ignore'][dotfile_name] = dotfile_dest
+            print('Ignore ' + dotfile_name)
             continue
-        print('Symlink ' + dotfile + ' to ' + install_location)
+        print('Symlink ' + dotfile_name + ' to ' + install_location)
+        if not os.path.exists(os.path.basename(install_location)):
+            mkdir_p(os.path.basename(install_location))
         os.symlink(dotfile, install_location)
+    return local
 
 
-def execute_executables(executables):
-    for executable in executables:
-        run = input('Execute ' + executable + '? (read first!) [Y/n]: ')
+def execute_executables(default, local, unknown):
+    # configured = default['execute'].union(local['execute'])
+    configured = set(default['execute'].keys()).union(set(local['execute'].keys()))
+
+    for executable in sorted(configured):
+        executable_name = executable
+        executable = os.path.join(dotfile_directory, executable)
+        if executable_name in local['execute']:
+            run = input('Execute ' + executable_name +
+                        '? (verify first!) y=yes n=no q=quit [Y/n/q]: ')
+        elif executable_name in default['execute']:
+            run = input('Execute ' + executable_name +
+                        '? (verify first!) y=yes n=no i=ignore q=quit [Y/n/i/q]: ')
+            if run.lower() == 'i':
+                local['ignore'][executable_name] = None
+                print('Ignore ' + executable_name)
+                continue
+        if run.lower() == 'q':
+            save_config(config_local_file, local)
+            exit(0)
         if not (run == '' or run.lower() == 'y'):
             continue
         print('Execute ' + executable)
         subprocess.Popen([executable], cwd=dotfile_directory).wait()
-
-
-def create_empty_file(file_path):
-    open(file_path, 'a').close()
+    for executable in sorted(set(unknown['execute'].keys())):
+        executable_name = executable
+        executable = os.path.join(dotfile_directory, executable)
+        run = input('Execute ' + executable_name +
+                    '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
+        if run.lower() == 'q':
+            save_config(config_local_file, local)
+            exit(0)
+        if run.lower() == 'i':
+            local['ignore'][executable_name] = None
+            print('Ignore ' + executable_name)
+            continue
+        if run.lower() == 'l':
+            install_location = os.path.join(
+                os.path.expanduser('~'), '.' + executable_name)
+            local['symlink'][executable_name] = None
+            print('Symlink ' + executable_name + ' to ' + install_location)
+            os.symlink(executable, install_location)
+            continue
+        if not (run == '' or run.lower() == 'y'):
+            continue
+        local['execute'][executable_name] = None
+        print('Execute ' + executable)
+        subprocess.Popen([executable], cwd=dotfile_directory).wait()
+    return local
 
 
 def substitute_home(path):
-    return re.sub(re.escape(os.path.expanduser('~')), '~', path, 1)
+    home_path = os.path.expanduser('~')
+    if path.startswith(home_path):
+        return path.replace(home_path, '~', 1)
+    return path
+
+
+def mkdir_p(path):
+    try:
+        os.makedirs(path)
+    except OSError as exc:  # Python >2.5
+        if exc.errno == errno.EEXIST and os.path.isdir(path):
+            pass
+        else:
+            raise
 
 
 def handle_sigint():
