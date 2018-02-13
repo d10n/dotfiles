@@ -8,6 +8,7 @@ bashrc.local
 gitignore_global
 inputrc
 irbrc
+nvim = ~/.config/nvim
 profile
 tmux.conf
 tmux.conf.local
