@@ -162,8 +162,8 @@ def symlink_dotfiles(default, local, unknown):
             print('Ignore ' + dotfile_name)
             continue
         print('Symlink ' + dotfile_name + ' to ' + install_location)
-        if not os.path.exists(os.path.basename(install_location)):
-            mkdir_p(os.path.basename(install_location))
+        if not os.path.exists(os.path.dirname(install_location)):
+            mkdir_p(os.path.dirname(install_location))
         os.symlink(dotfile, install_location)
     return local
 
