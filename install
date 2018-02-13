@@ -22,9 +22,9 @@ config_local_file = os.path.join(dotfile_directory, 'install-config.local.txt')
 
 def main():
     config_default, config_local = read_config()
-    unknown = find_unknown(config_default, config_local)
-    config_local = symlink_dotfiles(config_default, config_local, unknown)
-    config_local = execute_executables(config_default, config_local, unknown)
+    config_discovered = discover_unknown(config_default, config_local)
+    config_local = symlink_dotfiles(config_default, config_local, config_discovered)
+    config_local = execute_executables(config_default, config_local, config_discovered)
     save_config(config_local_file, config_local)
     warn_config_overlap(config_local)
 
@@ -98,32 +98,32 @@ def parse_config_file(name):
     return items
 
 
-def find_unknown(default, local):
-    unknown = {
+def discover_unknown(config_default, config_local):
+    config_discovered = {
         'symlink': {},
         'execute': {},
         'ignore': {},  # always empty
     }
     configured_items = {}
     for section in 'symlink', 'execute', 'ignore':
-        configured_items.update(default[section])
-        configured_items.update(local[section])
+        configured_items.update(config_default[section])
+        configured_items.update(config_local[section])
     dotfile_directory_files = glob.glob(dotfile_directory + '/*')
     for file in dotfile_directory_files:
         dotfile_name = os.path.basename(file)
         if dotfile_name not in configured_items:
             if os.access(file, os.X_OK) and not os.path.isdir(file):
-                unknown['execute'][dotfile_name] = None
+                config_discovered['execute'][dotfile_name] = None
             else:
-                unknown['symlink'][dotfile_name] = None
-    return unknown
+                config_discovered['symlink'][dotfile_name] = None
+    return config_discovered
 
 
-def symlink_dotfiles(default, local, unknown):
+def symlink_dotfiles(config_default, config_local, config_discovered):
     symlinks = {}
-    symlinks.update(default['symlink'])
-    symlinks.update(local['symlink'])
-    symlinks.update(unknown['symlink'])
+    symlinks.update(config_default['symlink'])
+    symlinks.update(config_local['symlink'])
+    symlinks.update(config_discovered['symlink'])
     for dotfile_name, dotfile_dest in sorted(symlinks.items()):
         dotfile = os.path.join(dotfile_directory, dotfile_name)
         if dotfile_dest:
@@ -140,7 +140,7 @@ def symlink_dotfiles(default, local, unknown):
             else:
                 print(short_install_location + ' already exists, skipping')
             continue
-        if dotfile_name in local['ignore']:
+        if dotfile_name in config_local['ignore']:
             print(dotfile_name + ' is ignored; skipping')
             continue
         if dotfile_dest:
@@ -149,78 +149,78 @@ def symlink_dotfiles(default, local, unknown):
             prompt = 'Symlink ' + dotfile_name + '? y=yes n=no q=quit [Y/n/q]: '
         install = input(prompt)
         if install.lower() == 'q':
-            save_config(config_local_file, local)
+            save_config(config_local_file, config_local)
             exit(0)
         if not (install == '' or install.lower() == 'y'):
-            if dotfile_name in local['symlink']:
+            if dotfile_name in config_local['symlink']:
                 continue
-            local['ignore'][dotfile_name] = dotfile_dest
+            config_local['ignore'][dotfile_name] = dotfile_dest
             print('Ignore ' + dotfile_name)
             continue
         print('Symlink ' + dotfile_name + ' to ' + install_location)
         if not os.path.exists(os.path.dirname(install_location)):
             mkdir_p(os.path.dirname(install_location))
         os.symlink(dotfile, install_location)
-    return local
+    return config_local
 
 
-def execute_executables(default, local, unknown):
-    local = execute_configured_executables(default, local)
-    local = execute_unknown_executables(local, unknown)
-    return local
+def execute_executables(config_default, config_local, config_discovered):
+    config_local = execute_configured_executables(config_default, config_local)
+    config_local = execute_discovered_executables(config_local, config_discovered)
+    return config_local
 
 
-def execute_configured_executables(default, local):
-    configured = set(default['execute'].keys()).union(set(local['execute'].keys()))
+def execute_configured_executables(config_default, config_local):
+    configured = set(config_default['execute'].keys()).union(set(config_local['execute'].keys()))
     for executable in sorted(configured):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
-        if executable_name in local['execute']:
+        if executable_name in config_local['execute']:
             run = input('Execute ' + executable_name +
                         '? (verify first!) y=yes n=no q=quit [Y/n/q]: ')
-        elif executable_name in default['execute']:
+        elif executable_name in config_default['execute']:
             run = input('Execute ' + executable_name +
                         '? (verify first!) y=yes n=no i=ignore q=quit [Y/n/i/q]: ')
             if run.lower() == 'i':
-                local['ignore'][executable_name] = None
+                config_local['ignore'][executable_name] = None
                 print('Ignore ' + executable_name)
                 continue
         if run.lower() == 'q':
-            save_config(config_local_file, local)
+            save_config(config_local_file, config_local)
             exit(0)
         if not (run == '' or run.lower() == 'y'):
             continue
         print('Execute ' + executable)
         subprocess.Popen([executable], cwd=dotfile_directory).wait()
-    return local
+    return config_local
 
 
-def execute_unknown_executables(local, unknown):
-    for executable in sorted(set(unknown['execute'].keys())):
+def execute_discovered_executables(config_local, config_discovered):
+    for executable in sorted(set(config_discovered['execute'].keys())):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
         run = input('Execute ' + executable_name +
                     '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
         if run.lower() == 'q':
-            save_config(config_local_file, local)
+            save_config(config_local_file, config_local)
             exit(0)
         if run.lower() == 'i':
-            local['ignore'][executable_name] = None
+            config_local['ignore'][executable_name] = None
             print('Ignore ' + executable_name)
             continue
         if run.lower() == 'l':
             install_location = os.path.join(
                 os.path.expanduser('~'), '.' + executable_name)
-            local['symlink'][executable_name] = None
+            config_local['symlink'][executable_name] = None
             print('Symlink ' + executable_name + ' to ' + install_location)
             os.symlink(executable, install_location)
             continue
         if not (run == '' or run.lower() == 'y'):
             continue
-        local['execute'][executable_name] = None
+        config_local['execute'][executable_name] = None
         print('Execute ' + executable)
         subprocess.Popen([executable], cwd=dotfile_directory).wait()
-    return local
+    return config_local
 
 
 def substitute_home(path):
