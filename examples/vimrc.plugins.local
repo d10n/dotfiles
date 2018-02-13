@@ -205,8 +205,10 @@ let g:clang_hl_errors = 1
 let g:vaxe_completion_write_compiler_ouput = 1
 
 " syntastic {{{1
-let g:syntastic_check_on_open = 1
-let g:syntastic_enable_signs = 1
+if has_key(g:plugs, 'syntastic')
+  let g:syntastic_check_on_open = 1
+  let g:syntastic_enable_signs = 1
+endif
 
 " axiom {{{1
 if has_key(g:plugs, 'axiom')
