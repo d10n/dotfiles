@@ -127,11 +127,7 @@ def symlink_dotfiles(default, local, unknown):
     for dotfile_name, dotfile_dest in sorted(symlinks.items()):
         dotfile = os.path.join(dotfile_directory, dotfile_name)
         if dotfile_dest:
-            user = re.findall(r'^~[^/]*', dotfile_dest)
-            if user:
-                install_location = dotfile_dest.replace(user[0], os.path.expanduser(user[0]), 1)
-            else:
-                install_location = dotfile_dest
+            install_location = os.path.expanduser(dotfile_dest)
         else:
             install_location = os.path.join(
                 os.path.expanduser('~'), '.' + dotfile_name)
