@@ -1,5 +1,5 @@
-# Files that have been skipped by the install script
-.*.skip
+# Local configuration for the install script
+install-config.local.txt
 
 # Local dotfiles
 /*.local
