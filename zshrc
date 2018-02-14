@@ -158,6 +158,12 @@ git() {
         command git stash list --format='%C(auto)%h %gd %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset) %C(auto)%<(70,trunc)%s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)' "$@"
         return
     fi
+    if [[ "$1" = "grep" ]]; then
+        command git -c color.ui=always "$@" | perl -pe 'my $truncate = 500; if (length > $truncate) {
+            s/^((?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){$truncate})(?=(?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){14}).*/$1\e\[m...(truncated)/
+        }'
+        return
+    fi
     if [[ "$1" = "commit" ]] && [[ "$2" = "-a"* ]]; then
         if ! command git diff-index --cached --quiet HEAD -- && \
             ! command git diff-files --quiet; then
