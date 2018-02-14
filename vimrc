@@ -403,6 +403,9 @@ if has('autocmd')
   augroup END
 endif
 
+highlight nonascii guibg=Red ctermbg=1 term=standout
+autocmd BufReadPost * syntax match nonascii "[^\u0000-\u007F]"
+
 " Load matchit.vim, but only if the user hasn't installed a newer version.
 if !exists('g:loaded_matchit') && findfile('plugin/matchit.vim', &rtp) ==# ''
   runtime! macros/matchit.vim
