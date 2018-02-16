@@ -335,21 +335,17 @@ if !exists(":DiffOrig")
 endif
 
 " Clear search highlights with ^c
+"nnoremap <silent> <C-c> :nohlsearch<CR><silent><C-c>
+"nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
+nnoremap <silent> <C-c> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><silent><C-c>
 " Remapping Esc can cause vim to start in Replace mode
-if has('gui_running')
-  "nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
-  "nnoremap <silent> <C-c> :nohlsearch<CR><silent><C-c>
-  "nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
-  nnoremap <silent> <C-c> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><silent><C-c>
-else
-  "nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
-  augroup no_highlight
-    "autocmd TermResponse * nnoremap <Esc> :nohlsearch<CR><Esc>
-    "autocmd TermResponse * nnoremap <C-c> :nohlsearch<CR><silent><C-c>
-    "autocmd TermResponse * nnoremap <silent> <C-L> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><C-L>
-    autocmd TermResponse * nnoremap <silent> <C-c> :nohlsearch<C-R>=has('diff')?'<Bar>diffupdate':''<CR><CR><silent><C-c>
-  augroup END
-end
+"if has('gui_running')
+"  nnoremap <silent> <Esc> :nohlsearch<CR><Esc>
+"else
+"  augroup no_highlight
+"    autocmd TermResponse * nnoremap <Esc> :nohlsearch<CR><Esc>
+"  augroup END
+"end
 
 if has('gui_running')
   set guioptions-=c  " GUI tabs
