@@ -31,7 +31,7 @@ def main():
     print(textwrap.dedent("""
         Update the dotfiles by running "git pull" and "./install" in {}
         Check git log and README.md for changes when you update.
-        """).format(dotfile_directory))
+        """).format(substitute_home(dotfile_directory)))
 
 
 def read_config():
