@@ -248,6 +248,9 @@ apply_aliases() {
         export LSCOLORS=gxBxhxDxfxhxhxhxhxcxcx
         alias ls="ls -Gp"
     fi
+    if [[ "$OSTYPE" != "darwin"* ]]; then
+        command -v xdg-open &>/dev/null && alias open="xdg-open"
+    fi
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         alias ls="ls --color=auto -p"
         alias pbcopy='xsel --clipboard --input'
