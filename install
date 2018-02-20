@@ -157,6 +157,8 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
             config_local['ignore'][dotfile_name] = dotfile_dest
             print('Ignore ' + dotfile_name)
             continue
+        if dotfile_name not in config_default['symlink']:
+            config_local['symlink'][dotfile_name] = dotfile_dest
         print('Symlink ' + dotfile_name + ' to ' + install_location)
         if not os.path.exists(os.path.dirname(install_location)):
             mkdir_p(os.path.dirname(install_location))
