@@ -148,9 +148,9 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
             prompt = 'Symlink ' + dotfile_name + ' to ' + substitute_home(install_location) + '? y=yes n=no q=quit [Y/n/q]: '
         else:
             prompt = 'Symlink ' + dotfile_name + '? y=yes n=no q=quit [Y/n/q]: '
-        config_local = do_prompt(prompt, 'ynq',
+        config_local = do_prompt(prompt, 'Ynq', {'y': 'l', 'n': 'i'},
                                  dotfile_name, dotfile_path, dotfile_dest,
-                                 config_default, config_local, 'i', 'l')
+                                 config_default, config_local)
     return config_local
 
 
@@ -167,15 +167,15 @@ def execute_configured_executables(config_default, config_local):
         executable = os.path.join(dotfile_directory, executable)
         if executable_name in config_local['execute']:
             prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no q=quit [Y/n/q]: '
-            valid_actions='ynq'
+            valid_actions='Ynq'
         elif executable_name in config_default['execute']:
             prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no i=ignore q=quit [Y/n/i/q]: '
-            valid_actions='yniq'
+            valid_actions='Yniq'
         else:
             continue
-        config_local = do_prompt(prompt, valid_actions,
+        config_local = do_prompt(prompt, valid_actions, {'y': 'x', 'n': 's'},
                                  executable_name, executable, None,
-                                 config_default, config_local, 's', 'x')
+                                 config_default, config_local)
     return config_local
 
 
@@ -185,28 +185,25 @@ def execute_discovered_executables(config_local, config_discovered):
         executable = os.path.join(dotfile_directory, executable)
         prompt = ('Execute ' + executable_name +
                   '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
-        config_local = do_prompt(prompt, 'ynilq',
+        config_local = do_prompt(prompt, 'Ynilq', {'y': 'x', 'n': 's'},
                                  executable_name, executable, None,
-                                 None, config_local, 's', 'x')
+                                 None, config_local)
     return config_local
 
 
-def do_prompt(prompt, valid_actions,
+def do_prompt(prompt, valid_actions, action_map,
               item_name, item_path, item_dest,
-              config_default, config_local,
-              action_n, action_y, action_default='y'):
+              config_default, config_local):
     while True:
         action = input(prompt)
         if not action:
-            action = action_default
+            action = re.sub(r'[a-z]', '', valid_actions)  # capitalize default action
         action = action.lower()
-        if action in valid_actions:
+        if action and action in valid_actions.lower():
             break
         print('Invalid input.')
-    if action == 'y':
-        action = action_y
-    if action == 'n':
-        action = action_n
+    if action in action_map:
+        action = action_map[action]
     if action == 'q':
         config_local.save()
         exit(0)
