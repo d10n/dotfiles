@@ -16,17 +16,15 @@ except NameError:
     pass
 
 dotfile_directory = os.path.dirname(os.path.realpath(__file__))
-config_default_file = os.path.join(dotfile_directory, 'install-config.txt')
-config_local_file = os.path.join(dotfile_directory, 'install-config.local.txt')
 
 
 def main():
-    config_default, config_local = read_config()
+    config_default, config_local = read_configs()
     config_discovered = discover_unknown(config_default, config_local)
     config_local = symlink_dotfiles(config_default, config_local, config_discovered)
     config_local = execute_executables(config_default, config_local, config_discovered)
-    save_config(config_local_file, config_local)
-    warn_config_overlap(config_local)
+    config_local.save()
+    config_local.warn_overlap()
 
     print(textwrap.dedent("""
         Update the dotfiles by running "git pull" and "./install" in {}
@@ -34,76 +32,79 @@ def main():
         """).format(substitute_home(dotfile_directory)))
 
 
-def read_config():
-    config_default = parse_config_file(config_default_file)
+class Config(object):
+    def __init__(self, file_path=None):
+        self.file_path = file_path
+        self.items = {
+            'symlink': {},
+            'execute': {},
+            'ignore': {},
+        }
+        if not file_path or not os.path.exists(file_path):
+            return
+        state = None
+        with open(file_path) as file:
+            for line in file:
+                line = line.rstrip('\n')
+                section = re.findall(r'^\[(.*)\]$', line)
+                if section:
+                    state = section[0]
+                elif state in self.items.keys() and line:
+                    srcdest = re.findall(r'^([^=]*) = (.*)$', line)
+                    if srcdest:
+                        src, dest = srcdest[0]
+                        self.items[state][src] = dest or None
+                    else:
+                        self.items[state][line] = None
+
+    def save(self):
+        with open(self.file_path, 'w') as file:
+            for section in 'symlink', 'execute', 'ignore':
+                file.write('[' + section + ']\n\n')
+                section_items = ''
+                for src, dest in sorted(self.items[section].items()):
+                    if dest:
+                        section_items += src + ' = ' + dest
+                    else:
+                        section_items += src
+                    section_items += '\n'
+                if section_items:
+                    file.write(section_items + '\n')
+
+    def warn_overlap(self):
+        symlink_execute = sorted(set(self['symlink'].keys()).intersection(set(self['execute'].keys())))
+        symlink_ignore = sorted(set(self['symlink'].keys()).intersection(set(self['ignore'].keys())))
+        execute_ignore = sorted(set(self['execute'].keys()).intersection(set(self['ignore'].keys())))
+        if symlink_execute:
+            print('\nWarning: these entries are configured to both symlink and execute:')
+            print(symlink_execute)
+        if symlink_ignore:
+            print('\nWarning: these entries are configured to both symlink and ignore:')
+            print(symlink_ignore)
+        if execute_ignore:
+            print('\nWarning: these entries are configured to both execute and ignore:')
+            print(execute_ignore)
+
+    def __getitem__(self, item):
+        return self.items.__getitem__(item)
+
+    def __setitem__(self, item, value):
+        return self.items.__setitem__(item, value)
+
+
+def read_configs():
+    config_default_file = os.path.join(dotfile_directory, 'install-config.txt')
+    config_local_file = os.path.join(dotfile_directory, 'install-config.local.txt')
+    config_default = Config(config_default_file)
     config_default['ignore'][os.path.basename(__file__)] = None
     config_default['ignore'][os.path.basename(config_default_file)] = None
     config_default['ignore'][os.path.basename(config_local_file)] = None
-    config_local = parse_config_file(config_local_file)
+    config_local = Config(config_local_file)
     return config_default, config_local
 
 
-def save_config(file_path, config):
-    with open(file_path, 'w') as file:
-        for section in 'symlink', 'execute', 'ignore':
-            file.write('[' + section + ']\n\n')
-            section_items = ''
-            for src, dest in sorted(config[section].items()):
-                if dest:
-                    section_items += src + ' = ' + dest
-                else:
-                    section_items += src
-                section_items += '\n'
-            if section_items:
-                file.write(section_items + '\n')
-
-
-def warn_config_overlap(config):
-    symlink_execute = sorted(set(config['symlink'].keys()).intersection(set(config['execute'].keys())))
-    symlink_ignore = sorted(set(config['symlink'].keys()).intersection(set(config['ignore'].keys())))
-    execute_ignore = sorted(set(config['execute'].keys()).intersection(set(config['ignore'].keys())))
-    if symlink_execute:
-        print('\nWarning: these entries are configured to both symlink and execute:')
-        print(symlink_execute)
-    if symlink_ignore:
-        print('\nWarning: these entries are configured to both symlink and ignore:')
-        print(symlink_ignore)
-    if execute_ignore:
-        print('\nWarning: these entries are configured to both execute and ignore:')
-        print(execute_ignore)
-
-
-def parse_config_file(name):
-    items = {
-        'symlink': {},
-        'execute': {},
-        'ignore': {},
-    }
-    if not os.path.exists(name):
-        return items
-    state = None
-    with open(name) as file:
-        for line in file:
-            line = line.rstrip('\n')
-            section = re.findall(r'^\[(.*)\]$', line)
-            if section:
-                state = section[0]
-            elif state in items.keys() and line:
-                srcdest = re.findall(r'^([^=]*) = (.*)$', line)
-                if srcdest:
-                    src, dest = srcdest[0]
-                    items[state][src] = dest or None
-                else:
-                    items[state][line] = None
-    return items
-
-
 def discover_unknown(config_default, config_local):
-    config_discovered = {
-        'symlink': {},
-        'execute': {},
-        'ignore': {},  # always empty
-    }
+    config_discovered = Config()
     configured_items = {}
     for section in 'symlink', 'execute', 'ignore':
         configured_items.update(config_default[section])
@@ -149,7 +150,7 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
             prompt = 'Symlink ' + dotfile_name + '? y=yes n=no q=quit [Y/n/q]: '
         install = input(prompt)
         if install.lower() == 'q':
-            save_config(config_local_file, config_local)
+            config_local.save()
             exit(0)
         if not (install == '' or install.lower() == 'y'):
             if dotfile_name in config_local['symlink']:
@@ -188,7 +189,7 @@ def execute_configured_executables(config_default, config_local):
                 print('Ignore ' + executable_name)
                 continue
         if run.lower() == 'q':
-            save_config(config_local_file, config_local)
+            config_local.save()
             exit(0)
         if not (run == '' or run.lower() == 'y'):
             continue
@@ -204,7 +205,7 @@ def execute_discovered_executables(config_local, config_discovered):
         run = input('Execute ' + executable_name +
                     '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
         if run.lower() == 'q':
-            save_config(config_local_file, config_local)
+            config_local.save()
             exit(0)
         if run.lower() == 'i':
             config_local['ignore'][executable_name] = None
