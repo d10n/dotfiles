@@ -72,9 +72,9 @@ class Config(object):
                     file.write(section_items + '\n')
 
     def warn_overlap(self):
-        symlink_execute = sorted(set(self['symlink'].keys()).intersection(set(self['execute'].keys())))
-        symlink_ignore = sorted(set(self['symlink'].keys()).intersection(set(self['ignore'].keys())))
-        execute_ignore = sorted(set(self['execute'].keys()).intersection(set(self['ignore'].keys())))
+        symlink_execute = sorted(set(self['symlink']) & set(self['execute']))
+        symlink_ignore = sorted(set(self['symlink']) & set(self['ignore']))
+        execute_ignore = sorted(set(self['execute']) & set(self['ignore']))
         if symlink_execute:
             print('\nWarning: these entries are configured to both symlink and execute:')
             print(symlink_execute)
