@@ -126,7 +126,7 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
     symlinks.update(config_local['symlink'])
     symlinks.update(config_discovered['symlink'])
     for dotfile_name, dotfile_dest in sorted(symlinks.items()):
-        dotfile = os.path.join(dotfile_directory, dotfile_name)
+        dotfile_path = os.path.join(dotfile_directory, dotfile_name)
         if dotfile_dest:
             install_location = os.path.expanduser(dotfile_dest)
         else:
@@ -134,8 +134,8 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
                 os.path.expanduser('~'), '.' + dotfile_name)
         if os.path.exists(install_location) or os.path.islink(install_location):
             short_install_location = substitute_home(install_location)
-            short_dotfile = substitute_home(dotfile)
-            if os.path.realpath(install_location) != dotfile:
+            short_dotfile = substitute_home(dotfile_path)
+            if os.path.realpath(install_location) != dotfile_path:
                 print(short_install_location + ' already exists and is not symlinked to ' +
                       short_dotfile + ', skipping')
             else:
@@ -145,25 +145,12 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
             print(dotfile_name + ' is ignored; skipping')
             continue
         if dotfile_dest:
-            prompt = 'Symlink ' + dotfile_name + ' to ' + dotfile_dest + '? y=yes n=no q=quit [Y/n/q]: '
+            prompt = 'Symlink ' + dotfile_name + ' to ' + substitute_home(install_location) + '? y=yes n=no q=quit [Y/n/q]: '
         else:
             prompt = 'Symlink ' + dotfile_name + '? y=yes n=no q=quit [Y/n/q]: '
-        install = input(prompt)
-        if install.lower() == 'q':
-            config_local.save()
-            exit(0)
-        if not (install == '' or install.lower() == 'y'):
-            if dotfile_name in config_local['symlink']:
-                continue
-            config_local['ignore'][dotfile_name] = dotfile_dest
-            print('Ignore ' + dotfile_name)
-            continue
-        if dotfile_name not in config_default['symlink']:
-            config_local['symlink'][dotfile_name] = dotfile_dest
-        print('Symlink ' + dotfile_name + ' to ' + install_location)
-        if not os.path.exists(os.path.dirname(install_location)):
-            mkdir_p(os.path.dirname(install_location))
-        os.symlink(dotfile, install_location)
+        config_local = do_prompt(prompt, 'ynq',
+                                 dotfile_name, dotfile_path, dotfile_dest,
+                                 config_default, config_local, 'i', 'l')
     return config_local
 
 
@@ -179,22 +166,16 @@ def execute_configured_executables(config_default, config_local):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
         if executable_name in config_local['execute']:
-            run = input('Execute ' + executable_name +
-                        '? (verify first!) y=yes n=no q=quit [Y/n/q]: ')
+            prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no q=quit [Y/n/q]: '
+            valid_actions='ynq'
         elif executable_name in config_default['execute']:
-            run = input('Execute ' + executable_name +
-                        '? (verify first!) y=yes n=no i=ignore q=quit [Y/n/i/q]: ')
-            if run.lower() == 'i':
-                config_local['ignore'][executable_name] = None
-                print('Ignore ' + executable_name)
-                continue
-        if run.lower() == 'q':
-            config_local.save()
-            exit(0)
-        if not (run == '' or run.lower() == 'y'):
+            prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no i=ignore q=quit [Y/n/i/q]: '
+            valid_actions='yniq'
+        else:
             continue
-        print('Execute ' + executable)
-        subprocess.Popen([executable], cwd=dotfile_directory).wait()
+        config_local = do_prompt(prompt, valid_actions,
+                                 executable_name, executable, None,
+                                 config_default, config_local, 's', 'x')
     return config_local
 
 
@@ -202,28 +183,72 @@ def execute_discovered_executables(config_local, config_discovered):
     for executable in sorted(set(config_discovered['execute'].keys())):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
-        run = input('Execute ' + executable_name +
-                    '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
-        if run.lower() == 'q':
-            config_local.save()
-            exit(0)
-        if run.lower() == 'i':
-            config_local['ignore'][executable_name] = None
-            print('Ignore ' + executable_name)
-            continue
-        if run.lower() == 'l':
-            install_location = os.path.join(
-                os.path.expanduser('~'), '.' + executable_name)
-            config_local['symlink'][executable_name] = None
-            print('Symlink ' + executable_name + ' to ' + install_location)
-            os.symlink(executable, install_location)
-            continue
-        if not (run == '' or run.lower() == 'y'):
-            continue
-        config_local['execute'][executable_name] = None
-        print('Execute ' + executable)
-        subprocess.Popen([executable], cwd=dotfile_directory).wait()
+        prompt = ('Execute ' + executable_name +
+                  '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
+        config_local = do_prompt(prompt, 'ynilq',
+                                 executable_name, executable, None,
+                                 None, config_local, 's', 'x')
     return config_local
+
+
+def do_prompt(prompt, valid_actions,
+              item_name, item_path, item_dest,
+              config_default, config_local,
+              action_n, action_y, action_default='y'):
+    while True:
+        action = input(prompt)
+        if not action:
+            action = action_default
+        action = action.lower()
+        if action in valid_actions:
+            break
+        print('Invalid input.')
+    if action == 'y':
+        action = action_y
+    if action == 'n':
+        action = action_n
+    if action == 'q':
+        config_local.save()
+        exit(0)
+    if action == 's':
+        print('Skip ' + item_name)
+    if action == 'i':
+        ignore(config_default, config_local, item_name, item_dest)
+    if action == 'l':
+        symlink(config_default, config_local, item_name, item_path, item_dest)
+    if action == 'x':
+        execute(config_default, config_local, item_name, item_path)
+    return config_local
+
+
+def ignore(config_default, config_local, item_name, item_dest):
+    if ((config_default is None or item_name not in config_default['ignore']) and
+            item_name not in set(config_local['symlink']) | set(config_local['execute'])):
+        config_local['ignore'][item_name] = item_dest
+        print('Ignore ' + item_name)
+    else:
+        print('Skip ' + item_name)
+
+
+def symlink(config_default, config_local, item_name, item_path, item_dest):
+    if item_dest:
+        install_location = os.path.expanduser(item_dest)
+    else:
+        install_location = os.path.join(
+            os.path.expanduser('~'), '.' + item_name)
+    if config_default is None or item_name not in config_default['symlink']:
+        config_local['symlink'][item_name] = item_dest
+    print('Symlink ' + item_name + ' to ' + install_location)
+    if not os.path.exists(os.path.dirname(install_location)):
+        mkdir_p(os.path.dirname(install_location))
+    os.symlink(item_path, install_location)
+
+
+def execute(config_default, config_local, item_name, item_path):
+    if config_default is None or item_name not in config_default['execute']:
+        config_local['execute'][item_name] = None
+    print('Execute ' + item_path)
+    subprocess.Popen([item_path], cwd=dotfile_directory).wait()
 
 
 def substitute_home(path):
