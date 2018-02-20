@@ -24,7 +24,6 @@ def main():
     config_local = symlink_dotfiles(config_default, config_local, config_discovered)
     config_local = execute_executables(config_default, config_local, config_discovered)
     config_local.save()
-    config_local.warn_overlap()
 
     print(textwrap.dedent("""
         Update the dotfiles by running "git pull" and "./install" in {}
@@ -70,6 +69,7 @@ class Config(object):
                     section_items += '\n'
                 if section_items:
                     file.write(section_items + '\n')
+        self.warn_overlap()
 
     def warn_overlap(self):
         symlink_execute = sorted(set(self['symlink']) & set(self['execute']))
