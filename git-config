@@ -48,7 +48,7 @@ git config --global alias.l '!f() { git --no-pager log --color --graph --format=
 git config --global alias.lg "log --all --graph --format='%C(auto)%h %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset)%C(auto)%d %s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)'"
 
 # Short status
-git config --global alias.s "status -s"
+git config --global alias.s "status --short --branch"
 
 # More readable diff
 git config --global alias.d "diff --patience"
