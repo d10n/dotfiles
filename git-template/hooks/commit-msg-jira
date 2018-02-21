@@ -6,8 +6,8 @@
 # Otherwise, it is appended as the last line of the body
 # Example branch name: feature/SRC-1234-short-description
 
-jira_prefix="${JIRA_PREFIX:-SRC}"
-honor_subject_length_convention="${HONOR_SUBJECT_LENGTH_CONVENTION:-yes}"
+jira_prefix="$(git config hooks.jiraPrefix || echo SRC)"
+honor_subject_length_convention="$(git config --bool hooks.honorSubjectLengthConvention || echo true)"
 
 # This gets added with git commit -v or git commit --cleanup=scissors
 cut_line='------------------------ >8 ------------------------'
@@ -58,7 +58,7 @@ if ! printf %s "$message" | has_jira ; then
 
     # If the ticket number fits on the commit message subject, add it there
     prefixed_message="$(printf %s "$branch" | capitalize_jira | show_jira) $message"
-    if [[ "$honor_subject_length_convention" != "yes" ]]; then
+    if [[ "$honor_subject_length_convention" != "true" ]]; then
         message="$prefixed_message"
         jira_added=1
     fi
