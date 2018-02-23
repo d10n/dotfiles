@@ -25,7 +25,9 @@ To install:
 To uninstall:
 
     find ~ -maxdepth 1 -lname ~'/.config/dotfiles/*' -print -delete
-    cat install-config.txt install-config.local.txt | grep ' = ' | sed 's/[^=]*= //' | python -c 'import os,sys;[sys.stdout.write(os.path.expanduser(line)) for line in sys.stdin]' | while IFS= read -r file; do [[ -L "$file" ]] && rm "$file" && echo "$file"; done
+    cat install-config.txt install-config.local.txt | grep ' = ' | sed 's/[^=]*= //' |
+        python -c 'import os,sys;[sys.stdout.write(os.path.expanduser(line)) for line in sys.stdin]' |
+        while IFS= read -r file; do [[ -L "$file" ]] && rm "$file" && echo "$file"; done
 
 Make local customizations with:
 
@@ -45,16 +47,19 @@ Sample local files are in the example directory.
  * Color for the prompt is automatically chosen based on the computer's hostname
  * `zsh-syntax-highlighting` adds colors while you type
  * `zsh-history-substring-search` lets you type part of a previous command and press the up and down arrow keys to cycle through command history with that part
- * The full path is shown in the prompt so you can stop typing `pwd`
- * Git status is shown in the prompt so you can stop typing `git status`
- * iTerm tab color can be set with `set_iterm_tab_rgb`. Type `cd` by itself to remove the tab color
+ * The prompt shows the full path so you can stop typing `pwd`
+ * The prompt shows git status so you can stop typing `git status`
  * The prompt is bold to act as an eye magnet so you can find it quickly when scrolling up a lot
  * The prompt is multi-line to let every command you type start at the same column
  * `mkcd` makes a folder and `cd`s into it. `mvcd` moves a file and `cd`s to the destination.
+ * `git commit -a` is prevented if you already have staged changes
+ * `git checkout -i` shows a searchable list of local branches. `git checkout -ia` shows all branches. Press enter to check out the selected branch. Press ctrl-c or esc to exit the list.
+ * `cd :/` `cd`s to the root of the git repository
  * Tab completion is powerful. Type `cd /u/l/b<tab>` and it will expand to `cd /usr/local/bin/`.
  * Tab completion is case-insensitive if you start with a lowercase letter. For example, `cd /u/u` expands to `cd /Users/username`
- * `git commit -a` is prevented if you already have staged changes
- * `cd :/` `cd`s to the root of the git repository
+ * Tab completion is dash and underscore insensitive. For example, `cd foo-bar-baz` can expand to `cd foo-bar_baz`
+ * For commands that take longer than 5 seconds, the duration, start date, and end date are printed
+ * iTerm tab color can be set with `set_iterm_tab_rgb`. Type `cd` by itself to remove the tab color
 
 ### git
 
@@ -63,9 +68,11 @@ Sample local files are in the example directory.
  * `git ds` for diff of staged changes
  * `git s` for short status
  * `git b` for git branch
- * `git bd` for branches, sorted by date
+ * `git bd` for local branches, sorted by date
+ * `git bd -a` for all branches, sorted by date
  * `git f` to fetch branches and tags
- * `git fp` to fetch branches and tags then pull
+ * `git grep-blame` combines `git grep` and `git blame`
+ * `git browse` shows a searchable graph of git commits. Press enter to show the diff. Press q to exit the diff and press ctrl-c or esc to exit the graph.
 
 ### .vimrc
 
