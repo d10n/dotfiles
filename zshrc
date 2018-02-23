@@ -118,6 +118,9 @@ autoload -Uz run-help
 unalias run-help &>/dev/null
 alias help='PAGER="less -FX" run-help'
 
+autoload -Uz zmv
+alias zmv='noglob zmv'
+
 mkcd() {
     [[ ! -z "$1" ]] && mkdir -p "$1" && builtin cd "$1"
 }
