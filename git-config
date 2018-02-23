@@ -195,7 +195,7 @@ git config --global alias.browse '!f() {
         fzf --ansi --no-sort --reverse --tiebreak=index \
         --bind "enter:execute: echo {} |
             sed \"s#^[* /|\-]*\([a-f0-9]*\).*#\1#\" | head -1 |
-            xargs -I % sh -c \"git show --patch --stat --color=always % | less -R\""
+            xargs -I % sh -c \"git show -m --patch --stat --color=always % | less -R\""
     return 0
 }; f'
 
