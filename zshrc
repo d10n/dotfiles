@@ -313,31 +313,24 @@ pws() {
     # /usr/local/bin -> /u/l/bin
     # ~/code/hxsl -> ~/c/hxsl
     # Edge case: ~/._.foo/bar -> ~/._.f/b
-    print -Pn %~ | awk '{
-        len = split($0,dirs,"/");
-        for(i = 1; i <= len; i++) {
-            if(i < len) {
-                match(dirs[i], /^[._]*./)
-                printf substr(dirs[i], RSTART, RLENGTH)"/"
-            } else {
-                print dirs[i]
-            }
+    print -Pn %~ | awk -F / '{
+        for (i = 1; i < NF; i++) {
+            match($i, /^[._]*./)
+            printf "%s/", substr($i, RSTART, RLENGTH)
         }
+        print $NF
     }'
 
-    ## 55% slower than awk
     #print -Pn %~ | perl -ne '
-    #    my @dirs = split("/", $_);
+    #    my @dirs = split m{/};
     #    my $basename = pop @dirs;
-    #    foreach $dir (@dirs) {
-    #        print $dir =~ /^(\.*.)/;
-    #        print "/";
+    #    foreach (@dirs) {
+    #        print /^([._]*.)/, q{/};
     #    }
     #    print $basename;
     #'
 
-    ## 53% slower than awk
-    #print -Pn %~ |perl -ne "s/(?<=\/)([._]*.)[^\/]*(?=\/)/\1/g;s/^\.$//;print;"
+    #print -Pn %~ |perl -pe 's|(?<=/)([._]*.)[^/]*(?=/)|$1|g;s|^\.$||'
 }
 
 
@@ -483,7 +476,7 @@ print_prompt_duration_precmd() {
 }
 
 set_terminal_title_short_path() {
-    echo -en "\e]0;$(pws)\a"
+    printf '\e]0;%s\a' "$(pws)"
     #print -Pn '\e]0;%C\a'
     #print -Pn '\e]0;%~\a'
 }
