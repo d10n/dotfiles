@@ -47,6 +47,12 @@ export EDITOR="$VISUAL"
 export SYSTEMD_EDITOR=vim
 
 
+## Missing command suggestions
+
+# Arch command suggestions
+[[ -f /usr/share/doc/pkgfile/command-not-found.zsh ]] && . /usr/share/doc/pkgfile/command-not-found.zsh
+
+
 ## Docker/Kubernetes
 # { if minikube status | grep -q -v -e 'N/A' -e 'Stopped'; then eval "$(minikube docker-env)"; fi }
 # eval $(docker-machine env default --shell=bash)
