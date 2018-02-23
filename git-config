@@ -43,9 +43,12 @@ git config --global alias.bd '!f() {
 
 # Short log
 git config --global alias.l '!f() {
+    commit_count="$(git rev-list --count HEAD@{upstream}~3..HEAD 2>/dev/null || echo 5)";
+    [ "$commit_count" -lt 5 ] && commit_count=5;
+    [ "$commit_count" -gt 20 ] && commit_count=20;
     git --no-pager log \
         --format="%C(auto)%h %C(reset)%C(dim red)[%C(reset)%C(red)%cr%C(reset)%C(dim red)]%C(reset)%C(auto) %x00%s%x00 %C(reset)%C(dim cyan)<%C(reset)%C(cyan)%an%C(reset)%C(dim cyan)>%C(reset)%C(auto)%d%C(reset)" \
-        --color --graph -5 "$@" |
+        --color --graph "-$commit_count" "$@" |
         perl -pe "s/ seconds? ago/s/ ||
                   s/ minutes? ago/m/ ||
                   s/ hours? ago/h/ ||
