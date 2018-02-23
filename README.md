@@ -54,7 +54,7 @@ Sample local files are in the example directory.
  * Tab completion is powerful. Type `cd /u/l/b<tab>` and it will expand to `cd /usr/local/bin/`.
  * Tab completion is case-insensitive if you start with a lowercase letter. For example, `cd /u/u` expands to `cd /Users/username`
  * `git commit -a` is prevented if you already have staged changes
- * `git cdroot` `cd`s to the root of the repository
+ * `cd :/` `cd`s to the root of the git repository
 
 ### git
 
