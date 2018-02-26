@@ -63,7 +63,7 @@ git config --global alias.l '!f() {
 }; f'
 
 # Full log graph
-git config --global alias.lg "log --all --graph --format='%C(auto)%h %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset)%C(auto)%d %s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)'"
+git config --global alias.lg "log --all --graph --format='%C(auto)%h %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset)%C(auto) %s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)%C(auto)%d'%C(reset)"
 
 # Short status
 git config --global alias.s "status --short --branch"
