@@ -130,14 +130,16 @@ git() {
 }
 
 git-checkout-i() {
-    local fzf one refs cmd format branches line_count term_height fzf_height branch checkout_command
+    local fzf one refs cmd format branches line_count term_height fzf_height fzf_tmux branch checkout_command
     fzf="$(command -v fzf)"
-    [[ -z "$fzf" ]] && [ -x ~/.fzf/bin/fzf ] && fzf=~/.fzf/bin/fzf
+    [[ -z "$fzf" ]] && [[ -x ~/.fzf/bin/fzf ]] && fzf=~/.fzf/bin/fzf
     if [[ -z "$fzf" ]]; then
         printf >&2 "\e[0;31mCan't git checkout -i without installation of fzf\e[0m\n\n"
         command git "$@"
         return
     fi
+    fzf_tmux="$(command -v fzf-tmux)"
+    [[ -z "$fzf_tmux" ]] && [[ -x ~/.fzf/bin/fzf-tmux ]] && fzf_tmux=~/.fzf/bin/fzf-tmux
 
     shift
     one="${1/#-i/-}"; shift; [[ "$one" != "-" ]] && set -- "$one" "$@"
@@ -161,8 +163,9 @@ git-checkout-i() {
         line_count=$(( $(wc -l <<< "$branches") )) &&
         term_height=$(tput lines) &&
         fzf_height=$(( line_count + 2 < term_height / 2 ? line_count + 2 : term_height / 2 )) &&
+        { [[ -n "$fzf_tmux" ]] && fzf_cmd=("$fzf_tmux" -d "$fzf_height" --) || fzf_cmd=("$fzf"); } &&
         branch=$(echo "$branches" |
-        fzf-tmux -d "$fzf_height" -- --no-multi --reverse --tac --ansi --no-sort --height="$fzf_height") &&
+        "${fzf_cmd[@]}" --no-multi --reverse --tac --ansi --no-sort --height="$fzf_height") &&
         branch="$(echo "$branch" | REMOTES="$(command git remote)" perl -pe 's/\x1b\[[0-9;]*m//g; s/^([^\t]*\t)\(tag\) (.*)$/$1refs\/tags\/$2/; s/^[^\t]*\t([^ ]*).*$/$1/; my @remotes = split /\n/, $ENV{REMOTES}; foreach my $remote (@remotes) { s/^$remote\///; }')" &&
         checkout_command="$(printf 'git checkout %q\n' "$branch")" &&
         echo "$checkout_command" &&
