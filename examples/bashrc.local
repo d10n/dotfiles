@@ -41,7 +41,8 @@ shopt -s globstar 2> /dev/null
 # This defines where cd looks for targets
 # Add the directories you want to have fast access to, separated by colon
 # Ex: CDPATH=".:~:~/projects" will look for targets in the current working directory, in home and in the ~/projects folder
-CDPATH="."
+# If CDPATH is used to cd, then cd will echo the destination
+#CDPATH="~"
 
 # Not set because I don't want it set in zsh and I want consistency
 # cd to variables; with foo=~/code/foo, `cd foo` works from any folder that doesn't contain its own foo folder
