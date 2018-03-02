@@ -131,6 +131,7 @@ git() {
 
 git-checkout-i() {
     local fzf one refs cmd format branches line_count term_height fzf_height fzf_tmux branch checkout_command
+    command git rev-parse || return
     fzf="$(command -v fzf)"
     [[ -z "$fzf" ]] && [[ -x ~/.fzf/bin/fzf ]] && fzf=~/.fzf/bin/fzf
     if [[ -z "$fzf" ]]; then
