@@ -178,6 +178,7 @@ git config --global alias.stash-unstaged '!f() {
 
 # Press enter to view a stash's diff, q to exit the diff pager, and esc to exit fzf
 git config --global alias.stash-browse '!f() {
+    git rev-parse || return
     fzf="$(command -v fzf)"
     [ -z "$fzf" ] && [ -x ~/.fzf/bin/fzf ] && fzf=~/.fzf/bin/fzf
     [ -z "$fzf" ] && { printf >&2 "\e[0;31mgit stash-browse requires fzf to be installed\e[0m\n"; return 1; }
@@ -191,6 +192,7 @@ git config --global alias.stash-browse '!f() {
 
 # Press enter to view a commit's diff, q to exit the diff pager, and esc to exit fzf
 git config --global alias.browse '!f() {
+    git rev-parse || return
     fzf="$(command -v fzf)"
     [ -z "$fzf" ] && [ -x ~/.fzf/bin/fzf ] && fzf=~/.fzf/bin/fzf
     [ -z "$fzf" ] && { printf >&2 "\e[0;31mgit browse requires fzf to be installed\e[0m\n"; return 1; }
