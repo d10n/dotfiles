@@ -178,10 +178,12 @@ git config --global alias.stash-unstaged '!f() {
 
 # Press enter to view a stash's diff, q to exit the diff pager, and esc to exit fzf
 git config --global alias.stash-browse '!f() {
-    command -v fzf &>/dev/null || { printf >&2 "\e[0;31mgit stash-browse requires fzf to be installed\e[0m\n"; return 1; }
+    fzf="$(command -v fzf)"
+    [ -z "$fzf" ] && [ -x ~/.fzf/bin/fzf ] && fzf=~/.fzf/bin/fzf
+    [ -z "$fzf" ] && { printf >&2 "\e[0;31mgit stash-browse requires fzf to be installed\e[0m\n"; return 1; }
     git stash list --color=always \
         --format="%C(auto)%h %gd %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset) %C(auto)%<(70,trunc)%s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)" |
-        fzf --ansi --no-sort --reverse --tiebreak=index \
+        "$fzf" --ansi --no-sort --reverse --tiebreak=index \
         --bind "enter:execute: echo {} | sed \"s#\([a-f0-9]*\).*#\1#\" | head -1 |
         xargs -I % sh -c \"git show --patch --stat --color=always % | less -R\""
     return 0
@@ -189,10 +191,12 @@ git config --global alias.stash-browse '!f() {
 
 # Press enter to view a commit's diff, q to exit the diff pager, and esc to exit fzf
 git config --global alias.browse '!f() {
-    command -v fzf &>/dev/null || { printf >&2 "\e[0;31mgit browse requires fzf to be installed\e[0m\n"; return 1; }
+    fzf="$(command -v fzf)"
+    [ -z "$fzf" ] && [ -x ~/.fzf/bin/fzf ] && fzf=~/.fzf/bin/fzf
+    [ -z "$fzf" ] && { printf >&2 "\e[0;31mgit browse requires fzf to be installed\e[0m\n"; return 1; }
     git log --graph --color=always \
         --format="%C(auto)%h %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset)%C(auto)%d %s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)" "$@" |
-        fzf --ansi --no-sort --reverse --tiebreak=index \
+        "$fzf" --ansi --no-sort --reverse --tiebreak=index \
         --bind "enter:execute: echo {} |
             sed \"s#^[* /|\-]*\([a-f0-9]*\).*#\1#\" | head -1 |
             xargs -I % sh -c \"git show -m --patch --stat --color=always % | less -R\""
