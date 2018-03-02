@@ -132,7 +132,7 @@ mvcd() {
 cd() {
     local top
     [[ "$#" -eq 0 ]] && set_iterm_tab_rgb
-    { [[ "$1" = ":/" ]] && top="$(git rev-parse --show-cdup)." && builtin cd "$top"; } || \
+    { [[ "$1" = ":/" ]] && top="$(command git rev-parse --show-cdup)." && builtin cd "$top"; } || \
     { [[ -f "$1" ]] && builtin cd "$(dirname "$1")"; } || \
     builtin cd "$@"
 }
@@ -208,9 +208,9 @@ git-checkout-i() {
         *) refs="refs/heads/"; one="${1/#-i/-}"; [[ "$#" -gt 0 ]] && shift && [[ "$one" != "-" ]] && set -- "$one" "$@";;
     esac
     # old git for-each-ref does not accept --color flag, new git for-each-ref only accepts --color flag
-    command git for-each-ref --color --count=1 &>/dev/null && cmd=( git for-each-ref --color ) || cmd=( git -c color.ui=always for-each-ref )
+    command git for-each-ref --color --count=1 &>/dev/null && cmd=( command git for-each-ref --color ) || cmd=( command git -c color.ui=always for-each-ref )
     format="--format=%(refname) %00%(committerdate:format:%s)%(taggerdate:format:%s)%(color:red)%(committerdate:relative)%(taggerdate:relative)%(color:reset)%09%00%(color:yellow)%(refname:short)%(color:reset) %00%(subject)%00 %(color:reset)%(color:dim cyan)<%(color:reset)%(color:cyan)%(authorname)%(taggername)%(color:reset)%(color:dim cyan)>%(color:reset)"
-    branches="$(command "${cmd[@]}" "$format" "$refs" |
+    branches="$("${cmd[@]}" "$format" "$refs" |
         perl -ne 'next if /^refs\/stash /; s/^refs\/tags\/[^\x00]*\x00([^\x00]*)\x00([^\x00]*)/\1(tag) \2/ || s/^[^\x00]*\x00([^\x00]*)\x00/$1/; s/\x00([^\x00]{0,50})([^\x00]*)\x00/$1\x1b[1;30m$2\x1b[0m/; print' |
         sort -k1,1 | cut -c11- | tail "${@:-+0}")" &&
         line_count=$(( $(wc -l <<< "$branches") )) &&
@@ -218,7 +218,7 @@ git-checkout-i() {
         fzf_height=$(( line_count + 2 < term_height / 2 ? line_count + 2 : term_height / 2 )) &&
         branch=$(echo "$branches" |
         fzf-tmux -d "$fzf_height" -- --no-multi --reverse --tac --ansi --no-sort --height="$fzf_height") &&
-        branch="$(echo "$branch" | REMOTES="$(git remote)" perl -pe 's/\x1b\[[0-9;]*m//g; s/^([^\t]*\t)\(tag\) (.*)$/$1refs\/tags\/$2/; s/^[^\t]*\t([^ ]*).*$/$1/; my @remotes = split /\n/, $ENV{REMOTES}; foreach my $remote (@remotes) { s/^$remote\///; }')" &&
+        branch="$(echo "$branch" | REMOTES="$(command git remote)" perl -pe 's/\x1b\[[0-9;]*m//g; s/^([^\t]*\t)\(tag\) (.*)$/$1refs\/tags\/$2/; s/^[^\t]*\t([^ ]*).*$/$1/; my @remotes = split /\n/, $ENV{REMOTES}; foreach my $remote (@remotes) { s/^$remote\///; }')" &&
         checkout_command="$(printf 'git checkout %q\n' "$branch")" &&
         echo "$checkout_command" &&
         { { builtin history -a && builtin history -s "git checkout -i" && builtin history -s "$checkout_command" && builtin history -a; } &>/dev/null ||
@@ -513,19 +513,19 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
     local -a gitstatus
 
     # On a branch?
-    branch=$(git symbolic-ref --short -q HEAD)
+    branch=$(command git symbolic-ref --short -q HEAD)
     # On a remote-tracking branch?
-    remote=${$(git rev-parse --verify "${hook_com[branch]}@{upstream}" \
+    remote=${$(command git rev-parse --verify "${hook_com[branch]}@{upstream}" \
         --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
 
     if [[ -z ${branch} ]] ; then
-        #detached_from=${$(git describe --all --exact-match 2>/dev/null):-$(git rev-parse --short HEAD)}
-        detached_from="$(git describe --all --always)"
+        #detached_from=${$(command git describe --all --exact-match 2>/dev/null):-$(command git rev-parse --short HEAD)}
+        detached_from="$(command git describe --all --always)"
         hook_com[branch]="[detached from ${detached_from}]"
     elif [[ -n ${remote} ]] ; then
-        ahead=$(git rev-list "${hook_com[branch]}@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
+        ahead=$(command git rev-list "${hook_com[branch]}@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
         (( ahead )) && gitstatus+=( "+${ahead}" )
-        behind=$(git rev-list "HEAD..${hook_com[branch]}@{upstream}" 2>/dev/null | wc -l | tr -d ' ')
+        behind=$(command git rev-list "HEAD..${hook_com[branch]}@{upstream}" 2>/dev/null | wc -l | tr -d ' ')
         (( behind )) && gitstatus+=( "-${behind}" )
         hook_com[branch]="${hook_com[branch]} [${remote}${gitstatus:+ ${(j:/:)gitstatus}}]"
     fi
@@ -534,8 +534,8 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
 # Show count of stashed changes
 +vi-git-stash() {
     local -a stashes
-    if git rev-parse --quiet --verify refs/stash &>/dev/null; then
-        stashes=$(git rev-list --walk-reflogs --count refs/stash)
+    if command git rev-parse --quiet --verify refs/stash &>/dev/null; then
+        stashes=$(command git rev-list --walk-reflogs --count refs/stash)
         hook_com[misc]="${hook_com[misc]}${hook_com[misc]:+ }(${stashes} stashed)"
     fi
 }
