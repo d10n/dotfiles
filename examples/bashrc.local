@@ -335,7 +335,7 @@ PS1="\u@\h:\w"'$(__git_info)'$'\n'"\\\$ "
 PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\\\$\[$X\] "
 
 __git_info() {
-    if ! command git rev-parse; then
+    if ! command git rev-parse &>/dev/null; then
         return
     fi
     local message branch remote_ref remote commit_hash detached_tag detached_from tracking ahead behind gitstatus base stashes stash_message staged_changes unstaged_changes
