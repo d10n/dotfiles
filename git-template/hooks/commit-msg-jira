@@ -48,8 +48,13 @@ jira_added=0
 
 if ! printf %s "$message" | has_jira ; then
     if ! printf %s "$branch" | capitalize_jira | has_jira; then
-        printf >&2 '\e[0;31mERROR\e[0m NOT COMMITTED\n'
-        printf >&2 '\e[0;31mERROR\e[0m JIRA %s ticket number not found in commit message or branch name.\n' "$jira_prefix"
+        if [[ -t 1 ]]; then
+            printf >&2 '\e[0;31mERROR:\e[0m NOT COMMITTED\n'
+            printf >&2 '\e[0;31mERROR:\e[0m JIRA %s ticket number not found in commit message or branch name.\n' "$jira_prefix"
+        else
+            printf >&2 'ERROR: NOT COMMITTED\n'
+            printf >&2 'ERROR: JIRA %s ticket number not found in commit message or branch name.\n' "$jira_prefix"
+        fi
         printf >&2 'Bypass with --no-verify\n'
         # Prevent losing the current failing message by prepopulating the next commit message
         perl -e '$_ = @ARGV[0]; s/\n\Q@ARGV[1]\E\n(.|\n)*/\n/ && print && exit; s/(?:\n#.*\n?|\n)+\Z//; print' "$(<"$1")" "$cut_line" > "$GIT_DIR/MERGE_MSG"
