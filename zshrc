@@ -503,8 +503,8 @@ precmd_functions+=(
 
 zstyle ':vcs_info:*' enable git  #hg svn
 zstyle ':vcs_info:*' check-for-changes true
-zstyle ':vcs_info:git*' formats $'\n'"(%s) %7.7i%c%u %b %m"
-zstyle ':vcs_info:git*' actionformats $'\n'"(%s|%a) %7.7i%c%u %b %m"
+zstyle ':vcs_info:git*' formats $'\n'"(%s) %i%c%u %b %m"
+zstyle ':vcs_info:git*' actionformats $'\n'"(%s|%a) %i%c%u %b %m"
 zstyle ':vcs_info:git*' stagedstr ' S'
 zstyle ':vcs_info:git*' unstagedstr ' U'
 zstyle ':vcs_info:git*:*' get-revision true
@@ -520,6 +520,7 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
     # On a remote-tracking branch?
     remote=${$(command git rev-parse --verify "${hook_com[branch]}@{upstream}" \
         --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
+    hook_com[revision]="$(command git rev-parse --verify --short=7 HEAD 2>/dev/null)"
 
     if [[ -z ${branch} ]] ; then
         #detached_from=${$(command git describe --all --exact-match 2>/dev/null):-$(command git rev-parse --short HEAD)}
