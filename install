@@ -169,6 +169,9 @@ def execute_configured_executables(config_default, config_local):
         executable = os.path.join(dotfile_directory, executable)
         if not os.path.exists(executable):
             continue
+        if executable_name in config_local['ignore']:
+            print(executable_name + ' is ignored; skipping')
+            continue
         if executable_name in config_local['execute']:
             prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no q=quit [Y/n/q]: '
             valid_actions='Ynq'
