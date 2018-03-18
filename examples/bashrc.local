@@ -331,7 +331,7 @@ fi
 
 if [[ $EUID == '0' ]]; then
     # running as root or with privileges
-    PROMPT_ROOT_FLAG="\[\e[0;31;41m\]/\[\e[1;37m\]!\[\e[0;31;41m\]\\\\\[$X\]"
+    PROMPT_ROOT_FLAG="\[\e[0;31;41m\]/\[\e[1;37m\]!\[\e[0;31;41m\]\\\\\[\e[0m\]"
 else
     PROMPT_ROOT_FLAG=''
 fi
