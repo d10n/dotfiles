@@ -60,7 +60,7 @@ git config --global alias.l '!f() {
                 s/ months? ago/mo/ ||
                 s/ years? ago/y/;
                 s/([^\x1b]\[)(.*?)]/sprintf(\"%s%21s]\",\$1,\$2)/e;
-                s/\x02([^\x03]{0,50})([^\x03]*)\x03/\$1\x1b[1;30m\$2/
+                s/\x02([^\x03]{0,50})([^\x03]*)\x03/length \$2?\$1.\"\x1b[1;30m\".\$2:\$1/e
             ";
         else
             awk "{
