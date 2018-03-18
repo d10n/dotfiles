@@ -127,6 +127,8 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
     symlinks.update(config_discovered['symlink'])
     for dotfile_name, dotfile_dest in sorted(symlinks.items()):
         dotfile_path = os.path.join(dotfile_directory, dotfile_name)
+        if not os.path.exists(dotfile_path):
+            continue
         if dotfile_dest:
             install_location = os.path.expanduser(dotfile_dest)
         else:
@@ -165,6 +167,8 @@ def execute_configured_executables(config_default, config_local):
     for executable in sorted(configured):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
+        if not os.path.exists(executable):
+            continue
         if executable_name in config_local['execute']:
             prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no q=quit [Y/n/q]: '
             valid_actions='Ynq'
@@ -183,6 +187,8 @@ def execute_discovered_executables(config_local, config_discovered):
     for executable in sorted(set(config_discovered['execute'].keys())):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
+        if not os.path.exists(executable):
+            continue
         prompt = ('Execute ' + executable_name +
                   '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
         config_local = do_prompt(prompt, 'Ynilq', {'y': 'x', 'n': 's'},
