@@ -46,6 +46,10 @@ Plug 'jeetsukumaran/vim-filebeagle'  " - to open, q to close
 "Plug 'Shougo/vimproc.vim', {'do' : 'make'} | Plug 'Shougo/unite.vim' | Plug 'Shougo/vimfiler.vim'  " - to open and close
 "Plug 'tpope/vim-vinegar'  " - to open, q to close
 
+if has_key(g:plugs, 'nerdtree')
+  Plug 'Xuyuanp/nerdtree-git-plugin'
+endif
+
 " Languages
 Plug 'jdonaldson/vaxe'
 Plug 'pangloss/vim-javascript'
