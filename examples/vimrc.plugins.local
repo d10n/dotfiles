@@ -67,6 +67,7 @@ Plug 'ervandew/supertab'
 " Warning: >60MB download!
 "Plug 'vim-ctrlspace/vim-ctrlspace'
 
+" TODO: Add a langserver.org plugin
 
 "
 " Press zR to open all folds and zM to close all folds
