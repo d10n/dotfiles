@@ -194,7 +194,7 @@ git-checkout-i() {
     fzf="$(command -v fzf)"
     [[ -z "$fzf" ]] && [[ -x ~/.fzf/bin/fzf ]] && fzf=~/.fzf/bin/fzf
     if [[ -z "$fzf" ]]; then
-        printf >&2 "\e[0;31mgit checkout -i requires fzf to be installed\e[0m\n"
+        printf >&2 '\e[0;31mgit checkout -i requires fzf to be installed\e[0m\n'
         return 1
     fi
     fzf_tmux="$(command -v fzf-tmux)"
