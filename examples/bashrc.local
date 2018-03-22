@@ -107,6 +107,10 @@ git() {
         return
     fi
     if [[ "$1" = "grep" ]]; then
+        if ! command -v perl &>/dev/null; then
+            command git "$@"
+            return
+        fi
         command git -c color.ui=always "$@" | perl -pe 'my $truncate = 500; if (length > $truncate) {
             s/^((?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){$truncate})(?=(?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){14}).*/$1\e\[m...(truncated)/
         }'
