@@ -87,6 +87,7 @@ if [[ -d "$NVM_DIR" ]]; then
     nvm() { lazy_load_nvm; "$0" "$@" }
     npm() { lazy_load_nvm; "$0" "$@" }
     node() { lazy_load_nvm; "$0" "$@" }
+    yarn() { lazy_load_nvm; "$0" "$@" }
     lazy_load_nvm() {
         export NVM_DIR
         unset -f lazy_load_nvm nvm npm node
