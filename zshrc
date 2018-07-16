@@ -458,10 +458,10 @@ color_count = int(os.environ["color_count"])
 colors = rgb2short256(*rgb) if color_count >= 256 else hl2short(h, l, color_count)
 for c in colors: print(c)
 ')"
-HOSTBGCOLOR=$(tput setab "$HOSTCOLORNUMBER" 2>/dev/null || printf '\e[48;5;%s' "$HOSTCOLORNUMBER")
-HOSTFGCOLOR=$(tput setaf "$HOSTCOLORNUMBER" 2>/dev/null || printf '\e[38;5;%s' "$HOSTCOLORNUMBER")
-HOSTBGTEXT=$(tput setab "$HOSTTEXTNUMBER" 2>/dev/null || printf '\e[48;5;%s' "$HOSTTEXTNUMBER")
-HOSTFGTEXT=$(tput setaf "$HOSTTEXTNUMBER" 2>/dev/null || printf '\e[38;5;%s' "$HOSTTEXTNUMBER")
+HOSTBGCOLOR=$(tput setab "$HOSTCOLORNUMBER" 2>/dev/null || printf '\e[48;5;%sm' "$HOSTCOLORNUMBER")
+HOSTFGCOLOR=$(tput setaf "$HOSTCOLORNUMBER" 2>/dev/null || printf '\e[38;5;%sm' "$HOSTCOLORNUMBER")
+HOSTBGTEXT=$(tput setab "$HOSTTEXTNUMBER" 2>/dev/null || printf '\e[48;5;%sm' "$HOSTTEXTNUMBER")
+HOSTFGTEXT=$(tput setaf "$HOSTTEXTNUMBER" 2>/dev/null || printf '\e[38;5;%sm' "$HOSTTEXTNUMBER")
 fi
 
 if [[ $(print -Pn '%#') == '#' ]]; then
