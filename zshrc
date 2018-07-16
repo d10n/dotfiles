@@ -286,7 +286,7 @@ apply_aliases() {
     # modified commands
     command -v gtar &>/dev/null && alias tar="gtar"
     command -v colordiff &>/dev/null && alias diff="colordiff"
-    command -v wget &>/dev/null && alias wget="wget --content-disposition"
+    command -v wget &>/dev/null && ! command wget --help 2>&1 | head -1 | grep -q BusyBox && alias wget="wget --content-disposition"
     command -v pygmentize &>/dev/null && alias ccat="pygmentize -g"  # pip install Pygments
     alias more="less"
     alias df="df -h"
