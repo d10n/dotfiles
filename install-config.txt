@@ -32,6 +32,8 @@ Dockerfile
 Makefile
 README.md
 examples
+find-installed-dotfiles
 git-template
+uninstall
 zsh-libs
 

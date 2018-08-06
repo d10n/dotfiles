@@ -24,10 +24,8 @@ To install:
 
 To uninstall:
 
-    find ~ -maxdepth 1 -lname ~'/.config/dotfiles/*' -print -delete
-    cat install-config.txt install-config.local.txt | grep ' = ' | sed 's/[^=]*= //' |
-        python -c 'import os,sys;[sys.stdout.write(os.path.expanduser(line)) for line in sys.stdin]' |
-        while IFS= read -r file; do [[ -L "$file" ]] && rm "$file" && echo "$file"; done
+    ~/.config/dotfiles/uninstall
+    # Or manually remove the symlinked files
 
 Make local customizations with:
 

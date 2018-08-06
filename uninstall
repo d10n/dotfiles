@@ -1,0 +1,17 @@
+#!/usr/bin/env bash
+
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+    echo 'Execute this file instead of sourcing it'
+    return 1
+fi
+
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "$SOURCE" ]]; do
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DOTFILES_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+cd "$DOTFILES_DIR" || { echo >&2 'Error finding dotfiles dir'; exit 1; }
+
+./find-installed-dotfiles -print0 | xargs -0 -n1 -I % find % -maxdepth 0 -type l -print -exec rm '{}' ';'

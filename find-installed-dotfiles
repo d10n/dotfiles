@@ -1,0 +1,41 @@
+#!/usr/bin/env bash
+
+if [[ "${BASH_SOURCE[0]}" != "${0}" ]]; then
+    echo 'Execute this file instead of sourcing it'
+    return 1
+fi
+
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -L "$SOURCE" ]]; do
+    DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE"
+done
+DOTFILES_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
+cd "$DOTFILES_DIR" || { echo >&2 'Error finding dotfiles dir'; exit 1; }
+export DOTFILES_DIR
+
+export PRINT0=false
+[[ "$1" = '-print0' ]] && PRINT0=true
+
+#find ~ -maxdepth 1 -type l -lname "${DOTFILES_DIR}/*" -print0
+# -lname is not supported by busybox find, so use python
+# use xargs to prevent too many arguments
+
+find ~ -maxdepth 1 -type l -print0 | xargs -0 -n5 python -c '
+import os
+import sys
+delimiter = "\0" if os.environ["PRINT0"] == "true" else "\n"
+files = sys.argv[1:] # exclude -c flag
+for file in files:
+    if os.path.realpath(file).startswith(os.environ["DOTFILES_DIR"] + "/"):
+        sys.stdout.write(file + delimiter)'
+
+cat install-config.txt install-config.local.txt | sed -n 's/[^=]*= //p' | python -c '
+import os
+import sys
+delimiter = "\0" if os.environ["PRINT0"] == "true" else "\n"
+for line in sys.stdin:
+    expanded_file = os.path.expanduser(line.strip())
+    if os.path.islink(expanded_file) and os.path.realpath(expanded_file).startswith(os.environ["DOTFILES_DIR"] + "/"):
+        sys.stdout.write(expanded_file + delimiter)'
