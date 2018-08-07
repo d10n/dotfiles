@@ -289,7 +289,7 @@ ansicolors() {
 
 #codegrep() {
 #    find ~/code -maxdepth 2 -mindepth 2 -type d -name .git \
-#        -execdir sh -o pipefail -c 'git grep --color --line-number --extended-regexp "$@" | perl -pe "s/^([^:]*:[^:]*?)(?:\e\[[^:]*m)?:.{500,}/\$1 matches/" | awk -v dir="$(basename "$PWD")" "NR==1{print dir}1" && echo' - "$@" \;
+#        -execdir sh -o pipefail -c 'git grep --color --line-number --extended-regexp "$@" | perl -pe "s/^([^:]*:[^:]*?)(?:\e\[[^:]*m)?:.{500,}/\$1\e[0m matches/" | awk -v dir="$(basename "$PWD")" "NR==1{print dir}1" && echo' - "$@" \;
 #}
 
 #gtm() {
