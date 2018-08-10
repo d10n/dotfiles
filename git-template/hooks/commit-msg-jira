@@ -6,7 +6,8 @@
 # Otherwise, it is appended as the last line of the body
 # Example branch name: feature/SRC-1234-short-description
 
-jira_prefix="$(git config hooks.jiraPrefix || echo SRC)"
+match_any_jira_prefix='[A-Z][A-Z]*'
+jira_prefix="$(git config hooks.jiraPrefix || printf %s "$match_any_jira_prefix")"
 honor_subject_length_convention="$(git config --bool hooks.honorSubjectLengthConvention || echo true)"
 
 # This gets added with git commit -v or git commit --cleanup=scissors
@@ -33,15 +34,23 @@ show_jira() {
     grep -o "\\b${jira_prefix}-[0-9][0-9]*\\b"
 }
 
-capitalize_jira() {
-    perl -pe "s/\\b${jira_prefix}-(\\d+)\\b/${jira_prefix}-\\1/ig"
+show_jira_prefix() {
+    grep -o "\\b${jira_prefix}\\b"
 }
 
-capitalized="$(printf %s "$message" | capitalize_jira)"
-if ! cmp -s <(printf %s "$message") <(printf %s "$capitalized"); then
-    printf %s "$capitalized" > "$1"
-    printf >&2 '%s numbers in the commit message have been capitalized.' "$jira_prefix"
-    exit
+capitalize_jira() {
+    perl -pe "s/\\b(${jira_prefix}-\\d+)\\b/\\U\\1/ig"
+}
+
+# If a specific JIRA prefix is configured, then we can attempt
+# to automatically fix incorrect ticket captialization
+if [[ "$jira_prefix" != "$match_any_jira_prefix" ]]; then
+    capitalized="$(printf %s "$message" | capitalize_jira)"
+    if ! cmp -s <(printf %s "$message") <(printf %s "$capitalized"); then
+        printf %s "$capitalized" > "$1"
+        printf >&2 '%s numbers in the commit message have been capitalized.' "$jira_prefix"
+        exit
+    fi
 fi
 
 jira_added=0
@@ -50,19 +59,21 @@ if ! printf %s "$message" | has_jira ; then
     if ! printf %s "$branch" | capitalize_jira | has_jira; then
         if [[ -t 1 ]]; then
             printf >&2 '\e[0;31mERROR:\e[0m NOT COMMITTED\n'
-            printf >&2 '\e[0;31mERROR:\e[0m JIRA %s ticket number not found in commit message or branch name.\n' "$jira_prefix"
+            printf >&2 '\e[0;31mERROR:\e[0m JIRA ticket number not found in commit message or branch name.\n'
         else
             printf >&2 'ERROR: NOT COMMITTED\n'
-            printf >&2 'ERROR: JIRA %s ticket number not found in commit message or branch name.\n' "$jira_prefix"
+            printf >&2 'ERROR: JIRA ticket number not found in commit message or branch name.\n'
         fi
         printf >&2 'Bypass with --no-verify\n'
         # Prevent losing the current failing message by prepopulating the next commit message
         perl -e '$_ = @ARGV[0]; s/\n\Q@ARGV[1]\E\n(.|\n)*/\n/ && print && exit; s/(?:\n#.*\n?|\n)+\Z//; print' "$(<"$1")" "$cut_line" > "$GIT_DIR/MERGE_MSG"
         exit 1
     fi
+    matched_jira_ticket="$(printf %s "$branch" | capitalize_jira | show_jira)"
+    matched_jira_prefix="$(printf %s "$matched_jira_ticket" | show_jira_prefix)"
 
     # If the ticket number fits on the commit message subject, add it there
-    prefixed_message="$(printf %s "$branch" | capitalize_jira | show_jira) $message"
+    prefixed_message="$matched_jira_ticket $message"
     if [[ "$honor_subject_length_convention" != "true" ]]; then
         message="$prefixed_message"
         jira_added=1
@@ -94,7 +105,7 @@ if ! printf %s "$message" | has_jira ; then
 
     # Save
     printf %s "$message" > "$1"
-    printf >&2 'JIRA %s ticket number added from git branch name.\n' "$jira_prefix"
+    printf >&2 'JIRA %s ticket number added from git branch name.\n' "$matched_jira_prefix"
 fi
 
 rm "$backup_file"
