@@ -135,7 +135,13 @@ git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//'
     my $last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
         if (/^Binary file .* matches$/) { print; next; }
-        my ($file, $line, $text) = /^(.*?)(?:\e\[[^m]*m):(?:\e\[[^m]*m)(.*?)(?:\e\[[^m]*m):(?:\e\[[^m]*m)(.*)$/;
+        my ($file, $line, $text, $context_separator) = /^(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*)$|^(\e\[[^m]*m--\e\[[^m]*m)$/;
+        if (defined($context_separator)) {
+            do_blame() if (@lines);
+            @lines = (); @texts = ();
+            print $context_separator, "\n";
+            next;
+        }
         if ($file eq "") { print; next; }
         if (defined($last_file) && $file ne $last_file) {
             do_blame() if (@lines);
