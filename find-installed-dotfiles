@@ -16,7 +16,7 @@ cd "$DOTFILES_DIR" || { echo >&2 'Error finding dotfiles dir'; exit 1; }
 export DOTFILES_DIR
 
 export PRINT0=false
-[[ "$1" = '-print0' ]] && PRINT0=true
+[[ "$1" = '-print0' ]] && export PRINT0=true
 
 #find ~ -maxdepth 1 -type l -lname "${DOTFILES_DIR}/*" -print0
 # -lname is not supported by busybox find, so use python
