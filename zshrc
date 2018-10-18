@@ -407,8 +407,8 @@ h = divmod(d[1],3600)  # hours
 m = divmod(h[1],60)  # minutes
 s = m[1]  # seconds
 if d[0] > 0:
-    sys.stdout.write("{}d ".format(d[0]))
-sys.stdout.write("{:0>2}:{:0>2}:{:0>2}".format(h[0], m[0], s))
+    sys.stdout.write("{0}d ".format(d[0]))
+sys.stdout.write("{0:0>2}:{1:0>2}:{2:0>2}".format(h[0], m[0], s))
 ' "$date_end" "$date_start")
     echo -e "Wall time: $wall_time\tStart: $date_start_iso\tStop: $date_end_iso"
 }
