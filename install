@@ -26,7 +26,7 @@ def main():
     config_local.save()
 
     print(textwrap.dedent("""
-        Update the dotfiles by running "git pull" and "./install" in {}
+        Update the dotfiles by running "git pull" and "./install" in {0}
         Check git log and README.md for changes when you update.
         """).format(substitute_home(dotfile_directory)))
 
