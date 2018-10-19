@@ -415,11 +415,11 @@ endif
 let s:original_showbreak = &showbreak
 function! ToggleGutter()
   set invnumber
-  let &list=&number
+  let &list = &number
   if exists('&signcolumn')
-    let &signcolumn=(&number?'auto':'no')
+    let &signcolumn = (&number ? 'auto' : 'no')
   endif
-  let &showbreak=(&number?s:original_showbreak:"")
+  let &showbreak = (&number ? s:original_showbreak : "")
 endfunction
 command! ToggleGutter call ToggleGutter()
 
