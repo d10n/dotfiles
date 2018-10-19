@@ -142,6 +142,7 @@ cd() {
     builtin cd "$@"
 }
 
+unalias which &>/dev/null  # Prevent system-wide which alias from breaking the which function
 which() {
     local which_out which_exit
     which_out="$(builtin which "$@")"
