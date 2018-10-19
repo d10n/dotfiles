@@ -121,6 +121,11 @@ alias help='PAGER="less -FX" run-help'
 autoload -Uz zmv
 alias zmv='noglob zmv'
 
+# Make ^x^e edit the command line like bash
+autoload -Uz edit-command-line
+zle -N edit-command-line
+bindkey '^x^e' edit-command-line
+
 mkcd() {
     [[ ! -z "$1" ]] && mkdir -p "$1" && builtin cd "$1"
 }
