@@ -29,7 +29,7 @@ else
 endif
 
 " Bootstrap plugin manager and plugins
-if filereadable($HOME . '/.vimrc.plugins')  " Disable plugins by (re)moving ~/.vimrc.plugins
+if filereadable(glob('~/.vimrc.plugins'))  " Disable plugins by (re)moving ~/.vimrc.plugins
   " Download with curl (recommended by vim-plug)
   " Use :PlugUpdate to update vim-plug
   let vimplug_src = 'https://raw.githubusercontent.com/junegunn/vim-plug/master/plug.vim'
@@ -440,7 +440,7 @@ function! AnalyzeProfile()
 endfunction
 
 " Local config
-if filereadable($HOME . '/.vimrc.local')
+if filereadable(glob('~/.vimrc.local'))
   source ~/.vimrc.local
 endif
 
