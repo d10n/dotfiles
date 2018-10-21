@@ -1,5 +1,4 @@
 [symlink]
-
 bash.colors
 bash_profile
 bashrc
@@ -20,18 +19,15 @@ zshrc
 zshrc.local
 
 [symlink:darwin]
-
 amethyst
 hushlogin
 
 [execute]
-
 get-zsh-tools
 git-config
 run-lesskey
 
 [ignore]
-
 Dockerfile
 Makefile
 README.md
