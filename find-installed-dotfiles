@@ -31,7 +31,7 @@ for file in files:
     if os.path.realpath(file).startswith(os.environ["DOTFILES_DIR"] + "/"):
         sys.stdout.write(file + delimiter)'
 
-cat install-config.txt install-config.local.txt | sed -n 's/[^=]*= //p' | python -c '
+cat install-config.txt install-config.local.txt 2>/dev/null | sed -n 's/[^=]*= //p' | python -c '
 import os
 import sys
 delimiter = "\0" if os.environ["PRINT0"] == "true" else "\n"
