@@ -151,7 +151,7 @@ def symlink_dotfiles(config_default, config_local, config_discovered):
 
 def execute_executables(config_default, config_local, config_discovered):
     config_local = execute_configured_executables(config_default, config_local)
-    config_local = execute_discovered_executables(config_local, config_discovered)
+    config_local = execute_discovered_executables(config_default, config_local, config_discovered)
     return config_local
 
 
@@ -179,7 +179,7 @@ def execute_configured_executables(config_default, config_local):
     return config_local
 
 
-def execute_discovered_executables(config_local, config_discovered):
+def execute_discovered_executables(config_default, config_local, config_discovered):
     for executable in sorted(set(config_discovered['execute'].keys())):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
@@ -189,7 +189,7 @@ def execute_discovered_executables(config_local, config_discovered):
                   '? (verify first!) y=yes n=no i=ignore l=symlink q=quit [Y/n/i/l/q]: ')
         config_local = do_prompt(prompt, 'Ynilq', {'y': 'x', 'n': 's'},
                                  executable_name, executable, None,
-                                 None, config_local)
+                                 config_default, config_local)
     return config_local
 
 
@@ -221,7 +221,7 @@ def do_prompt(prompt, valid_actions, action_map,
 
 
 def ignore(config_default, config_local, item_name, item_dest):
-    if ((config_default is None or item_name not in config_default['ignore']) and
+    if (item_name not in config_default['ignore'] and
             item_name not in set(config_local['symlink']) | set(config_local['execute'])):
         config_local['ignore'][item_name] = item_dest
         print('  Ignore ' + item_name)
@@ -235,7 +235,7 @@ def symlink(config_default, config_local, item_name, item_path, item_dest):
     else:
         install_location = os.path.join(
             os.path.expanduser('~'), '.' + item_name)
-    if config_default is None or item_name not in config_default['symlink']:
+    if item_name not in config_default['symlink']:
         config_local['symlink'][item_name] = item_dest
     print('  Symlink ' + item_name + ' to ' + install_location)
     if not os.path.exists(os.path.dirname(install_location)):
@@ -244,7 +244,7 @@ def symlink(config_default, config_local, item_name, item_path, item_dest):
 
 
 def execute(config_default, config_local, item_name, item_path):
-    if config_default is None or item_name not in config_default['execute']:
+    if item_name not in config_default['execute']:
         config_local['execute'][item_name] = None
     print('  Execute ' + item_path)
     subprocess.Popen([item_path], cwd=dotfile_directory).wait()
