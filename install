@@ -8,6 +8,9 @@ import textwrap
 import re
 import errno
 import subprocess
+import platform
+import itertools
+from collections import defaultdict
 
 # Python 2/3 compatibility
 try:
@@ -16,6 +19,13 @@ except NameError:
     pass
 
 dotfile_directory = os.path.dirname(os.path.realpath(__file__))
+
+detected_platform = re.search(r'(^[^=]*$|(?<===)[^ ]*)', sys.platform).group(0)
+if 'java' in detected_platform:
+    detected_platform = platform.platform().lower()
+    detected_platform = re.search('darwin|linux|windows|cygwin', detected_platform).group(0)
+    if detected_platform == 'windows':
+        detected_platform = 'win32'
 
 
 def main():
@@ -34,11 +44,11 @@ def main():
 class Config(object):
     def __init__(self, file_path=None):
         self.file_path = file_path
-        self.items = {
+        self.items = defaultdict(lambda: {}, {
             'symlink': {},
             'execute': {},
             'ignore': {},
-        }
+        })
         if not file_path or not os.path.exists(file_path):
             return
         state = None
@@ -48,7 +58,7 @@ class Config(object):
                 section = re.findall(r'^\[(.*)\]$', line)
                 if section:
                     state = section[0]
-                elif state in self.items.keys() and line:
+                elif line:
                     srcdest = re.findall(r'^([^=]*) = (.*)$', line)
                     if srcdest:
                         src, dest = srcdest[0]
@@ -58,7 +68,7 @@ class Config(object):
 
     def save(self):
         with open(self.file_path, 'w') as file:
-            for section in 'symlink', 'execute', 'ignore':
+            for section in self.sorted_keys():
                 file.write('[' + section + ']\n\n')
                 section_items = ''
                 for src, dest in sorted(self.items[section].items()):
@@ -74,12 +84,30 @@ class Config(object):
     def warn_overlap(self):
         for section_a, section_b in itertools.combinations(self.items.keys(), 2):
             items_overlap = sorted(set(self[section_a]) & set(self[section_b]))
-            if items_overlap:
+            a_primary, _, a_secondary = section_a.partition(':')
+            b_primary, _, b_secondary = section_a.partition(':')
+            primary_section_overlaps = a_primary == b_primary
+            secondary_sections_separate = primary_section_overlaps and '' not in [a_secondary, b_secondary]
+            if items_overlap and not secondary_sections_separate:
                 print('\nWarning: these entries are configured to both {0} and {1}:'.format(section_a, section_b))
                 print(items_overlap)
 
+    def sorted_keys(self):
+        keys = []
+        keys.extend(sorted([key for key in self.items.keys() if key.startswith('symlink')]))
+        keys.extend(sorted([key for key in self.items.keys() if key.startswith('execute')]))
+        keys.extend(sorted([key for key in self.items.keys() if key.startswith('ignore')]))
+        keys.extend(sorted([key for key in self.items.keys() if key not in keys]))
+        return keys
+
     def __getitem__(self, item):
-        return self.items.__getitem__(item)
+        merged_sections = {}
+        for section in self.items.keys():
+            primary_section, _, secondary_section = section.partition(':')
+            if primary_section == item:
+                if not secondary_section or detected_platform.startswith(secondary_section):
+                    merged_sections.update(self.items[section])
+        return merged_sections
 
     def __setitem__(self, item, value):
         return self.items.__setitem__(item, value)
@@ -89,9 +117,9 @@ def read_configs():
     config_default_file = os.path.join(dotfile_directory, 'install-config.txt')
     config_local_file = os.path.join(dotfile_directory, 'install-config.local.txt')
     config_default = Config(config_default_file)
-    config_default['ignore'][os.path.basename(__file__)] = None
-    config_default['ignore'][os.path.basename(config_default_file)] = None
-    config_default['ignore'][os.path.basename(config_local_file)] = None
+    config_default.items['ignore'][os.path.basename(__file__)] = None
+    config_default.items['ignore'][os.path.basename(config_default_file)] = None
+    config_default.items['ignore'][os.path.basename(config_local_file)] = None
     config_local = Config(config_local_file)
     return config_default, config_local
 
@@ -99,17 +127,18 @@ def read_configs():
 def discover_unknown(config_default, config_local):
     config_discovered = Config()
     configured_items = {}
-    for section in 'symlink', 'execute', 'ignore':
-        configured_items.update(config_default[section])
-        configured_items.update(config_local[section])
+    for section in config_default.items:
+        configured_items.update(config_default.items[section])
+    for section in config_local.items:
+        configured_items.update(config_local.items[section])
     dotfile_directory_files = glob.glob(dotfile_directory + '/*')
     for file in dotfile_directory_files:
         dotfile_name = os.path.basename(file)
         if dotfile_name not in configured_items:
             if os.access(file, os.X_OK) and not os.path.isdir(file):
-                config_discovered['execute'][dotfile_name] = None
+                config_discovered.items['execute'][dotfile_name] = None
             else:
-                config_discovered['symlink'][dotfile_name] = None
+                config_discovered.items['symlink'][dotfile_name] = None
     return config_discovered
 
 
@@ -156,7 +185,7 @@ def execute_executables(config_default, config_local, config_discovered):
 
 
 def execute_configured_executables(config_default, config_local):
-    configured = set(config_default['execute'].keys()).union(set(config_local['execute'].keys()))
+    configured = set(config_default['execute'].keys()) | set(config_local['execute'].keys())
     for executable in sorted(configured):
         executable_name = executable
         executable = os.path.join(dotfile_directory, executable)
@@ -221,9 +250,9 @@ def do_prompt(prompt, valid_actions, action_map,
 
 
 def ignore(config_default, config_local, item_name, item_dest):
-    if (item_name not in config_default['ignore'] and
-            item_name not in set(config_local['symlink']) | set(config_local['execute'])):
-        config_local['ignore'][item_name] = item_dest
+    local_non_ignore = set(config_local['symlink']) | set(config_local['execute'])
+    if item_name not in config_default['ignore'] and item_name not in local_non_ignore:
+        config_local.items['ignore'][item_name] = item_dest
         print('  Ignore ' + item_name)
     else:
         print('  Skip ' + item_name)
@@ -236,7 +265,7 @@ def symlink(config_default, config_local, item_name, item_path, item_dest):
         install_location = os.path.join(
             os.path.expanduser('~'), '.' + item_name)
     if item_name not in config_default['symlink']:
-        config_local['symlink'][item_name] = item_dest
+        config_local.items['symlink'][item_name] = item_dest
     print('  Symlink ' + item_name + ' to ' + install_location)
     if not os.path.exists(os.path.dirname(install_location)):
         mkdir_p(os.path.dirname(install_location))
@@ -245,7 +274,7 @@ def symlink(config_default, config_local, item_name, item_path, item_dest):
 
 def execute(config_default, config_local, item_name, item_path):
     if item_name not in config_default['execute']:
-        config_local['execute'][item_name] = None
+        config_local.items['execute'][item_name] = None
     print('  Execute ' + item_path)
     subprocess.Popen([item_path], cwd=dotfile_directory).wait()
 
