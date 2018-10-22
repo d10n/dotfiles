@@ -167,10 +167,10 @@ def execute_configured_executables(config_default, config_local):
             continue
         if executable_name in config_local['execute']:
             prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no q=quit [Y/n/q]: '
-            valid_actions='Ynq'
+            valid_actions = 'Ynq'
         elif executable_name in config_default['execute']:
             prompt = 'Execute ' + executable_name + '? (verify first!) y=yes n=no i=ignore q=quit [Y/n/i/q]: '
-            valid_actions='Yniq'
+            valid_actions = 'Yniq'
         else:
             continue
         config_local = do_prompt(prompt, valid_actions, {'y': 'x', 'n': 's'},
