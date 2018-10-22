@@ -19,6 +19,7 @@ zshrc
 zshrc.local
 
 [symlink:darwin]
+DefaultKeyBinding.dict = ~/Library/KeyBindings/DefaultKeyBinding.dict
 amethyst
 hushlogin
 
