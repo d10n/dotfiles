@@ -72,18 +72,11 @@ class Config(object):
         self.warn_overlap()
 
     def warn_overlap(self):
-        symlink_execute = sorted(set(self['symlink']) & set(self['execute']))
-        symlink_ignore = sorted(set(self['symlink']) & set(self['ignore']))
-        execute_ignore = sorted(set(self['execute']) & set(self['ignore']))
-        if symlink_execute:
-            print('\nWarning: these entries are configured to both symlink and execute:')
-            print(symlink_execute)
-        if symlink_ignore:
-            print('\nWarning: these entries are configured to both symlink and ignore:')
-            print(symlink_ignore)
-        if execute_ignore:
-            print('\nWarning: these entries are configured to both execute and ignore:')
-            print(execute_ignore)
+        for section_a, section_b in itertools.combinations(self.items.keys(), 2):
+            items_overlap = sorted(set(self[section_a]) & set(self[section_b]))
+            if items_overlap:
+                print('\nWarning: these entries are configured to both {0} and {1}:'.format(section_a, section_b))
+                print(items_overlap)
 
     def __getitem__(self, item):
         return self.items.__getitem__(item)
