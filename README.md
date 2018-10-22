@@ -5,27 +5,30 @@
 > https://xkcd.com/1205/
 
 To try without installing:
+```sh
+docker build -t dotfiles .
 
-    docker build -t dotfiles .
+docker run --rm -it dotfiles
+# cd ~/.config/dotfiles; git l; vim; tmux; etc.
 
-    docker run --rm -it dotfiles
-    # cd ~/.config/dotfiles; git l; vim; tmux; etc.
-
-    # Or use the --volume flag to access files on your host
-    docker run --rm -it --volume "$HOME":/mnt/ dotfiles
-    # cd /mnt/; ls
+# Or use the --volume flag to access files on your host
+docker run --rm -it --volume "$HOME":/mnt/ dotfiles
+# cd /mnt/; ls
+```
 
 
 To install:
-
-    git clone https://gitlab.com/d10n/dotfiles.git ~/.config/dotfiles
-    ~/.config/dotfiles/install
-    # Or manually symlink the files and execute the executable files
+```sh
+git clone https://gitlab.com/d10n/dotfiles.git ~/.config/dotfiles
+~/.config/dotfiles/install
+# Or manually symlink the files and execute the executable files
+```
 
 To uninstall:
-
-    ~/.config/dotfiles/uninstall
-    # Or manually remove the symlinked files
+```sh
+~/.config/dotfiles/uninstall
+# Or manually remove the symlinked files
+```
 
 Make local customizations with:
 
