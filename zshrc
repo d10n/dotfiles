@@ -221,10 +221,10 @@ git-checkout-i() {
     esac
     # old git for-each-ref does not accept --color flag, new git for-each-ref only accepts --color flag
     command git for-each-ref --color --count=1 &>/dev/null && cmd=( command git for-each-ref --color ) || cmd=( command git -c color.ui=always for-each-ref )
-    format="--format=%(refname) %00%(committerdate:format:%s)%(taggerdate:format:%s)%(color:red)%(committerdate:relative)%(taggerdate:relative)%(color:reset)%09%00%(color:yellow)%(refname:short)%(color:reset) %00%(subject)%00 %(color:reset)%(color:dim cyan)<%(color:reset)%(color:cyan)%(authorname)%(taggername)%(color:reset)%(color:dim cyan)>%(color:reset)"
+    format="--format=%(refname) %00%(committerdate:format:%s)%(taggerdate:format:%s) %(color:red)%(committerdate:relative)%(taggerdate:relative)%(color:reset)%09%00%(color:yellow)%(refname:short)%(color:reset) %00%(subject)%00 %(color:reset)%(color:dim cyan)<%(color:reset)%(color:cyan)%(authorname)%(taggername)%(color:reset)%(color:dim cyan)>%(color:reset)"
     branches="$("${cmd[@]}" "$format" "$refs" |
         perl -ne 'next if /^refs\/stash /; s/^refs\/tags\/[^\x00]*\x00([^\x00]*)\x00([^\x00]*)/\1(tag) \2/ || s/^[^\x00]*\x00([^\x00]*)\x00/$1/; s/\x00([^\x00]{0,50})([^\x00]*)\x00/$1\x1b[1;30m$2\x1b[0m/; print' |
-        sort -k1,1 | cut -c11- | tail "${@:--n+0}")" &&
+        sort -n -k1,1 | cut -d" " -f2- | tail "${@:--n+0}")" &&
         line_count=$(( $(wc -l <<< "$branches") )) &&
         term_height=$(tput lines) &&
         fzf_height=$(( line_count + 2 < term_height / 2 ? line_count + 2 : term_height / 2 )) &&
