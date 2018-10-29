@@ -341,7 +341,8 @@ else
     PROMPT_ROOT_FLAG=''
 fi
 
-PROMPT_COMMAND='history -a;printf "\e]0;%s\a" "$(pwd|perl -pe '"'"'s|^\Q$ENV{HOME}\E|~|;s|(?<=/)([._]*.)[^/]*(?=/)|$1|g;s|^\.$||'"'"')"'
+#PROMPT_COMMAND='history -a;printf "\e]0;%s\a" "$(pwd|perl -pe '"'"'s|^\Q$ENV{HOME}\E|~|;s|(?<=/)([._]*.)[^/]*(?=/)|$1|g;s|^\.$||'"'"')"'
+PROMPT_COMMAND='history -a;printf "\e]0;%s\a" "$(pws)"'
 
 PS1="\u@\h:\w"'$(__git_info)'$'\n'"\\\$ "
 PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\\\$\[$X\] "
