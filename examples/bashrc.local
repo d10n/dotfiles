@@ -300,7 +300,7 @@ HOSTBGCOLOR=$'\e[46m' # fallback to cyan background
 HOSTFGCOLOR=$'\e[36m' # fallback to cyan foreground
 HOSTBGTEXT=$'\e[40m'  # fallback to black background
 HOSTFGTEXT=$'\e[30m'  # fallback to black foreground
-HOSTHASH="$(name="$(uname -n | sed 's/\..*//')"; ssh_host_color "$name" 2>/dev/null || printf '%s\n' "$name" | if command -v md5sum &>/dev/null; then md5sum; else md5; fi)"
+HOSTHASH="$( name="$(uname -n | sed 's/\..*//')"; ssh_host_color "$name" 2>/dev/null || printf '%s\n' "$name" | if command -v md5sum &>/dev/null; then md5sum; else md5; fi )"
 if command -v python &>/dev/null; then
 { IFS= read -r HOSTCOLORNUMBER; IFS= read -r HOSTTEXTNUMBER; } <<<"$(hosthash=${HOSTHASH:0:6} color_count=$(tput colors 2>/dev/null || echo 8) python -c '
 import os
