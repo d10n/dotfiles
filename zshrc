@@ -271,8 +271,14 @@ apply_aliases() {
     fi
     if [[ "$OSTYPE" == "linux-gnu" ]]; then
         alias ls="ls --color=auto -p"
-        alias pbcopy='xsel --clipboard --input'
-        alias pbpaste='xsel --clipboard --output'
+        if uname -a | grep -q Microsoft; then
+            # wsl
+            alias pbcopy='clip.exe'
+            alias pbpaste='powershell.exe Get-Clipboard'
+        else
+            alias pbcopy='xsel --clipboard --input'
+            alias pbpaste='xsel --clipboard --output'
+        fi
     fi
     if [[ "$OSTYPE" == "cygwin" ]]; then
         alias ls="ls --color=auto -p"

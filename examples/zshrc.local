@@ -122,7 +122,14 @@ fi
 #alias vim=nvim
 #alias subl=subl3
 #alias idea='cygstart "C:\Users\username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\JetBrains Toolbox\IntelliJ IDEA Ultimate.lnk"'
+#alias idea='cygstart "$APPDATA\Microsoft\Windows\Start Menu\Programs\JetBrains Toolbox\IntelliJ IDEA Ultimate.lnk"'
 #alias subl='/cygdrive/c/Program\ Files/Sublime\ Text\ 3/subl'
+
+
+## Windows Subsystem for Linux (WSL)
+#alias vagrant=vagrant.exe
+#alias docker=docker.exe
+#alias docker-compose=docker-compose.exe
 
 
 ## Miscellaneous aliases
