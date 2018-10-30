@@ -240,6 +240,21 @@ git config --global alias.browse '!f() {
     return 0
 }; f'
 
+# Highlight word differences in lines like GitHub
+diff_highlight_found=''
+if command -v diff-highlight &>/dev/null; then
+    diff_highlight_found='diff-highlight'
+elif [[ -x /usr/share/git/diff-highlight/diff-highlight ]]; then
+    diff_highlight_found='/usr/share/git/diff-highlight/diff-highlight'
+elif [[ -x /usr/share/doc/git/diff-highlight/diff-highlight ]]; then
+    diff_highlight_found='/usr/share/doc/git/diff-highlight/diff-highlight'
+fi
+if [[ -n "$diff_highlight_found" ]]; then
+    git config --global pager.log "$diff_highlight_found | less -RFX"
+    git config --global pager.show "$diff_highlight_found | less -RFX"
+    git config --global pager.diff "$diff_highlight_found | less -RFX"
+fi
+
 # Set a global gitignore file
 git config --global core.excludesfile ~/.gitignore_global
 
