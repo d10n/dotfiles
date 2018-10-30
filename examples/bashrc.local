@@ -265,8 +265,8 @@ pws() {
     # ~/code/srv/src -> ~/c/s/src
     # Edge case: ~/._.foo/bar -> ~/._.f/b
     pwd | awk -F / -v home="$HOME" '{
-        if (substr($0, 0, length(home)) == home) {
-            $0 = "~" substr($0, length(home))
+        if (substr($0, 1, length(home)) == home) {
+            $0 = "~" substr($0, length(home) + 1)
         }
         for (i = 1; i < NF; i++) {
             match($i, /^[._]*./)
