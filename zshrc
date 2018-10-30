@@ -535,36 +535,40 @@ zstyle ':vcs_info:git*+set-message:*' hooks git-st git-stash
 
 # Show remote ref name and number of commits ahead-of or behind
 +vi-git-st() {
-    local ahead behind remote branch detached_from
+    local ahead behind remote branch on_branch detached_from
     local -a gitstatus
 
-    # On a branch?
-    branch=$(command git symbolic-ref --short -q HEAD)
-    # On a remote-tracking branch?
-    remote=${$(command git rev-parse --verify "${hook_com[branch]}@{upstream}" \
-        --symbolic-full-name 2>/dev/null)/refs\/remotes\/}
-    hook_com[revision]="$(command git rev-parse --verify --short=7 HEAD 2>/dev/null)"
+    # If hook_com[revision] is already short then we can skip safely getting the short hash
+    [[ "${#hook_com[revision]}" -gt 39 ]] && hook_com[revision]="$(command git rev-parse --verify -q --short=7 HEAD)"
 
-    if [[ -z ${branch} ]] ; then
-        #detached_from=${$(command git describe --all --exact-match 2>/dev/null):-$(command git rev-parse --short HEAD)}
-        detached_from="$(command git describe --all --always)"
+    # On a branch? Need to check because hook_com[branch] might be a tag
+    IFS='' read -r branch <"${gitdir}/HEAD"
+    [[ "$branch" = "ref: refs/heads/"* ]] && on_branch=true || on_branch=false
+
+    if [[ "$on_branch" = true ]]; then
+        # On a remote-tracking branch?
+        remote="${$(command git rev-parse --verify --symbolic-full-name @{u} 2>/dev/null)#refs/remotes/}"
+        if [[ -n "${remote}" ]]; then
+            IFS=$'\t' read -r ahead behind <<<"$(command git rev-list --left-right --count HEAD...@{u})"
+            (( ahead )) && gitstatus+=( "+${ahead}" )
+            (( behind )) && gitstatus+=( "-${behind}" )
+            hook_com[branch]="${hook_com[branch]} [${remote}${gitstatus:+ ${(j:/:)gitstatus}}]"
+        fi
+    else
+        detached_from="${$(command git describe --all --always 2>/dev/null):-${hook_com[revision]}}"
         hook_com[branch]="[detached from ${detached_from}]"
-    elif [[ -n ${remote} ]] ; then
-        ahead=$(command git rev-list "${hook_com[branch]}@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
-        (( ahead )) && gitstatus+=( "+${ahead}" )
-        behind=$(command git rev-list "HEAD..${hook_com[branch]}@{upstream}" 2>/dev/null | wc -l | tr -d ' ')
-        (( behind )) && gitstatus+=( "-${behind}" )
-        hook_com[branch]="${hook_com[branch]} [${remote}${gitstatus:+ ${(j:/:)gitstatus}}]"
     fi
 }
 
 # Show count of stashed changes
 +vi-git-stash() {
-    local -a stashes
-    if command git rev-parse --quiet --verify refs/stash &>/dev/null; then
-        stashes=$(command git rev-list --walk-reflogs --count refs/stash)
-        hook_com[misc]="${hook_com[misc]}${hook_com[misc]:+ }(${stashes} stashed)"
-    fi
+    local stashes stashes_exit stash_message
+    stashes="$(command git rev-list --walk-reflogs --count refs/stash 2>/dev/null)"
+    stashes_exit="$?"
+    [[ "$stashes_exit" -ne 0 ]] && return
+    [[ "$stashes" -eq 0 ]] && return
+    stash_message="(${stashes} stashed)"
+    hook_com[misc]="${hook_com[misc]}${hook_com[misc]:+ }(${stashes} stashed)"
 }
 
 # Get home/end/ins/etc keys to work as expected

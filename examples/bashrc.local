@@ -348,41 +348,67 @@ PS1="\u@\h:\w"'$(__git_info)'$'\n'"\\\$ "
 PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\\\$\[$X\] "
 
 __git_info() {
-    if ! command git rev-parse &>/dev/null; then
-        return
+    local message branch on_branch remote detached_tag detached_from tracking ahead behind gitstatus stashes stashes_exit stash_message staged_changes unstaged_changes
+
+    local repo_info="$(command git rev-parse --verify --git-dir --is-inside-git-dir --is-bare-repository --is-inside-work-tree --show-toplevel --short=7 HEAD 2>/dev/null)"
+    local rev_parse_exit_code="$?"
+    [[ -z "$repo_info" ]] && return
+
+    local short_sha=""
+    if [[ "$rev_parse_exit_code" = "0" ]]; then
+        # repository has commits (not empty)
+        short_sha="${repo_info##*$'\n'}"
+        repo_info="${repo_info%$'\n'*}"
     fi
-    local message branch remote_ref remote commit_hash detached_tag detached_from tracking ahead behind gitstatus base stashes stash_message staged_changes unstaged_changes
-    base=$(command git rev-parse --show-toplevel)
+    local toplevel="${repo_info##*$'\n'}"
+    repo_info="${repo_info%$'\n'*}"
+    local inside_worktree="${repo_info##*$'\n'}"
+    repo_info="${repo_info%$'\n'*}"
+    local bare_repo="${repo_info##*$'\n'}"
+    repo_info="${repo_info%$'\n'*}"
+    local inside_gitdir="${repo_info##*$'\n'}"
+    local g="${repo_info%$'\n'*}"
+
     # On a branch?
-    branch=$(command git symbolic-ref --short -q HEAD)
-    # On a remote-tracking branch?
-    remote_ref=$(command git rev-parse --verify "${branch}@{upstream}" --symbolic-full-name 2>/dev/null)
-    remote=${remote_ref/refs\/remotes\/}
-    commit_hash=$(command git rev-parse --verify --short=7 HEAD 2>/dev/null)
-    if [[ "$(command git rev-parse --is-inside-work-tree)" = "true" ]]; then
-        staged_changes="$(command git diff-index --cached --quiet HEAD -- || echo 'S')"
+    IFS='' read -r branch <"$g/HEAD"  # For bash in cygwin (not zsh), read is MUCH faster than branch="$(<"$g/HEAD")"
+    [[ "$branch" = "ref: refs/heads/"* ]] && on_branch=true || on_branch=false
+    branch="${branch#ref: refs/heads/}"
+    #branch=$(command git symbolic-ref --short -q HEAD)
+
+    if [[ "$inside_worktree" = "true" ]]; then
         unstaged_changes="$(command git diff-files --quiet || echo 'U')"
+        if [[ "$rev_parse_exit_code" = "0" ]]; then
+            staged_changes="$(command git diff-index --cached --quiet HEAD -- || echo 'S')"
+        else
+            # empty repository (no commits yet)
+            # 4b825dc642cb6eb9a060e54bf8d69288fbee4904 is the git empty tree.
+            staged_changes="$(command git diff-index --cached --quiet 4b825dc642cb6eb9a060e54bf8d69288fbee4904 2>/dev/null || echo 'S')"
+        fi
     fi
-    if [[ -z ${branch} ]] ; then
-        detached_tag=$(command git describe --tags --exact-match 2>/dev/null)
-        detached_from=${detached_tag:-${commit_hash}}
+    if [[ "$on_branch" = true ]]; then
+        # On a remote-tracking branch?
+        remote="$(command git rev-parse --verify --symbolic-full-name @{u} 2>/dev/null)"
+        remote="${remote#refs/remotes/}"
+        if [[ -n "${remote}" ]]; then
+            IFS=$'\t' read -r ahead behind <<<"$(command git rev-list --left-right --count HEAD...@{u})"
+            (( $ahead )) && gitstatus+="+${ahead}"
+            (( $behind )) && gitstatus="${gitstatus:+$gitstatus/}-${behind}"
+            tracking="[${remote}${gitstatus:+ ${gitstatus}}]"
+        fi
+    else
+        detached_tag="$(command git describe --all --always 2>/dev/null)"
+        detached_from="${detached_tag:-${short_sha}}"
         tracking="[detached from ${detached_from}]"
-    elif [[ -n ${remote} ]] ; then
-        ahead=$(command git rev-list "${branch}@{upstream}..HEAD" 2>/dev/null | wc -l | tr -d ' ')
-        (( $ahead )) && gitstatus+="+${ahead}"
-        behind=$(command git rev-list "HEAD..${branch}@{upstream}" 2>/dev/null | wc -l | tr -d ' ')
-        (( $behind )) && gitstatus="${gitstatus:+$gitstatus/}-${behind}"
-        tracking="[${remote}${gitstatus:+ ${gitstatus}}]"
     fi
-    if command git rev-parse --quiet --verify refs/stash &>/dev/null; then
-        stashes=$(command git rev-list --walk-reflogs --count refs/stash)
-        stash_message="(${stashes} stashed)"
-    fi
+    stashes="$(command git rev-list --walk-reflogs --count refs/stash 2>/dev/null)"
+    stashes_exit="$?"
+    [[ "$stashes_exit" -eq 0 ]] && stash_message="(${stashes} stashed)"
+
     message="(git)"
-    [[ -n "${commit_hash}" ]] && message+=" ${commit_hash}"
+    [[ -n "${short_sha}" ]] && message+=" ${short_sha}"
     [[ -n "${staged_changes}" ]] && message+=" ${staged_changes}"
     [[ -n "${unstaged_changes}" ]] && message+=" ${unstaged_changes}"
-    [[ -n "${branch}" ]] && message+=" ${branch}"
+    [[ "$on_branch" = true ]] && message+=" ${branch}"
     [[ -n "${tracking}" ]] && message+=" ${tracking}"
     [[ -n "${stash_message}" ]] && message+=" ${stash_message}"
     echo -en "\n${message}"
