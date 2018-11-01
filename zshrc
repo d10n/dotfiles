@@ -404,13 +404,13 @@ pretty_print_date_difference() {
     if ( date --version 2>&1; true; ) | grep -q -e GNU -e BusyBox; then
         local date_start_iso="$(date -u -d @"$date_start" +%FT%TZ)"
         local date_end_iso="$(date -u -d @"$date_end" +%FT%TZ)"
-        local date_start_local="$(date -d @"$date_start" '+%F %T %Z')"
-        local date_end_local="$(date -d @"$date_end" '+%F %T %Z')"
+        local date_start_local="$(date -d @"$date_start" '+%F %T')"
+        local date_end_local="$(date -d @"$date_end" '+%F %T')"
     else
         local date_start_iso="$(date -u -r "$date_start" +%FT%TZ)"
         local date_end_iso="$(date -u -r "$date_end" +%FT%TZ)"
-        local date_start_local="$(date -r "$date_start" '+%F %T %Z')"
-        local date_end_local="$(date -r "$date_end" '+%F %T %Z')"
+        local date_start_local="$(date -r "$date_start" '+%F %T')"
+        local date_end_local="$(date -r "$date_end" '+%F %T')"
     fi
     local wall_time=$(python -c '
 import sys
@@ -424,12 +424,17 @@ if d[0] > 0:
     sys.stdout.write("{0}d ".format(d[0]))
 sys.stdout.write("{0:0>2}:{1:0>2}:{2:0>2}".format(h[0], m[0], s))
 ' "$date_end" "$date_start")
-    if [[ "$(date +%Z)" = UTC ]]; then
-        echo "Wall time: $wall_time\tStart: $date_start_iso\tStop: $date_end_iso"
-    else
-        echo "Wall time: $wall_time\tStart: $date_start_iso\tStop: $date_end_iso"
-        echo "           ${wall_time//[^ ]/ }\t     : $date_start_local\t    : $date_end_local"
-    fi
+    {
+        local local_time_zone="$(date +%Z)"
+        if [[ "$local_time_zone" = UTC ]]; then
+            echo "Wall time: $wall_time\tStart: $date_start_iso\tStop: $date_end_iso"
+        else
+            local wall_time_prefix="Wall time: $wall_time"
+            local local_time_prefix="${(l(${#wall_time_prefix})( )):-Local time ($local_time_zone)}"
+            echo "$wall_time_prefix\tStart: $date_start_iso\tStop: $date_end_iso"
+            echo "$local_time_prefix\t     : $date_start_local\t    : $date_end_local"
+        fi
+    } | if command -v column &>/dev/null; then column -t -s $'\t'; else cat; fi
 }
 
 
