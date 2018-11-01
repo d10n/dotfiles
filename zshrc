@@ -382,6 +382,7 @@ print_prompt_duration_zle_accept_line() {
     # if the command was empty (just pressed enter) and if ZSH_PROMPT_PRINT_DURATION is set
     if [[ "$BUFFER" = "" ]] && [[ -n "$ZSH_PROMPT_PRINT_DURATION" ]]; then
         _prompt_date_start=${(%):-%D{%s%.}}
+        [[ "$_prompt_date_start" = *"%." ]] && _prompt_date_start="$(date +%s%3N)"
     fi
 }
 
@@ -519,6 +520,7 @@ print_prompt_duration_precmd() {
     fi
     _prompt_last_date_start="$_prompt_date_start"
     _prompt_date_end=${(%):-%D{%s%.}}
+    [[ "$_prompt_date_end" = *"%." ]] && _prompt_date_end="$(date +%s%3N)"
     _prompt_duration="$(( _prompt_date_end - _prompt_date_start ))"
     echo -e "Wall time: $_prompt_duration\tStart: $_prompt_date_start\tStop: $_prompt_date_end"
 }
