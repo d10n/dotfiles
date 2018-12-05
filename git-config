@@ -129,7 +129,7 @@ git config --global alias.r "rebase"
 
 # Grep with blame
 git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//'
-!perl -e '
+!cd -- "${GIT_PREFIX:-.}"; perl -e '
     my $truncate = 500;
     open grep_fh, "-|", "git", "grep", "-n", "--color", @ARGV;
     my $last_file; my @lines = (); my @texts = ();
