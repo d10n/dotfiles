@@ -308,7 +308,11 @@ apply_aliases() {
 }
 apply_aliases && unset -f apply_aliases
 
-command -v lesspipe.sh &>/dev/null && export LESSOPEN="|lesspipe.sh %s" LESS_ADVANCED_PREPROCESSOR=1
+if command -v lesspipe &>/dev/null; then
+    export LESSOPEN="|lesspipe %s" LESS_ADVANCED_PREPROCESSOR=1
+elif command -v lesspipe.sh &>/dev/null; then
+    export LESSOPEN="|lesspipe.sh %s" LESS_ADVANCED_PREPROCESSOR=1
+fi
 
 command -v direnv &>/dev/null && eval "$(direnv hook zsh)"
 
