@@ -133,8 +133,8 @@ fi
 
 
 ## Miscellaneous aliases
-#alias codefetch="find ~/code/{dotfiles,qemu,borg} -maxdepth 1 -type d -name .git -execdir sh -c 'basename \$PWD;git f' \;"
-#alias codefetchall="find ~/code -maxdepth 2 -mindepth 2 -type d -name .git -execdir sh -c 'basename \$PWD;git f' \;"
+#alias codefetch="find ~/code/{dotfiles,qemu,borg} -maxdepth 1 -type d -name .git -execdir sh -c 'basename \$PWD;git f;echo' \;"
+#alias codefetchall="find ~/code -maxdepth 2 -mindepth 2 -type d -name .git -execdir sh -c 'basename \$PWD;git f;echo' \;"
 #alias curl-srv="bash <(cd ~/code/srv; git show curl-srv:./curl-srv)"
 #alias curl-srv-dev="bash -x <(cd ~/code/srv; git show curl-srv:./curl-srv)"
 #alias gen-aws='jq -r '\''.[] | select(.tags[] | select(.key == "Name").value | contains("build")) | {ip: .publicIpAddress, name: (.tags[] | select(select(.key == "Name").value | contains("build")).value)} | select(.ip != null) | "Host \(.name)\n  HostName \(.ip)\n  User me\n"'\'' /tmp/aws.txt > ~/.ssh/config.d/aws'
