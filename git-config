@@ -255,6 +255,9 @@ if [[ -n "$diff_highlight_found" ]]; then
     git config --global pager.diff "$diff_highlight_found | less -RFX"
 fi
 
+# Highlight whitespace differences in removed lines too
+git config --global diff.wsErrorHighlight all
+
 # Set a global gitignore file
 git config --global core.excludesfile ~/.gitignore_global
 
