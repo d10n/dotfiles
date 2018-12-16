@@ -102,7 +102,7 @@ zstyle ':completion:*' rehash true  # automatically detect new executables
 autoload -Uz compinit && compinit -i > /dev/null
 
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
-[[ -d "$DOTFILES_DIR/zsh-libs/faster-vcs-info" ]] && fpath=("$DOTFILES_DIR/zsh-libs/faster-vcs-info" $fpath)
+[[ -d "$DOTFILES_DIR/zsh-libs/even-faster-vcs-info" ]] && fpath=("$DOTFILES_DIR/zsh-libs/even-faster-vcs-info" $fpath)
 if [[ "$OSTYPE" == "darwin"* ]] && (( ${(@)fpath[(I)/usr/local/share/zsh/site-functions]} )); then
     # On mac with zsh and git installed from homebrew:
     # git's git completion installs to /usr/local/share/zsh/site-functions_git
