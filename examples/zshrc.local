@@ -132,6 +132,7 @@ fi
 #alias docker=docker.exe
 #alias docker-compose=docker-compose.exe
 #alias idea='[[ "$(readlink -f "$PWD")" = "/mnt/"* ]] && cmd.exe /c start "" "C:\Users\username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\JetBrains Toolbox\IntelliJ IDEA Ultimate.lnk"'
+#alias subl='/mnt/c/Program\ Files/Sublime\ Text\ 3/subl.exe'
 
 
 ## Miscellaneous aliases
