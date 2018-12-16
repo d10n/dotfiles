@@ -54,6 +54,7 @@ export SYSTEMD_EDITOR=vim
 
 
 ## Docker/Kubernetes
+#alias docker='sudo docker'
 # { if minikube status | grep -q -v -e 'N/A' -e 'Stopped'; then eval "$(minikube docker-env)"; fi }
 # eval $(docker-machine env default --shell=bash)
 # if [[ $? -ne 0 ]]; then
