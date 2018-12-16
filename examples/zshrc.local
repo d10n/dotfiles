@@ -119,6 +119,21 @@ fi
 #export ANDROID_HOME=/usr/local/opt/android-sdk
 
 
+## Java
+#alias gradle='[[ -x ./gradlew ]] && ./gradlew'
+#gradle() {
+#    local cdup="./$(git rev-parse --show-cdup 2>/dev/null)"
+#    local inside_git="$?"
+#    if [[ -x ./gradlew ]]; then
+#        ./gradlew "$@"
+#    elif [[ "$inside_git" -eq 0 ]] && [[ -x "$cdup/gradlew" ]]; then
+#        "$cdup/gradlew" "$@"
+#    else
+#        command gradle "$@"
+#    fi
+#}
+
+
 ## Editors
 #alias vim=nvim
 #alias subl=subl3
