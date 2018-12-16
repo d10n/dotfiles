@@ -131,6 +131,7 @@ fi
 #alias vagrant=vagrant.exe
 #alias docker=docker.exe
 #alias docker-compose=docker-compose.exe
+#alias idea='[[ "$(readlink -f "$PWD")" = "/mnt/"* ]] && cmd.exe /c start "" "C:\Users\username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\JetBrains Toolbox\IntelliJ IDEA Ultimate.lnk"'
 
 
 ## Miscellaneous aliases
