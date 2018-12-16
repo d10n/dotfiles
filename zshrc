@@ -150,6 +150,7 @@ cd() {
 
 unalias which &>/dev/null  # Prevent system-wide which alias from breaking the which function
 which() {
+    { [[ -t 0 ]] && [[ -t 1 ]]; } || { builtin which "$@"; return; }
     local which_out which_exit
     which_out="$(builtin which "$@")"
     which_exit="$?"
