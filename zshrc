@@ -58,6 +58,12 @@ REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, sh
 WORDCHARS=${WORDCHARS//\/}  # Make ctrl-w delete 1 folder at a time
 WORDCHARS=${WORDCHARS//[\*\?\.\[\]\~\=\/\&\;\!\#\$\%\^\(\)\{\}\<\>]}  # Make ctrl-w stop deleting at these characters
 
+## Default programs
+#export BROWSER=firefox
+export VISUAL=vim
+export EDITOR="$VISUAL"
+export SYSTEMD_EDITOR=vim
+
 bindkey -e
 
 is_iterm() (
