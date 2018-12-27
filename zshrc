@@ -493,7 +493,7 @@ def hl2short(h, l, color_count):
 color_count = int(os.environ["color_count"])
 colors = rgb2short256(*rgb) if color_count >= 256 else hl2short(h, l, color_count)
 for c in colors: print(c)
-')"
+')"  # fix vim syntax highlighting further down in the file: '
 HOSTBGCOLOR=$(tput setab "$HOSTCOLORNUMBER" 2>/dev/null || printf '\e[48;5;%sm' "$HOSTCOLORNUMBER")
 HOSTFGCOLOR=$(tput setaf "$HOSTCOLORNUMBER" 2>/dev/null || printf '\e[38;5;%sm' "$HOSTCOLORNUMBER")
 HOSTBGTEXT=$(tput setab "$HOSTTEXTNUMBER" 2>/dev/null || printf '\e[48;5;%sm' "$HOSTTEXTNUMBER")
