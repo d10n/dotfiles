@@ -122,6 +122,9 @@ git config --global alias.fp '!f() { git fetch --all --prune 2>&1 | sed "s/^/bra
 # git fetch origin +refs/pull/*/head:refs/remotes/origin/pr/*
 git config --global alias.fetch-pr '!f() { git remote get-url "$1" >/dev/null 2>&1 || { printf >&2 "Usage: git fetch-pr <remote> [<pr-number>]\n"; exit 1; }; pr="$2"; [ -z "$pr" ] && pr="*"; git fetch "$1" "+refs/pull/$pr/head:refs/remotes/$1/pr/$pr"; }; f'
 
+# Fetch gitlab-style merge requests
+git config --global alias.fetch-mr '!f() { git remote get-url "$1" >/dev/null 2>&1 || { printf >&2 "Usage: git fetch-mr <remote> [<mr-number>]\n"; exit 1; }; mr="$2"; [ -z "$mr" ] && mr="*"; git fetch "$1" "+refs/merge-requests/$mr/head:refs/remotes/$1/mr/$mr"; }; f'
+
 # Pull
 git config --global alias.p "pull"
 
