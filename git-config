@@ -118,6 +118,10 @@ git config --global alias.f "!git fetch --all --prune 2>&1 | sed 's/^/branches: 
 # Update both branches and tags, then pull.
 git config --global alias.fp '!f() { git fetch --all --prune 2>&1 | sed "s/^/branches: /"; git fetch --all --prune --tags 2>&1 | sed "s/^/tags: /"; [ "$1" = "--rebase" ] && action=rebase || action=merge; git "$action" FETCH_HEAD; }; f'
 
+# Fetch github-style pull requests
+# git fetch origin +refs/pull/*/head:refs/remotes/origin/pr/*
+git config --global alias.fetch-pr '!f() { git remote get-url "$1" >/dev/null 2>&1 || { printf >&2 "Usage: git fetch-pr <remote> [<pr-number>]\n"; exit 1; }; pr="$2"; [ -z "$pr" ] && pr="*"; git fetch "$1" "+refs/pull/$pr/head:refs/remotes/$1/pr/$pr"; }; f'
+
 # Pull
 git config --global alias.p "pull"
 
