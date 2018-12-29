@@ -542,12 +542,80 @@ set_terminal_title_short_path() {
     #print -Pn '\e]0;%C\a'
     #print -Pn '\e]0;%~\a'
 }
+
+autoload -Uz is-at-least
+
+# zsh before 5.0.6 has a 100% CPU bug with zle -F
+if is-at-least 5.0.6; then
+    async_vcs_info() {
+        setopt LOCAL_OPTIONS NO_MONITOR
+        if [[ "$_async_vcs_info_pid" -ne 0 ]]; then
+            zle -F "$_async_vcs_info_fd"
+            # Clean up the old fd
+            exec {_async_vcs_info_fd}<&-
+            unset _async_vcs_info_fd
+            # Kill the obsolete async child
+            kill -s HUP "$_async_vcs_info_pid" &>/dev/null
+        fi
+        coproc {
+            vcs_info
+            printf %s "$vcs_info_msg_0_"
+        }
+        _async_vcs_info_pid=$!  # Get the pid of the vcs_info coproc
+        exec {_async_vcs_info_fd}<&p  # Get the vcs_info coproc output fd
+        disown %?vcs_info # disown "%${(k)jobstates[(r)*:$_async_vcs_info_pid=*]}"
+        zle -F $_async_vcs_info_fd async_vcs_info_handle_complete
+    }
+    async_vcs_info_handle_complete() {
+        zle -F $1  # Unregister the handler
+        vcs_info_msg_0_="$(<&$1)"  # Read the vcs_info data
+        exec {1}<&-  # Clean up the old fd
+        unset _async_vcs_info_fd
+        unset _async_vcs_info_pid
+        zle && zle .reset-prompt  # Redraw the prompt
+        # use .reset-prompt instead of reset-prompt because of:
+        # https://github.com/sorin-ionescu/prezto/issues/1026
+    }
+else
+    async_vcs_info() {
+        setopt LOCAL_OPTIONS NO_MONITOR
+        if [[ "$_async_vcs_info_pid" -ne 0 ]]; then
+            exec {_async_vcs_info_fd}<&-
+            unset _async_vcs_info_fd
+            kill -s HUP "$_async_vcs_info_pid" &>/dev/null
+        fi
+        coproc {
+            vcs_info
+            printf %s "$vcs_info_msg_0_"
+            kill -s USR1 $$ &>/dev/null
+        }
+        _async_vcs_info_pid=$!  # Get the pid of the vcs_info coproc
+        exec {_async_vcs_info_fd}<&p  # Get the vcs_info coproc output fd
+        disown %?vcs_info # disown "%${(k)jobstates[(r)*:$_async_vcs_info_pid=*]}"
+    }
+    trap async_vcs_info_handle_complete USR1
+    async_vcs_info_handle_complete() {
+        vcs_info_msg_0_="$(<&$_async_vcs_info_fd)"
+        exec {_async_vcs_info_fd}<&-
+        unset _async_vcs_info_fd
+        unset _async_vcs_info_pid
+        zle && zle .reset-prompt  # Redraw the prompt
+    }
+fi
+
+
 [[ -z "$precmd_functions" ]] && precmd_functions=()
 precmd_functions+=(
     print_long_command_duration_precmd
-    vcs_info
+    async_vcs_info
     set_terminal_title_short_path
     print_prompt_duration_precmd)
+
+clear_vcs_info() {
+    vcs_info_msg_0_=''
+}
+[[ -z "$chpwd_functions" ]] && chpwd_functions=()
+chpwd_functions+=(clear_vcs_info)  # Get new vcs_info after cd
 
 zstyle ':vcs_info:*' enable git  #hg svn
 zstyle ':vcs_info:*' check-for-changes true
