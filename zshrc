@@ -370,6 +370,7 @@ pws() {
 setup_highlighting() {
     local files file
     files=(
+        "$DOTFILES_DIR/zsh-libs/fast-syntax-highlighting/fast-syntax-highlighting.plugin.zsh"
         "$DOTFILES_DIR/zsh-libs/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh"
         /usr/share/zsh/plugins/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh
         /usr/local/share/zsh-syntax-highlighting/zsh-syntax-highlighting.zsh

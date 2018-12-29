@@ -50,7 +50,7 @@ Sample local files are in the example directory.
 ### .zshrc
 
 * Color for the prompt is automatically chosen based on the computer's hostname
-* `zsh-syntax-highlighting` adds colors while you type
+* `fast-syntax-highlighting` adds colors while you type
 * `zsh-history-substring-search` lets you type part of a previous command and press the up and down arrow keys to cycle through command history with that part
 * The prompt shows the full path so you can stop typing `pwd`
 * The prompt shows git status so you can stop typing `git status`
