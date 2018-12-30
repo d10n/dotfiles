@@ -346,13 +346,27 @@ pws() {
     # /usr/local/bin -> /u/l/bin
     # ~/code/hxsl -> ~/c/hxsl
     # Edge case: ~/._.foo/bar -> ~/._.f/b
-    print -Pn %~ | awk -F / '{
-        for (i = 1; i < NF; i++) {
-            match($i, /^[._]*./)
-            printf "%s/", substr($i, RSTART, RLENGTH)
-        }
-        print $NF
-    }'
+
+    local cwd="$(print -Pn %~)"
+    [[ "${cwd:0:1}" = '/' ]] && printf '/'
+    local -a parts
+    parts=(${(s:/:)cwd})
+    if [[ "${#parts}" -gt 1 ]]; then
+        local part
+        local match
+        for part in "${(@)parts:0:-1}"; do
+            printf '%s/' "${part/(#b)([._]#?)*/${match[1]}}"
+        done
+    fi
+    echo "${parts[-1]}"
+
+    # print -Pn %~ | awk -F / '{
+    #     for (i = 1; i < NF; i++) {
+    #         match($i, /^[._]*./)
+    #         printf "%s/", substr($i, RSTART, RLENGTH)
+    #     }
+    #     print $NF
+    # }'
 
     #print -Pn %~ | perl -ne '
     #    my @dirs = split m{/};
