@@ -1,0 +1,52 @@
+# turn off the initial welcome message
+startup_message off
+
+# automatically detach on terminal hangup (so that one can attach again and
+# continue working)
+autodetach on
+
+# Enable 256 color support
+term screen-256color
+
+# disable flow control to prevent confusion with ctrl s appearing to freeze the terminal
+defflow off
+
+# region selection with vim keys
+#bind h focus left
+#bind j focus down
+#bind k focus up
+#bind l focus right
+
+# region selection with arrow keys
+#bindkey "^AOA" focus up
+#bindkey "^AOB" focus down
+#bindkey "^AOC" focus right
+#bindkey "^AOD" focus left
+bindkey "OA" focus up
+bindkey "OB" focus down
+bindkey "OC" focus right
+bindkey "OD" focus left
+
+# scroll back buffer for new windows. Default is 100 lines.
+defscrollback 10000
+
+# enables mouse selection on split mode
+mousetrack on
+
+# restore original output after exiting fullscreen programs
+altscreen on
+
+# status bar like tmux
+hardstatus alwayslastline '%{= gk}%?%-w%?%n %t*%+w %= "%H"  %c %d-%M-%Y'
+
+# use current bg color for erased chars
+#defbce on
+
+deflogin on
+
+# Use utf8 encoding
+defutf8 on
+
+# reload
+#bind ^r source $HOME/.screenrc
+

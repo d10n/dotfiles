@@ -9,6 +9,7 @@ irbrc
 lesskey
 nvim = ~/.config/nvim
 profile
+screenrc
 tmux.conf
 tmux.conf.local
 vimrc
