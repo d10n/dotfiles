@@ -354,7 +354,7 @@ pws() {
     if [[ "${#parts}" -gt 1 ]]; then
         local part
         local match
-        for part in "${(@)parts:0:-1}"; do
+        for part in "${(@)parts:0:${#parts}-1}"; do
             printf '%s/' "${part/(#b)([._]#?)*/${match[1]}}"
         done
     fi
