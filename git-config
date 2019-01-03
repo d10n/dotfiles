@@ -165,11 +165,12 @@ git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//' | tr '\n' ' 
             /^([^\)]*\))/;
             shift @lines;
             my $text = shift @texts;
-            my $out = "$1 $last_file $text\n";
-            if (length($out) > $truncate) {
-                $out =~ s/^((?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){$truncate})(?=(?:\e\[[^m]*m(?:.|$)|.|$(*SKIP)(*FAIL)){14}).*/$1\e\[m...(truncated)/;
+            my $out = "$1 $last_file $text";
+            (my $blank_out = $out) =~ s/\e\[[^m]*m//g;
+            if (length $blank_out > $truncate) {
+                $out =~ s/^((?:\e\[[^m]*m(?:.|$)(?:\e\[m)?|.|$(*SKIP)(*FAIL)){$truncate})(?=(?:\e\[[^m]*m(?:.|$)(?:\e\[m)?|.|$(*SKIP)(*FAIL)){15}).*/$1\e\[m...(truncated)/;
             }
-            print $out;
+            print "$out\n";
         }
         close blame_fh;
     }
