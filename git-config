@@ -43,7 +43,7 @@ git config --global alias.bd '!f() {
 }; f'
 
 # Short log
-git config --global alias.l '!f() {
+git config --global alias.l '!f() { : git log ;
     commit_count="$(git rev-list --count HEAD@{upstream}~3..HEAD 2>/dev/null || echo 5)";
     [ "$commit_count" -lt 5 ] && commit_count=5;
     [ "$commit_count" -gt 20 ] && commit_count=20;
@@ -137,7 +137,7 @@ git config --global alias.r "rebase"
 
 # Grep with blame
 git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//' | tr '\n' ' '
-!cd -- "${GIT_PREFIX:-.}"; perl -e '
+! : git grep ; cd -- "${GIT_PREFIX:-.}"; perl -e '
     my $truncate = 500;
     my $color_flag = -t STDOUT ? "--color" : "--no-color";
     open grep_fh, "-|", "git", "grep", "-n", $color_flag, @ARGV;
@@ -187,7 +187,7 @@ EOF
 git config --global alias.subject-length '!f() { git log -1 --format="%s" | tr -d "\n" | wc -m; }; f'
 
 # Stash only staged changes
-git config --global alias.stash-staged '!f() {
+git config --global alias.stash-staged '!f() { : git stash ;
     staged="$(git diff --staged --unified=0)";
     unstaged="$(git diff --unified=0)";
     [ "$staged" = "" ] && return;
@@ -206,7 +206,7 @@ git config --global alias.stash-staged '!f() {
 }; f'
 
 # Stash only unstaged changes
-git config --global alias.stash-unstaged '!f() {
+git config --global alias.stash-unstaged '!f() { : git stash ;
     staged="$(git diff --staged --unified=0)";
     unstaged="$(git diff --unified=0)";
     [ "$staged" = "" ] && { git stash "$@"; return "$?"; };
@@ -239,7 +239,7 @@ git config --global alias.stash-browse '!f() {
 }; f'
 
 # Press enter to view a commit's diff, q to exit the diff pager, and esc to exit fzf
-git config --global alias.browse '!f() {
+git config --global alias.browse '!f() { : git log ;
     git rev-parse || return
     fzf="$(command -v fzf)"
     [ -z "$fzf" ] && [ -x ~/.fzf/bin/fzf ] && fzf=~/.fzf/bin/fzf
