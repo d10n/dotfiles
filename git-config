@@ -140,14 +140,12 @@ git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//' | tr '\n' ' 
 ! : git grep ; cd -- "${GIT_PREFIX:-.}"; perl -e '
     my $truncate = 500;
     my $color_flag = -t STDOUT ? "--color" : "--no-color";
-    open grep_fh, "-|", "git", "grep", "-n", $color_flag, @ARGV;
+    my @git_grep_flags = grep(!/^--no-null$/, @ARGV);
+    open grep_fh, "-|", "git", "grep", "--line-number", "--null", $color_flag, @git_grep_flags;
     my $last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
         if (/^Binary file .* matches$/) { print; next; }
-        my ($file, $line, $text, $context_separator);
-        unless (($file, $line, $text, $context_separator) = /^(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*)$|^(\e\[[^m]*m--\e\[[^m]*m)$/) {
-            ($file, $line, $text, $context_separator) = /^(.*?)[:-](.*?)[:-](.*)$|^(--)$/;
-        }
+        my ($file, $line, $text, $context_separator) = /^(.*?)\0(.*?)\0(.*)$|^((?:\e\[[^m]*m)?--(?:\e\[[^m]*m)?)$/;
         if (defined($context_separator)) {
             do_blame() if (@lines);
             @lines = (); @texts = ();
