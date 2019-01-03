@@ -16,6 +16,7 @@ git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old
 # Example: git bd -3
 # Example: git bd -a
 # Example: git bd -a -20
+# Example: git bd -a20
 git config --global alias.bd '!f() {
     case "$1" in
         -a) refs="--"; shift;;
