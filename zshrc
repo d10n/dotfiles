@@ -248,6 +248,30 @@ git-checkout-i() {
         command git checkout "$branch"
 }
 
+add_git_alias_completion() {
+    local -a git_aliases
+    # Avoid 1 git invocation per alias for performance.
+    # Instead, manually parse ~/.gitconfig to get all aliases at once.
+    # git config --global --get alias.grep-blame &>/dev/null && _git-grep-blame() { _git-grep "$@" }
+    # Avoid awk invocation for performance.
+    # Instead, parse with pure zsh
+    # git_aliases=(${(f)"$(awk '/^\[.*\]$/{a=0}a{sub(/^[ \t]*/,"");print}/^\[alias\]$/{a=1}' <~/.gitconfig)"})
+    local -a gitconfig_lines
+    local in_alias_section
+    gitconfig_lines=( ${(f)"$(<~/.gitconfig)"} )
+    for line in "${gitconfig_lines[@]}"; do
+        [[ $line = '['*']' ]] && in_alias_section=0
+        (( in_alias_section )) && git_aliases+=("${line##[[:blank:]]##}")
+        [[ $line = '[alias]' ]] && in_alias_section=1
+    done
+    [[ -n "${git_aliases[(r)grep-blame =*]}" ]] && _git-grep-blame() { _git-grep "$@" }
+    [[ -n "${git_aliases[(r)l =*]}" ]] && _git-l() { _git-log "$@" }
+    [[ -n "${git_aliases[(r)stash-staged =*]}" ]] && _git-stash-staged() { _git-stash "$@" }
+    [[ -n "${git_aliases[(r)stash-unstaged =*]}" ]] && _git-stash-unstaged() { _git-stash "$@" }
+    [[ -n "${git_aliases[(r)browse =*]}" ]] && _git-browse() { _git-log "$@" }
+}
+add_git_alias_completion; unset -f add_git_alias_completion
+
 set_iterm_tab_rgb() {
     [[ "$TERM_PROGRAM" != "iTerm.app" ]] && return
     [[ -n "${NO_ITERM_TAB_COLOR+set}" ]] && return
