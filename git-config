@@ -138,11 +138,15 @@ git config --global alias.r "rebase"
 git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//' | tr '\n' ' '
 !cd -- "${GIT_PREFIX:-.}"; perl -e '
     my $truncate = 500;
-    open grep_fh, "-|", "git", "grep", "-n", "--color", @ARGV;
+    my $color_flag = -t STDOUT ? "--color" : "--no-color";
+    open grep_fh, "-|", "git", "grep", "-n", $color_flag, @ARGV;
     my $last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
         if (/^Binary file .* matches$/) { print; next; }
-        my ($file, $line, $text, $context_separator) = /^(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*)$|^(\e\[[^m]*m--\e\[[^m]*m)$/;
+        my ($file, $line, $text, $context_separator);
+        unless (($file, $line, $text, $context_separator) = /^(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*?)(?:\e\[[^m]*m)[:-](?:\e\[[^m]*m)(.*)$|^(\e\[[^m]*m--\e\[[^m]*m)$/) {
+            ($file, $line, $text, $context_separator) = /^(.*?)[:-](.*?)[:-](.*)$|^(--)$/;
+        }
         if (defined($context_separator)) {
             do_blame() if (@lines);
             @lines = (); @texts = ();
