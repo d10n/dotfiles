@@ -139,10 +139,44 @@ git config --global alias.r "rebase"
 git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//' | tr '\n' ' '
 ! : git grep ; perl -e '
     my $truncate = 500;
+    my ($git_maj, $git_min) = `git --version` =~ /version (\d+)\.(\d+)/;
+    my $git_grep_supports_column = $git_maj == 2 && $git_min >= 19 || $git_maj > 2;
+    my $full_name = (`git config --get --bool grep.fullName` eq "true\n" && $? == 0);
+    my (@args, @invalid_args);
+    my $last_arg_was_e = 0;
+    my $index = -1;
+    foreach my $arg (@ARGV) {
+        $index++;
+        if ($last_arg_was_e) {
+            push @args, "-e", $arg;
+            $last_arg_was_e = 0; next;
+        }
+        if ($arg eq "-e") {
+            push @args, $arg if $index == $#ARGV;
+            $last_arg_was_e = 1; next;
+        }
+        if ($arg eq "--") {
+            push @args, @ARGV[$index .. $#ARGV];
+            last;
+        }
+        if ($arg =~ /^-O|^--open-files-in-pager(?:=|$)/ ||
+            $arg =~ /^(?:--no-null|--no-line-number|-h|--column|-c|--count|--heading|
+                -l|--files-with-matches|--name-only|-L|--files-without-match)$/x) {
+            push @invalid_args, $arg; next;
+        }
+        $full_name = 1 if ($arg eq "--full-name");
+        $full_name = 0 if ($arg eq "--no-full-name");
+        push @args, $arg;
+    }
+    print STDERR "Warning: Ignored invalid grep-blame flags: @invalid_args\n" if (@invalid_args);
+
     my $color_flag = -t STDOUT ? "--color" : "--no-color";
-    my @git_grep_flags = grep(!/^--no-null$/, @ARGV);
+    unshift @args, "--no-column" if $git_grep_supports_column;
+
     chdir $ENV{"GIT_PREFIX"} if $ENV{"GIT_PREFIX"};
-    open grep_fh, "-|", "git", "grep", "--line-number", "--null", $color_flag, @git_grep_flags;
+    open grep_fh, "-|", "git", "grep", "--line-number", "--null", $color_flag, @args;
+    chdir $ENV{"PWD"} if $full_name;
+
     my $last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
         if (/^Binary file .* matches$/) { print; next; }
