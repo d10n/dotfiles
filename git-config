@@ -137,10 +137,11 @@ git config --global alias.r "rebase"
 
 # Grep with blame
 git config --global alias.grep-blame "$(cat <<'EOF' | sed 's/^ *//' | tr '\n' ' '
-! : git grep ; cd -- "${GIT_PREFIX:-.}"; perl -e '
+! : git grep ; perl -e '
     my $truncate = 500;
     my $color_flag = -t STDOUT ? "--color" : "--no-color";
     my @git_grep_flags = grep(!/^--no-null$/, @ARGV);
+    chdir $ENV{"GIT_PREFIX"} if $ENV{"GIT_PREFIX"};
     open grep_fh, "-|", "git", "grep", "--line-number", "--null", $color_flag, @git_grep_flags;
     my $last_file; my @lines = (); my @texts = ();
     while (<grep_fh>) {
