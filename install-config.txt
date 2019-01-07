@@ -36,6 +36,7 @@ README.md
 examples
 find-installed-dotfiles
 git-template
+notes
 snippets
 uninstall
 zsh-libs
