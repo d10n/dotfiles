@@ -258,6 +258,7 @@ add_git_alias_completion() {
     # git_aliases=(${(f)"$(awk '/^\[.*\]$/{a=0}a{sub(/^[ \t]*/,"");print}/^\[alias\]$/{a=1}' <~/.gitconfig)"})
     local -a gitconfig_lines
     local in_alias_section
+    [[ -f ~/.gitconfig ]] || return
     gitconfig_lines=( ${(f)"$(<~/.gitconfig)"} )
     for line in "${gitconfig_lines[@]}"; do
         [[ $line = '['*']' ]] && in_alias_section=0
