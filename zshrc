@@ -464,7 +464,7 @@ pretty_print_date_difference() {
         local date_start_local="$(date -r "$date_start" '+%F %T')"
         local date_end_local="$(date -r "$date_end" '+%F %T')"
     fi
-    local wall_time=$(python -c '
+    local wall_time="$(python -c '
 import sys
 now = int(sys.argv[1])
 then = int(sys.argv[2])
@@ -475,7 +475,7 @@ s = m[1]  # seconds
 if d[0] > 0:
     sys.stdout.write("{0}d ".format(d[0]))
 sys.stdout.write("{0:0>2}:{1:0>2}:{2:0>2}".format(h[0], m[0], s))
-' "$date_end" "$date_start")
+' "$date_end" "$date_start")"
     {
         local local_time_zone="$(date +%Z)"
         if [[ "$local_time_zone" = UTC ]]; then
