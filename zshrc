@@ -260,6 +260,7 @@ add_git_alias_completion() {
     local in_alias_section
     [[ -f ~/.gitconfig ]] || return
     gitconfig_lines=( ${(f)"$(<~/.gitconfig)"} )
+    local line
     for line in "${gitconfig_lines[@]}"; do
         [[ $line = '['*']' ]] && in_alias_section=0
         (( in_alias_section )) && git_aliases+=("${line##[[:blank:]]##}")
@@ -378,7 +379,7 @@ pws() {
     parts=(${(s:/:)cwd})
     if [[ "${#parts}" -gt 1 ]]; then
         local part
-        local match
+        local match mbegin mend
         for part in "${(@)parts:0:${#parts}-1}"; do
             printf '%s/' "${part/(#b)([._]#?)*/${match[1]}}"
         done
@@ -443,6 +444,7 @@ zle_accept_line_hooks=(
     $'[[ "$BUFFER" != "" ]] && hash -r')
 
 zle_accept_line_function() {
+    local command_hook
     for command_hook in "${zle_accept_line_hooks[@]}"; do
         eval "$command_hook"
     done
