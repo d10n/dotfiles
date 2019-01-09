@@ -12,20 +12,16 @@ term screen-256color
 defflow off
 
 # region selection with vim keys
-#bind h focus left
-#bind j focus down
-#bind k focus up
-#bind l focus right
+bind h focus left
+bind j focus down
+bind k focus up
+bind l focus right
 
 # region selection with arrow keys
 #bindkey "^AOA" focus up
 #bindkey "^AOB" focus down
 #bindkey "^AOC" focus right
 #bindkey "^AOD" focus left
-bindkey "OA" focus up
-bindkey "OB" focus down
-bindkey "OC" focus right
-bindkey "OD" focus left
 
 # scroll back buffer for new windows. Default is 100 lines.
 defscrollback 10000
