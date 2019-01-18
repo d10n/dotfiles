@@ -260,20 +260,25 @@ async_vcs_info_coproc_zle_timeout() {
 }
 
 async_vcs_info_handle_complete_file() {
+    local old_vcs_info_msg_0_="$vcs_info_msg_0_"
     vcs_info_msg_0_="$(</tmp/zsh_prompt_$$)"
     rm "/tmp/zsh_prompt_$$"
     unset _async_vcs_info_pid
-    zle && zle .reset-prompt
+    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+        zle && zle .reset-prompt
 }
 
 async_vcs_info_handle_complete_fd() {
+    local old_vcs_info_msg_0_="$vcs_info_msg_0_"
     vcs_info_msg_0_="$(<&$_async_vcs_info_fd)"
     # Clean up the old fd
     exec {_async_vcs_info_fd}<&-
     unset _async_vcs_info_fd
     # Clean up obsolete pid
     unset _async_vcs_info_pid
-    zle && zle .reset-prompt  # Redraw the prompt
+    # Only redraw the prompt if the prompt has changed
+    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+        zle && zle .reset-prompt  # Redraw the prompt
     # use .reset-prompt instead of reset-prompt because of:
     # https://github.com/sorin-ionescu/prezto/issues/1026
 }
@@ -286,32 +291,40 @@ async_vcs_info_handle_complete_fd_timeout() {
     # Read the underscore
     read -k 1 -u $_async_vcs_info_fd vcs_info_msg_0_
     # Read the vcs_info message
+    local old_vcs_info_msg_0_="$vcs_info_msg_0_"
     vcs_info_msg_0_="$(<&$_async_vcs_info_fd)"
     # Clean up the old fd
     exec {_async_vcs_info_fd}<&-
     unset _async_vcs_info_fd
     # Clean up obsolete pid
     unset _async_vcs_info_pid
-    zle && zle .reset-prompt  # Redraw the prompt
+    # Only redraw the prompt if the prompt has changed
+    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+        zle && zle .reset-prompt  # Redraw the prompt
 }
 
 async_vcs_info_handle_complete_zle() {
     zle -F $1
+    local old_vcs_info_msg_0_="$vcs_info_msg_0_"
     vcs_info_msg_0_="$(<&$1)"
     exec {1}<&-
     unset _async_vcs_info_fd
     unset _async_vcs_info_pid
-    zle && zle .reset-prompt
+    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+        zle && zle .reset-prompt
 }
 
 async_vcs_info_handle_complete_zle_timeout() {
     zle -F $1
+    local old_vcs_info_msg_0_="$vcs_info_msg_0_"
     # Read the underscore
     read -k 1 -u $_async_vcs_info_fd vcs_info_msg_0_
+    # Read the vcs_info message
     vcs_info_msg_0_="$(<&$1)"
     exec {1}<&-
     unset _async_vcs_info_fd
     unset _async_vcs_info_pid
-    zle && zle .reset-prompt
+    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+        zle && zle .reset-prompt
 }
 

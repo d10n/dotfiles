@@ -629,11 +629,13 @@ if is-at-least 5.0.6; then
     }
     async_vcs_info_handle_complete() {
         zle -F $1  # Unregister the handler
+        local old_vcs_info_msg_0_="$vcs_info_msg_0_"
         vcs_info_msg_0_="$(<&$1)"  # Read the vcs_info data
         exec {1}<&-  # Clean up the old fd
         unset _async_vcs_info_fd
         unset _async_vcs_info_pid
-        zle && zle .reset-prompt  # Redraw the prompt
+        [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+            zle && zle .reset-prompt  # Redraw the prompt
         # use .reset-prompt instead of reset-prompt because of:
         # https://github.com/sorin-ionescu/prezto/issues/1026
     }
@@ -656,11 +658,13 @@ else
     }
     trap async_vcs_info_handle_complete USR1
     async_vcs_info_handle_complete() {
+        local old_vcs_info_msg_0_="$vcs_info_msg_0_"
         vcs_info_msg_0_="$(<&$_async_vcs_info_fd)"
         exec {_async_vcs_info_fd}<&-
         unset _async_vcs_info_fd
         unset _async_vcs_info_pid
-        zle && zle .reset-prompt  # Redraw the prompt
+        [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+            zle && zle .reset-prompt  # Redraw the prompt
     }
 fi
 
