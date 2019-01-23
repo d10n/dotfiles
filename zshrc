@@ -634,10 +634,11 @@ if is-at-least 5.0.6; then
         exec {1}<&-  # Clean up the old fd
         unset _async_vcs_info_fd
         unset _async_vcs_info_pid
-        [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+        if [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]]; then
             zle && zle .reset-prompt  # Redraw the prompt
-        # use .reset-prompt instead of reset-prompt because of:
-        # https://github.com/sorin-ionescu/prezto/issues/1026
+            # use .reset-prompt instead of reset-prompt because of:
+            # https://github.com/sorin-ionescu/prezto/issues/1026
+        fi
     }
 else
     async_vcs_info() {
@@ -663,8 +664,9 @@ else
         exec {_async_vcs_info_fd}<&-
         unset _async_vcs_info_fd
         unset _async_vcs_info_pid
-        [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+        if [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]]; then
             zle && zle .reset-prompt  # Redraw the prompt
+        fi
     }
 fi
 

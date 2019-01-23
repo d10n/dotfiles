@@ -264,8 +264,9 @@ async_vcs_info_handle_complete_file() {
     vcs_info_msg_0_="$(</tmp/zsh_prompt_$$)"
     rm "/tmp/zsh_prompt_$$"
     unset _async_vcs_info_pid
-    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+    if [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]]; then
         zle && zle .reset-prompt
+    fi
 }
 
 async_vcs_info_handle_complete_fd() {
@@ -277,10 +278,11 @@ async_vcs_info_handle_complete_fd() {
     # Clean up obsolete pid
     unset _async_vcs_info_pid
     # Only redraw the prompt if the prompt has changed
-    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+    if [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]]; then
         zle && zle .reset-prompt  # Redraw the prompt
-    # use .reset-prompt instead of reset-prompt because of:
-    # https://github.com/sorin-ionescu/prezto/issues/1026
+        # use .reset-prompt instead of reset-prompt because of:
+        # https://github.com/sorin-ionescu/prezto/issues/1026
+    fi
 }
 
 async_vcs_info_handle_complete_fd_timeout() {
@@ -299,8 +301,9 @@ async_vcs_info_handle_complete_fd_timeout() {
     # Clean up obsolete pid
     unset _async_vcs_info_pid
     # Only redraw the prompt if the prompt has changed
-    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+    if [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]]; then
         zle && zle .reset-prompt  # Redraw the prompt
+    fi
 }
 
 async_vcs_info_handle_complete_zle() {
@@ -310,8 +313,9 @@ async_vcs_info_handle_complete_zle() {
     exec {1}<&-
     unset _async_vcs_info_fd
     unset _async_vcs_info_pid
-    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+    if [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]]; then
         zle && zle .reset-prompt
+    fi
 }
 
 async_vcs_info_handle_complete_zle_timeout() {
@@ -324,7 +328,8 @@ async_vcs_info_handle_complete_zle_timeout() {
     exec {1}<&-
     unset _async_vcs_info_fd
     unset _async_vcs_info_pid
-    [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]] &&
+    if [[ "$old_vcs_info_msg_0_" != "$vcs_info_msg_0_" ]]; then
         zle && zle .reset-prompt
+    fi
 }
 
