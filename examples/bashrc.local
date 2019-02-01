@@ -363,7 +363,8 @@ fi
 PROMPT_COMMAND='history -a;printf "\e]0;%s\a" "$(pws)"'
 
 PS1="\u@\h:\w"'$(__git_info)'$'\n'"\\\$ "
-PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\\\$\[$X\] "
+#PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u \[$K$BGW\] \h\[$W$BGW\]]\[$X\e[0;100m\e[37m\] \w \[$X\]"'$(__git_info)'$'\n'"\[$X\e[1m\]\\\$\[$X\] "
+PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u \[\e[0;30m\e[47m\] \h\[\e[0;37m\e[47m\]]\[\e[0m\e[0;100m\e[37m\] \w \[\e[0m\]"'$(__git_info)'$'\n'"\[\e[0m\e[1m\]\\\$\[\e[0m\] "
 
 __git_info() {
     local message branch on_branch remote detached_tag detached_from tracking ahead behind gitstatus stashes stashes_exit stash_message staged_changes unstaged_changes
