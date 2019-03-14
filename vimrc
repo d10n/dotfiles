@@ -301,13 +301,21 @@ if &rtp!~'nerdtree' && &rtp!~'vim-filebeagle' && &rtp!~'vim-dirvish' && &rtp!~'v
     autocmd BufEnter * if (winnr("$") == 1 && exists("b:netrw_browser_active") && exists("t:netrw_lexbufnr")) | q | endif
   augroup END
 
-  nnoremap - :Lexplore<CR>
+  if exists(":Lexplore") == 2
+    nnoremap - :Lexplore<CR>
+  else
+    nnoremap - :explore<CR>
+  endif
   augroup netrw_custom_close
     autocmd!
     autocmd filetype netrw call s:netrw_custom_close()
   augroup END
   function! s:netrw_custom_close()
-    noremap <buffer> q :Lexplore<CR>
+    if exists(":Lexplore") == 2
+      noremap <buffer> q :Lexplore<CR>
+    else
+      noremap <buffer> q :bwipe<CR>
+    endif
   endfunction
 endif
 
