@@ -81,6 +81,22 @@ cd() {
     builtin cd "$@"
 }
 
+swap() {
+    [[ "$#" -ne 2 ]] && { echo >&2 '2 paths must be supplied'; return 1; }
+    { [[ -e "$1" ]] || [[ -e "$2" ]]; } || { echo >&2 'Neither file exists'; return 1; }
+    [[ "$1" = "$2" ]] && { echo >&2 "Can't swap file to itself"; return 1; }
+    if [[ -e "$1" ]] && [[ -e "$2" ]]; then
+        [[ -e "$1.$$" ]] && { echo >&2 'Swap temp file already exists. Aborting'; return 1; }
+        mv "$1" "$1.$$" &&
+        mv "$2" "$1" &&
+        mv "$1.$$" "$2"
+    elif [[ -e "$1" ]]; then
+        mv "$1" "$2"
+    elif [[ -e "$2" ]]; then
+        mv "$2" "$1"
+    fi
+}
+
 unalias which &>/dev/null  # Prevent system-wide which alias from breaking the which function
 which() {
     { [[ -t 0 ]] && [[ -t 1 ]]; } || { command which "$@"; return; }
