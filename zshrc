@@ -48,7 +48,8 @@ setopt FUNCTION_ARG_ZERO  # fill $0 with function name instead of "zsh"
 setopt NO_BEEP  # no beeps
 setopt PROMPT_SUBST  # variables in prompt
 #setopt SH_WORD_SPLIT  # uncomment for compatibility with obscure bash scripts
-#setopt WARN_CREATE_GLOBAL  # uncomment to warn when global variables were created in functions
+# setopt WARN_CREATE_GLOBAL  # uncomment to warn when global variables were created in functions
+# setopt WARN_NESTED_VAR
 
 setopt NO_FLOW_CONTROL  # disable ^s and ^q
 stty -ixon -ixoff # disable ^s and ^q again
