@@ -198,7 +198,7 @@ git() {
             return
         fi
         command git -c color.ui=always "$@" | perl -pe 'my $truncate = 500; (my $blank = $_) =~ s/\e\[[^m]*m//g; if (length $blank > $truncate) {
-            s/^((?:\e\[[^m]*m(?:.|$)(?:\e\[m)?|.|$(*SKIP)(*FAIL)){$truncate})(?=(?:\e\[[^m]*m(?:.|$)(?:\e\[m)?|.|$(*SKIP)(*FAIL)){15}).*/$1\e\[m...(truncated)/
+            s/^((?:\e\[[^m]*m(?:.|$)|.(?:\e\[m)?|$(*SKIP)(*FAIL)){$truncate})(?=(?:\e\[[^m]*m(?:.|$)|.(?:\e\[m)?|$(*SKIP)(*FAIL)){15}).*/$1\e\[m...(truncated)/
         }'
         return
     fi
