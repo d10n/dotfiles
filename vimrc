@@ -420,6 +420,9 @@ endif
 "  runtime! macros/editexisting.vim
 "endif
 
+" Fix syntax highlighting with very long tokens
+autocmd BufEnter * :syntax sync fromstart
+
 let s:original_showbreak = &showbreak
 function! ToggleGutter()
   set invnumber
