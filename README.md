@@ -45,6 +45,14 @@ Make local customizations with:
 
 Sample local files are in the example directory.
 
+## Guiding philosophy
+
+* Take advantage of the tools you have
+* Work with tools, not against tools
+* Preserve expected default behavior
+* Augment tools with optional convenience functions
+* Protect yourself from PEBKAC
+
 ## Overview
 
 ### .zshrc
