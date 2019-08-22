@@ -21,7 +21,7 @@ RUN apk add --no-cache \
     zsh-doc \
     zsh-vcs \
     && \
-    chsh -s /bin/zsh && \
+    usermod -s /bin/zsh root && \
     useradd -m -s /bin/zsh tester && \
     echo 'tester  ALL=(ALL) NOPASSWD:ALL' >> /etc/sudoers
 
