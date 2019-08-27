@@ -161,6 +161,17 @@ fi
 #alias solrsniff="ssh -o StrictHostKeyChecking=no $SSH_OPTS vagrant@solr sudo -i \"tcpdump -A -i eth1 host 10.0.0.2|grep --line-buffered -o 'GET.*HTTP/1\.1'\"|perl -pe '\$|=1;s/%([[:xdigit:]]{2})/chr hex \$1/ge'"
 
 
+## Wrapped functions
+
+btrfs() {
+    if [[ "$1" = 'f'* ]] && [[ "$2" = 'u'* ]]; then
+        shift 2
+        set -- filesystem usage -T "$@"
+    fi
+    command btrfs "$@"
+}
+
+
 ## Miscellaneous functions
 
 cmdfu() {
