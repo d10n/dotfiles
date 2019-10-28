@@ -164,7 +164,7 @@ fi
 ## Wrapped functions
 
 btrfs() {
-    if [[ "$1" = 'f'* ]] && [[ "$2" = 'u'* ]]; then
+    if [[ -t 0 ]] && [[ -t 1 ]] && [[ "$1" = 'f'* ]] && [[ "$2" = 'u'* ]]; then
         shift 2
         set -- filesystem usage -T "$@"
     fi
