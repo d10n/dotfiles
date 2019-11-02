@@ -135,7 +135,7 @@ zle -N edit-command-line
 bindkey '^x^e' edit-command-line
 
 mkcd() {
-    [[ ! -z "$1" ]] && mkdir -p "$1" && builtin cd "$1"
+    mkdir -p "$1" && builtin cd "$1"
 }
 
 mvcd() {

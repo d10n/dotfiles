@@ -65,8 +65,7 @@ setup_completion() {
 setup_completion && unset -f setup_completion
 
 mkcd() {
-    local dir="$*"
-    mkdir -p "$dir" && cd "$dir"
+    mkdir -p "$1" && builtin cd "$1"
 }
 
 mvcd() {
