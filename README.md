@@ -69,6 +69,7 @@ Sample local files are in the example directory.
 * `cd :/` `cd`s to the root of the git repository
 * `git commit -a` is prevented if you already have staged changes
 * `git checkout -i` shows a searchable list of local branches. `git checkout -ia` shows all branches. Press enter to check out the selected branch. Press ctrl-c or esc to exit the list.
+* When an output line of `git grep` is very long, the line will be truncated
 * When `which` output is a file, `ls -l` information will be added
 * Tab completion is powerful. Type `cd /u/l/b<tab>` and it will expand to `cd /usr/local/bin/`.
 * Tab completion is case-insensitive if you start with a lowercase letter. For example, `cd /u/u` expands to `cd /Users/username`
