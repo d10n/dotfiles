@@ -105,7 +105,7 @@ unalias which &>/dev/null  # Prevent system-wide which alias from breaking the w
 which() {
     { [[ -t 0 ]] && [[ -t 1 ]]; } || { command which "$@"; return; }
     local which_out which_exit
-    which_out="$(builtin type -a "$@")"
+    which_out="$(builtin type "$@")"
     which_exit="$?"
     echo -E "$which_out" | while IFS=$'\n' read -r line; do
         if [[ "$line" = *" is /"* ]] && [[ -x "${line/#* is /}" ]]; then
