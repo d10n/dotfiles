@@ -134,14 +134,17 @@ autoload -Uz edit-command-line
 zle -N edit-command-line
 bindkey '^x^e' edit-command-line
 
+# mkdir then cd
 mkcd() {
     mkdir -p "$1" && builtin cd "$1"
 }
 
+# mv then cd to destination
 mvcd() {
     (( $# > 1 )) && [[ -d "${@: -1}" ]] && mv "$@" && builtin cd "${@: -1}"
 }
 
+# enable cd to directory containing file; cd :/ to visit git root
 cd() {
     local top
     [[ "$#" -eq 0 ]] && set_iterm_tab_rgb
@@ -150,6 +153,7 @@ cd() {
     builtin cd "$@"
 }
 
+# move a to b and b to a
 swap() {
     [[ "$#" -ne 2 ]] && { echo >&2 '2 paths must be supplied'; return 1; }
     { [[ -e "$1" ]] || [[ -e "$2" ]]; } || { echo >&2 'Neither file exists'; return 1; }
@@ -167,6 +171,7 @@ swap() {
 }
 
 unalias which &>/dev/null  # Prevent system-wide which alias from breaking the which function
+# When which output is a file, ls -l the file
 which() {
     { [[ -t 0 ]] && [[ -t 1 ]]; } || { builtin which "$@"; return; }
     local which_out which_exit
@@ -182,16 +187,20 @@ which() {
     return "$which_exit"
 }
 
+# Add custom git extensions
 git() {
     local code
+    # Add git checkout -i flag
     if [[ "$1" = "checkout" ]] && [[ "$2" = "-i"* ]]; then
         git-checkout-i "$@"; return
     fi
+    # Set default format for git stash list
     if [[ "$1" = "stash" ]] && [[ "$2" = "list" ]]; then
         shift;shift;
         command git stash list --format='%C(auto)%h %gd %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset) %C(auto)%<(70,trunc)%s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)' "$@"
         return
     fi
+    # Truncate long lines in git grep
     if [[ "$1" = "grep" ]]; then
         if ! command -v perl &>/dev/null; then
             command git "$@"
@@ -202,6 +211,7 @@ git() {
         }'
         return
     fi
+    # Prevent accidental git commit -a
     if [[ "$1" = "commit" ]] && [[ "$2" = "-a"* ]]; then
         if ! command git diff-index --cached --quiet HEAD -- && \
             ! command git diff-files --quiet; then
@@ -219,6 +229,7 @@ git() {
     return "$code"
 }
 
+# Interactively check out git branches
 git-checkout-i() {
     local fzf one refs cmd format branches line_count term_height fzf_height fzf_tmux branch checkout_command
     command git rev-parse || return
