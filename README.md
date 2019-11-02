@@ -65,10 +65,10 @@ Sample local files are in the example directory.
 * The prompt is bold to act as an eye magnet so you can find it quickly when scrolling up a lot
 * The prompt is multi-line to let every command you type start at the same column
 * `mkcd` makes a folder and `cd`s into it. `mvcd` moves a file and `cd`s to the destination.
+* `cd` to a file will automatically `cd` to its containing folder
+* `cd :/` `cd`s to the root of the git repository
 * `git commit -a` is prevented if you already have staged changes
 * `git checkout -i` shows a searchable list of local branches. `git checkout -ia` shows all branches. Press enter to check out the selected branch. Press ctrl-c or esc to exit the list.
-* `cd :/` `cd`s to the root of the git repository
-* `cd` to a file will automatically `cd` to its containing folder
 * Tab completion is powerful. Type `cd /u/l/b<tab>` and it will expand to `cd /usr/local/bin/`.
 * Tab completion is case-insensitive if you start with a lowercase letter. For example, `cd /u/u` expands to `cd /Users/username`
 * Tab completion is dash and underscore insensitive. For example, `cd foo-bar-baz` can expand to `cd foo-bar_baz`
