@@ -110,7 +110,8 @@ which() {
     echo -E "$which_out" | while IFS=$'\n' read -r line; do
         if [[ "$line" = *" is /"* ]] && [[ -x "${line/#* is /}" ]]; then
             echo -En "${line%% is *} is "
-            ls -la "${line/#* is /}"
+            # eval to use ls alias with color flag. Aliases only work if set before function definition
+            eval "ls -la $(printf %q "${line/#* is /}")"
         else
             echo -E "$line"
         fi

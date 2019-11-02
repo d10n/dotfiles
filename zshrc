@@ -179,7 +179,8 @@ which() {
     which_exit="$?"
     echo -E "$which_out" | while IFS=$'\n' read -r line; do
         if [[ "$line" = "/"* ]] && [[ -x "$line" ]]; then
-            ls -la "$line"
+            # eval to use ls alias with color flag. Aliases only work if set before function definition
+            eval "ls -la $(printf %q "$line")"
         else
             echo -E "$line"
         fi
