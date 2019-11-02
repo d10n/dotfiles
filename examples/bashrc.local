@@ -74,7 +74,7 @@ mvcd() {
 
 cd() {
     local top
-    [[ -z "$@" ]] && set_iterm_tab_rgb
+    [[ "$#" -eq 0 ]] && set_iterm_tab_rgb
     { [[ "$1" = ":/" ]] && top="$(command git rev-parse --show-cdup)." && builtin cd "$top"; } || \
     { [[ -f "$1" ]] && builtin cd "$(dirname "$1")"; } || \
     builtin cd "$@"
@@ -199,7 +199,7 @@ git-checkout-i() {
 set_iterm_tab_rgb() {
     [[ "$TERM_PROGRAM" != "iTerm.app" ]] && return
     [[ -n "${NO_ITERM_TAB_COLOR+set}" ]] && return
-    if [[ -z "$@" ]]; then
+    if [[ "$#" -eq 0 ]]; then
         echo -ne "\033]6;1;bg;*;default\a"  # reset
     else
         echo -ne "\033]6;1;bg;red;brightness;${1}\a\033]6;1;bg;green;brightness;${2}\a\033]6;1;bg;blue;brightness;${3}\a"
