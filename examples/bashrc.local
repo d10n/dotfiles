@@ -1,4 +1,7 @@
 #!/bin/bash
+
+[[ "$-" = *i* ]] && return
+
 [[ -z "${ORIGINAL_VARS}" ]] && ORIGINAL_VARS="$(declare -px)"
 typeset +x ORIGINAL_VARS
 [[ -n "${FIXPATH}" ]] && PATH="$FIXPATH" && unset FIXPATH
