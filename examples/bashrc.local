@@ -383,8 +383,10 @@ fi
 if [[ $EUID == '0' ]]; then
     # running as root or with privileges
     PROMPT_ROOT_FLAG=$'\[\e[0;31;41m\]/\[\e[1;37m\]!\[\e[0;31;41m\]\\\\\[\e[0m\]'
+    PROMPT_ROOT_FLAG_NO_COLOR='/!\\'
 else
     PROMPT_ROOT_FLAG=''
+    PROMPT_ROOT_FLAG_NO_COLOR=''
 fi
 
 ensure_prompt_on_own_line() {
@@ -398,7 +400,7 @@ ensure_prompt_on_own_line() {
 PROMPT_COMMAND='history -a;printf "\e]0;%s\a" "$(pws)";ensure_prompt_on_own_line'
 
 PS1="$PROMPT_ROOT_FLAG\[$HOSTFGCOLOR$HOSTBGCOLOR\][\[$HOSTFGTEXT$HOSTBGCOLOR\]\u "$'\[\e[0;30m\e[47m\] \h\[\e[0;37m\e[47m\]]\[\e[0m\e[0;100m\e[37m\] \w \[\e[0m\]$(__git_info)\n\[\e[0m\e[1m\]\\$\[\e[0m\] '  # full color + git info
-#PS1=$'\[\e[0m\]\u@\h:\w$(__git_info)\n\$ '  # reset color + git info
+#PS1=$'\[\e[0m\e[1m\]'"$PROMPT_ROOT_FLAG_NO_COLOR"$'\u@\h:\w$(__git_info)\n\$ \[\e[0m\]'  # bold + git info
 #PS1=$'\u@\h:\w\n\$ '  # basic
 
 __git_info() {
