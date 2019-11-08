@@ -305,8 +305,16 @@ add_git_alias_completion; unset -f add_git_alias_completion
 
 tolower() { tr '[[:upper:]]' '[[:lower:]]'; }
 toupper() { tr '[[:lower:]]' '[[:upper:]]'; }
-tolower_ansi() { perl -pe '$|=1;s/(.*?)(\e\[.*?m)?/lc($1).$2/ge'; }
-toupper_ansi() { perl -pe '$|=1;s/(.*?)(\e\[.*?m)?/uc($1).$2/ge'; }
+tolower_ansi() {
+    awk '{s=$0;b=0;while(1){match(substr(s,b+1),/\x1b\[[^m]*m/);b=RSTART;e=RLENGTH;
+        if(b||e=length(s)){printf"%s",tolower(substr(s,1,b))substr(s,b+1,e)}
+        else{print tolower(s);break}s=substr(s,b+e+1)}}'
+}
+toupper_ansi() {
+    awk '{s=$0;b=0;while(1){match(substr(s,b+1),/\x1b\[[^m]*m/);b=RSTART;e=RLENGTH;
+        if(b||e=length(s)){printf"%s",toupper(substr(s,1,b))substr(s,b+1,e)}
+        else{print toupper(s);break}s=substr(s,b+e+1)}}'
+}
 highlight_whitespace() { sed $'s/[ \t\v\f][ \t\v\f]*/\e[41m&\e[0m/g'; }
 trim() {  # Remove leading and trailing whitespace of stdin
     awk 'BEGIN{b=0;t=""}
