@@ -305,6 +305,8 @@ add_git_alias_completion; unset -f add_git_alias_completion
 
 tolower() { tr '[[:upper:]]' '[[:lower:]]'; }
 toupper() { tr '[[:lower:]]' '[[:upper:]]'; }
+tolower_ansi() { perl -pe '$|=1;s/(.*?)(\e\[.*?m)?/lc($1).$2/ge'; }
+toupper_ansi() { perl -pe '$|=1;s/(.*?)(\e\[.*?m)?/uc($1).$2/ge'; }
 highlight_whitespace() { sed $'s/[ \t\v\f][ \t\v\f]*/\e[41m&\e[0m/g'; }
 trim() {  # Remove leading and trailing whitespace of stdin
     awk 'BEGIN{b=0;t=""}
