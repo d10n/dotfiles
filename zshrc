@@ -303,6 +303,15 @@ add_git_alias_completion() {
 }
 add_git_alias_completion; unset -f add_git_alias_completion
 
+tolower() { tr '[[:upper:]]' '[[:lower:]]'; }
+toupper() { tr '[[:lower:]]' '[[:upper:]]'; }
+highlight_whitespace() { sed $'s/[ \t\v\f][ \t\v\f]*/\e[41m&\e[0m/g'; }
+trim() {  # Remove leading and trailing whitespace of stdin
+    awk 'BEGIN{b=0;t=""}
+        b{l=match($0,/[^ \t\v\f][ \t\v\f]*$/);if(l>0){printf t substr($0,1,l);t=substr($0,l+1)"\n"}else{t=t$0"\n"}}
+        !b{sub(/^[ \t\v\f]+/,"",$0);l=match($0,/[^ \t\v\f][ \t\v\f]*$/);if(l>0){printf substr($0,1,l);t=substr($0,l+1)"\n";b=1}}'
+}
+
 set_iterm_tab_rgb() {
     [[ "$TERM_PROGRAM" != "iTerm.app" ]] && return
     [[ -n "${NO_ITERM_TAB_COLOR+set}" ]] && return
