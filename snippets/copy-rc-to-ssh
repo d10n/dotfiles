@@ -1,0 +1,105 @@
+#!/bin/bash
+
+set -euo pipefail
+
+SOURCE="${BASH_SOURCE[0]}"
+while [[ -h "$SOURCE" ]]; do # resolve $SOURCE until the file is no longer a symlink
+    DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+    SOURCE="$(readlink "$SOURCE")"
+    [[ $SOURCE != /* ]] && SOURCE="$DIR/$SOURCE" # if $SOURCE was a relative symlink, we need to resolve it relative to the path where the symlink file was located
+done
+DIR="$( cd -P "$( dirname "$SOURCE" )" >/dev/null 2>&1 && pwd )"
+cd "$DIR"
+
+if [[ -t 1 ]]; then
+    echo >&2 "Usage: ssh <host> bash <<(./copy-rc-to-ssh)"
+    exit 1
+fi
+
+BASHRC="$(<bashrc)"
+BASHRC_SUM="$(cksum <bashrc | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
+SCREENRC="$(<screenrc)"
+SCREENRC_SUM="$(cksum <screenrc | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
+VIMRC="$(<vimrc)"
+VIMRC_SUM="$(cksum <vimrc | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
+INPUTRC_FILE="$(<inputrc)"
+INPUTRC_SUM="$(cksum <inputrc | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
+LESSKEY="$(<lesskey)"
+LESSKEY_SUM="$(cksum <lesskey | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
+
+SSH_PUBLIC_KEY="$(<ssh_key.pub)"
+
+cat <<'EOF_CHECKS'
+[[ -n "$SSH_CONNECTION" ]] || { echo >&2 "Usage: ssh <host> bash <<(./copy-rc-to-ssh)"; exit 1; }
+#[[ "$USER" = "myuser" ]] || { echo >&2 "Unexpected user; exiting without change"; exit 1; }
+#[[ "$HOSTNAME" = *myhost* ]] || { echo >&2 "Unexpected host; exiting without change"; exit 1; }
+
+EOF_CHECKS
+
+cat <<EOF_VARIABLES
+$(declare -p BASHRC     SCREENRC     VIMRC     INPUTRC_FILE LESSKEY    )
+$(declare -p BASHRC_SUM SCREENRC_SUM VIMRC_SUM INPUTRC_SUM  LESSKEY_SUM)
+$(declare -p SSH_PUBLIC_KEY)
+
+EOF_VARIABLES
+
+cat <<'EOF_SCRIPT'
+get_bak_dest() {
+    { [[ -f "$1.orig" ]] && ! [[ -f "$1.bak" ]]; } && echo .bak || echo .orig
+}
+
+backup_file() {
+    [[ -f "$1" ]] && cp -a "$1" "$1$(get_bak_dest "$1")"
+}
+
+if ! grep 2>/dev/null -qF '# start copied-screenrc-'"$SCREENRC_SUM" ~/.screenrc; then
+    echo "Updating screenrc"
+    backup_file ~/.screenrc
+    {
+        echo '# start copied-screenrc-'"$SCREENRC_SUM"
+        printf '%s\n' "$SCREENRC"
+    } >~/.screenrc
+fi
+if ! grep 2>/dev/null -qF '" start copied-vimrc-'"$VIMRC_SUM" ~/.vimrc; then
+    echo "Updating vimrc"
+    backup_file ~/.vimrc
+    {
+        echo '" start copied-vimrc-'"$VIMRC_SUM"
+        printf '%s\n' "$VIMRC"
+    } >~/.vimrc
+fi
+if ! grep 2>/dev/null -qF '# start copied-inputrc-'"$INPUTRC_SUM" ~/.inputrc; then
+    echo "Updating inputrc"
+    backup_file ~/.inputrc
+    {
+        echo '# start copied-inputrc-'"$INPUTRC_SUM"
+        printf '%s\n' "$INPUTRC_FILE"
+    } >~/.inputrc
+fi
+if ! grep 2>/dev/null -qF '# start copied-lesskey-'"$LESSKEY_SUM" ~/.lesskey; then
+    echo "Updating lesskey"
+    backup_file ~/.lesskey
+    {
+        echo '# start copied-lesskey-'"$LESSKEY_SUM"
+        printf '%s\n' "$LESSKEY"
+    } >~/.lesskey
+    command -v lesskey &>/dev/null && lesskey
+fi
+if ! grep 2>/dev/null -qF "$SSH_PUBLIC_KEY" ~/.ssh/authorized_keys; then
+    mkdir -p ~/.ssh
+    chmod 700 ~/.ssh
+    echo "Updating authorized_keys"
+    backup_file ~/.ssh/authorized_keys
+    printf '%s\n' "$SSH_PUBLIC_KEY" >> ~/.ssh/authorized_keys
+fi
+if ! grep 2>/dev/null -qF '# start copied-bashrc-'"$BASHRC_SUM" ~/.bashrc; then
+    echo "Updating bashrc"
+    backup_file ~/.bashrc
+    {
+        echo '# start copied-bashrc-'"$BASHRC_SUM"
+        printf '%s\n' "$BASHRC"
+    } >~/.bashrc
+    [[ "$SHELL" = */bash ]] && . ~/.bashrc
+fi
+
+EOF_SCRIPT
