@@ -51,6 +51,7 @@ Sample local files are in the example directory.
 * Work with tools, not against tools
 * Preserve expected default behavior
 * Augment tools with optional convenience functions
+* Degrade enhancements gracefully
 * Protect yourself from PEBKAC
 
 ## Overview
