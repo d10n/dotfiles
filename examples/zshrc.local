@@ -186,6 +186,21 @@ cmdfu() {
     rm "$tempfile"
 }
 
+adb-type() {
+    [[ -t 0 ]] || exit 1
+    saved_stty="$(stty -g)"
+    trap "stty '$saved_stty'; exit 1" INT
+    #stty -echo -icanon raw 2>/dev/null
+    stty -echo
+    while true; do
+        #key="$(dd if=/dev/stdin bs=1 count=1)" # can't ctrl-c
+        read -rsk1 key
+        escaped_key="$(adb-escape "$key")"
+        adb shell input text "$escaped_key"
+    done
+    stty "$saved_stty"
+}
+
 adb-paste() {
     local TEXT ESCAPED_TEXT
     if [[ "$1" != "" ]]; then
