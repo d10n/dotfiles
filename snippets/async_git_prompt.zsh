@@ -2,7 +2,7 @@
 
 # Unfortunately, it seems like there is no best approach:
 # file is the fastest, but uses the filesystem
-# coproc is about as fast, but &p from the interacive shell can't be restored
+# coproc is about as fast, but &p from the interactive shell can't be restored
 # subshell has no side effects, but it is relatively slow
 
 # the _timeout variants will wait synchronously for a bit to potentially avoid a redraw
