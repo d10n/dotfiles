@@ -91,6 +91,7 @@ if ! grep 2>/dev/null -qF "$SSH_PUBLIC_KEY" ~/.ssh/authorized_keys; then
     echo "Updating authorized_keys"
     backup_file ~/.ssh/authorized_keys
     printf '%s\n' "$SSH_PUBLIC_KEY" >> ~/.ssh/authorized_keys
+    chmod 600 ~/.ssh/authorized_keys
 fi
 if ! grep 2>/dev/null -qF '# start copied-bashrc-'"$BASHRC_SUM" ~/.bashrc; then
     echo "Updating bashrc"
