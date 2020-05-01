@@ -177,6 +177,11 @@ btrfs() {
 
 ## Miscellaneous functions
 
+touch-tree-by-file() {
+    # Recursively update the last modified dates of a tree of directories by the most recently modified file in each directory
+    ( oldest="$(find . -mindepth 1 -type f -printf '%T+=%p\n' | sort | head -n 1 | cut -d= -f2-)"; find . -depth -type d -exec sh -c 'newest="$(find "$1" -mindepth 1 -maxdepth 1 -printf "%T+=%p\n" | sort |tail -n 1 | cut -d= -f2-)"; if [ -n "$newest" ]; then ref="$newest"; else ref="$2"; fi; set -x; touch -r "$ref" "$1";' -- '{}' "$oldest" \; ; )
+}
+
 cmdfu() {
     local tempfile="$(mktemp)" || return 1
     echo -e "\n# press za to toggle a fold" >> "$tempfile"
