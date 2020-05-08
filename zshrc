@@ -174,7 +174,7 @@ unalias which &>/dev/null  # Prevent system-wide which alias from breaking the w
 which() {
     { [[ -t 0 ]] && [[ -t 1 ]]; } || { builtin which "$@"; return; }
     local which_out which_exit
-    which_out="$(builtin which "$@")"
+    which_out="$(builtin which -x4 "$@")"
     which_exit="$?"
     [[ -z "$which_out" ]] && return "$which_exit"
     printf '%s\n' "$which_out" | while IFS=$'\n' read -r line; do
