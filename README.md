@@ -68,6 +68,7 @@ Sample local files are in the example directory.
 * `mkcd` makes a folder and `cd`s into it. `mvcd` moves a file and `cd`s to the destination.
 * `cd` to a file will automatically `cd` to its containing folder
 * `cd :/` `cd`s to the root of the git repository
+* `cd ..../` expands to `cd ../../../`; every . after the first 2 goes up another directory
 * `git commit -a` is prevented if you already have staged changes
 * `git checkout -i` shows a searchable list of local branches. `git checkout -ia` shows all branches. Press enter to check out the selected branch. Press ctrl-c or esc to exit the list.
 * When an output line of `git grep` is very long, the line will be truncated

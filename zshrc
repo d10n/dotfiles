@@ -144,11 +144,13 @@ mvcd() {
 }
 
 # enable cd to directory containing file; cd :/ to visit git root
+# cd ..../ becomes ../../../ - every . after the first 2 goes up another directory
 cd() {
     local top parent
     [[ "$#" -eq 0 ]] && set_iterm_tab_rgb
     { [[ "$1" = ":/" ]] && top="$(command git rev-parse --show-cdup)." && builtin cd "$top"; } || \
     { [[ ! -d "$1" ]] && [[ -e "$1" ]] && parent="$(dirname "$1")" && [[ "$parent" != . ]] && [[ -d "$parent" ]] && builtin cd "$parent" 2>/dev/null; } || \
+    { [[ "$1" = '...'* ]] && command -v perl &>/dev/null && builtin cd "$(printf %s "$1" | perl -pe 's/\/(.*$)|(\.)(?=\.\.)/$2$2\/$1/g')" } || \
     builtin cd "$@"
 }
 
