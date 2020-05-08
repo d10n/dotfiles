@@ -170,7 +170,7 @@ swap() {
 }
 
 unalias which &>/dev/null  # Prevent system-wide which alias from breaking the which function
-# When which output is a file, ls -l the file
+# When which output is a file, ls -l the file (zsh-specific version)
 which() {
     { [[ -t 0 ]] && [[ -t 1 ]]; } || { builtin which "$@"; return; }
     local which_out which_exit
