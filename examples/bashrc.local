@@ -13,8 +13,8 @@ HISTIGNORE="&:[ ]*:ls:bg:fg:exit:reset:clear:which"
 HISTCONTROL="ignoreboth:erasedups"
 
 # Huge history. Doesn't appear to slow things down, so why not?
-HISTSIZE=500000
-HISTFILESIZE=100000
+HISTSIZE=9999999999
+HISTFILESIZE=9999999999
 
 # Use standard ISO 8601 timestamp
 # %F equivalent to %Y-%m-%d

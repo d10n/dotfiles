@@ -23,8 +23,8 @@ if [[ -f ~/.histfile ]]; then
 else
     HISTFILE=~/.zsh_history
 fi
-HISTSIZE=1000000
-SAVEHIST=1000000
+HISTSIZE=9999999999
+SAVEHIST=9999999999
 
 setopt PRINT_EXIT_VALUE
 setopt EXTENDED_GLOB
