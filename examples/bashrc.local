@@ -1,6 +1,6 @@
 #!/bin/bash
 
-[[ "$-" = *i* ]] && return
+[[ "$-" = *i* ]] || return
 
 [[ -z "${ORIGINAL_VARS}" ]] && ORIGINAL_VARS="$(declare -px)"
 typeset +x ORIGINAL_VARS
