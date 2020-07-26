@@ -18,6 +18,8 @@ fi
 
 BASHRC="$(<bashrc)"
 BASHRC_SUM="$(cksum <bashrc | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
+TMUX_CONF="$(<tmux.conf)"
+TMUX_CONF_SUM="$(cksum <tmux.conf | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
 SCREENRC="$(<screenrc)"
 SCREENRC_SUM="$(cksum <screenrc | { IFS=' ' read -r dec len; printf '%08x-%d' "$dec" "$len"; })"
 VIMRC="$(<vimrc)"
@@ -37,8 +39,8 @@ cat <<'EOF_CHECKS'
 EOF_CHECKS
 
 cat <<EOF_VARIABLES
-$(declare -p BASHRC     SCREENRC     VIMRC     INPUTRC_FILE LESSKEY    )
-$(declare -p BASHRC_SUM SCREENRC_SUM VIMRC_SUM INPUTRC_SUM  LESSKEY_SUM)
+$(declare -p BASHRC     SCREENRC     TMUX_CONF     VIMRC     INPUTRC_FILE LESSKEY    )
+$(declare -p BASHRC_SUM SCREENRC_SUM TMUX_CONF_SUM VIMRC_SUM INPUTRC_SUM  LESSKEY_SUM)
 $(declare -p SSH_PUBLIC_KEY)
 
 EOF_VARIABLES
@@ -59,6 +61,14 @@ if ! grep 2>/dev/null -qF '# start copied-screenrc-'"$SCREENRC_SUM" ~/.screenrc;
         echo '# start copied-screenrc-'"$SCREENRC_SUM"
         printf '%s\n' "$SCREENRC"
     } >~/.screenrc
+fi
+if ! grep 2>/dev/null -qF '# start copied-tmux-conf-'"$TMUX_CONF_SUM" ~/.tmux.conf; then
+    echo "Updating tmux.conf"
+    backup_file ~/.tmux.conf
+    {
+        echo '# start copied-tmux-conf-'"$SCREENRC_SUM"
+        printf '%s\n' "$SCREENRC"
+    } >~/.tmux.conf
 fi
 if ! grep 2>/dev/null -qF '" start copied-vimrc-'"$VIMRC_SUM" ~/.vimrc; then
     echo "Updating vimrc"
