@@ -242,6 +242,9 @@ nnoremap g/t /\t<CR>
 noremap <expr> n 'Nn'[v:searchforward].'zzzv'
 noremap <expr> N 'nN'[v:searchforward].'zzzv'
 
+" Search for visual selection by pressing /
+vnoremap // y/\V<C-R>=escape(@",'/\')<CR><CR>
+
 "" Cycle buffers with (shift) tab (<Tab> conflicts with <C-i>)
 "nnoremap <silent> <Tab> :bnext<CR>
 "nnoremap <silent> <S-Tab> :bprevious<CR>
