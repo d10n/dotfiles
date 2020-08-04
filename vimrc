@@ -426,6 +426,53 @@ endif
 " Fix syntax highlighting with very long tokens
 autocmd BufEnter * :syntax sync fromstart
 
+" Interpret filenames of the form <filename>:<line>[:<col>] as the instruction
+" to open <filename> (if it exists) and position the cursor at a given line number.
+autocmd! BufNewFile *:* nested call s:gotoline()
+function! s:gotoline()
+  let file = bufname("%")
+  let newfile = ""
+
+  " filename:row[:]
+  let matches = matchlist(file, '\(.*\):\(\d\+\):\?')
+  if len(matches) != 0 && filereadable(matches[1]) && !filereadable(file)
+    let newfile = matches[1]
+    let row = matches[2]
+    let col = ""
+  endif
+
+  " filename:row:col[:]
+  let matches = matchlist(file, '\(.*\):\(\d\+\):\(\d\+\):\?$')
+  if len(newfile) == 0 && len(matches) != 0 && filereadable(matches[1]) && !filereadable(file)
+    let newfile = matches[1]
+    let row = matches[2]
+    let col = matches[3]
+  endif
+
+  " filename:
+  let matches = matchlist(file, '\(.*\):')
+  if len(newfile) == 0 && len(matches) != 0 && filereadable(matches[1]) && !filereadable(file)
+    let newfile = matches[1]
+    let row = matches[2]
+    let col = ""
+  endif
+
+  if len(newfile) > 0
+    let l:bufn = bufnr("%")
+    exec ":e " . newfile
+    if len(col) > 0
+      call cursor(row, col)
+    else
+      exec ":" . row
+    endif
+    exec ":bdelete " . l:bufn
+    if foldlevel(row) > 0
+      exec ":foldopen!"
+    endif
+    return
+  endif
+endfunction
+
 let s:original_showbreak = &showbreak
 function! ToggleGutter()
   set invnumber
