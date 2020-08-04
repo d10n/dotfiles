@@ -395,7 +395,7 @@ else
 fi
 
 ensure_prompt_on_own_line() {
-    [[ -t 0 ]] && [[ -t 1 ]] || return
+    [[ -t 0 ]] && [[ -t 1 ]] || return 0
     local _ col
     IFS='[;' read -p $'\e[6n' -s -r -dR _ _ col # \e[6n is tput u7
     [[ "$col" -gt 1 ]] && printf '\e[7m%%\e[0m\n'
