@@ -1,6 +1,6 @@
 
 # If not running interactively, don't do anything
-[[ "$-" != *i* ]] && return
+[[ "$-" = *i* ]] || return
 
 [[ -f ~/.bash.colors ]] && . ~/.bash.colors
 #PS1=$'\u@\h:\w\n\$ '  # no color
