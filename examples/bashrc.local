@@ -399,6 +399,9 @@ ensure_prompt_on_own_line() {
     local _ col
     IFS='[;' read -p $'\e[6n' -s -r -dR _ _ col # \e[6n is tput u7
     [[ "$col" -gt 1 ]] && printf '\e[7m%%\e[0m\n'
+
+    # Alternative: (via https://www.vidarholen.net/contents/blog/?p=878)
+    #printf "%%%$((COLUMNS-1))s\\r"
 }
 
 #PROMPT_COMMAND='history -a;printf "\e]0;%s\a" "$(pwd|perl -pe '"'"'s|^\Q$ENV{HOME}\E|~|;s|(?<=/)([._]*.)[^/]*(?=/)|$1|g;s|^\.$||'"'"')";ensure_prompt_on_own_line'
