@@ -1,0 +1,46 @@
+#!/bin/sh
+
+# This gets added with git commit -v or git commit --cleanup=scissors
+cut_line='------------------------ >8 ------------------------'
+
+# Strip comments and cut line
+message="$(awk "/$cut_line/{exit} !/^#/{print}" "$1")"
+
+if ! printf %s "$message" | grep -q .; then
+    exit # empty commit message
+fi
+
+branch="$(git symbolic-ref --short -q HEAD)"
+
+should_branch_be_in_commit() {
+    # Ignore master branch
+    [ "$branch" = "master" ] && return 1
+    # Create this file to ignore branches per repository
+    if [ -r "$GIT_DIR/dont-automatically-add-these-branches-to-commits" ]; then
+        printf %s "$branch" |
+            grep -qFxf "$GIT_DIR/dont-automatically-add-these-branches-to-commits" &&
+            return 1
+    fi
+    # Assume a branch with a / is important
+    case "$branch" in */*) return;; esac
+    # Assume all other branches are important
+}
+
+commit_has_branch() {
+    printf %s "$message" | grep -wF "$branch"
+}
+
+# Store newline (line feed) into variable: the best portable way to append a newline to a string
+LF='
+'
+
+if ! commit_has_branch; then
+    if should_branch_be_in_commit; then
+        # Add the branch name after a blank line
+        if printf %s "$message" | tail -n 1 | grep -q .; then
+            message="$message$LF"
+        fi
+        printf '%s\n%s\n' "$message" "$branch" > "$1"
+        echo >&2 'Appended branch name to commit message.'
+    fi
+fi
