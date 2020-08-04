@@ -389,6 +389,8 @@ apply_aliases() {
     alias du="du -ch"
 
     alias tmux='tmux -2'
+
+    alias ping='ping -c5'
 }
 apply_aliases && unset -f apply_aliases
 
