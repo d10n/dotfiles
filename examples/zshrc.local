@@ -143,6 +143,7 @@ fi
 #alias subl=subl3
 #alias idea='cygstart "C:\Users\username\AppData\Roaming\Microsoft\Windows\Start Menu\Programs\JetBrains Toolbox\IntelliJ IDEA Ultimate.lnk"'
 #alias idea='cygstart "$APPDATA\Microsoft\Windows\Start Menu\Programs\JetBrains Toolbox\IntelliJ IDEA Ultimate.lnk"'
+#alias code='cygstart "$APPDATA\Microsoft\Windows\Start Menu\Programs\Visual Studio Code\Visual Studio Code.lnk"'
 #alias subl='/cygdrive/c/Program\ Files/Sublime\ Text\ 3/subl'
 
 
