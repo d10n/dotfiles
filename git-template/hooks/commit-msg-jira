@@ -42,6 +42,11 @@ capitalize_jira() {
     perl -pe "s/\\b(${jira_prefix}-\\d+)\\b/\\U\\1/ig"
 }
 
+is_branch_excluded() {
+    # TODO get with git config
+    [[ -z "$branch" ]] || printf %s "$branch" | egrep -qf <(echo $'^release\\/\n/^master$')
+}
+
 # If a specific JIRA prefix is configured, then we can attempt
 # to automatically fix incorrect ticket captialization
 if [[ "$jira_prefix" != "$match_any_jira_prefix" ]]; then
@@ -55,7 +60,7 @@ fi
 
 jira_added=0
 
-if ! printf %s "$message" | has_jira ; then
+if ! is_branch_excluded && ! printf %s "$message" | has_jira ; then
     if ! printf %s "$branch" | capitalize_jira | has_jira; then
         if [[ -t 1 ]]; then
             printf >&2 '\e[0;31mERROR:\e[0m NOT COMMITTED\n'
