@@ -66,6 +66,8 @@ export SYSTEMD_EDITOR=vim
 ## Ruby
 #command -v rbenv &>/dev/null && eval "$(rbenv init -)"
 #export RBENV_ROOT=/usr/local/var/rbenv
+#PATH="$PATH:$(gem environment gempath | tr ':' '\n' | sed 's,$,/bin,' | paste -sd: -)"
+#path=($path) # remove duplicates
 
 
 ## Python
