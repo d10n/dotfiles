@@ -70,3 +70,12 @@ HIBGM=$'\e[10;95m'   # purple
 HIBGY=$'\e[0;103m'   # yellow
 HIBGK=$'\e[0;100m'   # black
 
+FONT_UNDERLINE=$'\e[4m'
+FONT_BLINK=$'\e[5m'
+FONT_REVERSE=$'\e[7m'
+FONT_HIDDEN=$'\e[8m'
+FONT_INVISIBLE="$FONT_HIDDEN"
+FONT_RESET=$'\e[0m'
+FONT_BOLD=$'\e[1m'
+FONT_BRIGHT="$FONT_BOLD"
+FONT_DIM=$'\e[2m'
