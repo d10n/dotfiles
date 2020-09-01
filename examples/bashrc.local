@@ -487,12 +487,10 @@ monitorhttp() {
     fi
     local pcap_file="http_traffic_$(date +%F)-$(date +%s).pcap"
     local text_file="http_traffic_$(date +%F).log"
-    sudo sh -c 'port="$1"; pcap_file="$2"; text_file="$3"
-        stdbuf -oL -eL tcpdump -vv -l -i any -s 0 -w - "tcp port $port" |
-          tee "$pcap_file" |
-          stdbuf -oL -eL tcpdump -A -r - "((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0" |
-          tee -a "$text_file"
-    ' sh "$port" "$pcap_file" "$text_file"
+    sudo stdbuf -oL -eL tcpdump -vv -l -i any -s 0 -w - "tcp port $port" |
+      tee "$pcap_file" |
+      stdbuf -oL -eL tcpdump -A -r - "((ip[2:2] - ((ip[0]&0xf)<<2)) - ((tcp[12]&0xf0)>>2)) != 0" |
+      tee -a "$text_file"
 }
 
 #[[ -f ~/.bashrc.local ]] && . ~/.bashrc.local
