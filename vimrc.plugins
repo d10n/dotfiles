@@ -21,6 +21,7 @@ Plug 'terryma/vim-multiple-cursors'  " Sublime Text-like multiple selection. nex
 Plug 'terryma/vim-expand-region'  " IntelliJ-like context-aware selection. expand=+, contract=_
 "Plug 'editorconfig/editorconfig-vim'  " Universal editor config files - TODO prevent trimming trailing whitespace on save when in git add -p
 Plug 'vim-scripts/PreserveNoEOL'
+Plug 'vim-scripts/selection_eval.vim'  " Evaluate selection with <c-e><c-s>
 Plug 'mbbill/undotree'  " Browse through undo history
 Plug 'd10n/vim-toggle-help'  " Toggle help off and on with <F1>
 Plug 'bkad/CamelCaseMotion'  " Shift+(w|b|e) through camelCase words
