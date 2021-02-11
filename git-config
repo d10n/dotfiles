@@ -35,22 +35,12 @@ git config --global alias.bd '!f() {
           *) shift;;
       esac;
     done;
-    color_flag=no;
-    git for-each-ref --color --count=1 1>/dev/null 2>&1 && color_flag=yes;
     format="%(refname) %00%(committerdate:format:%s)%(taggerdate:format:%s) %(color:red)%(committerdate:relative)%(taggerdate:relative)%(color:reset)%09%00%(color:yellow)%(refname:short)%(color:reset) %00%(subject)%00 %(color:reset)%(color:dim cyan)<%(color:reset)%(color:cyan)%(authorname)%(taggername)%(color:reset)%(color:dim cyan)>%(color:reset)";
     {
-        if [ "$color_flag" = yes ]; then
-            if [ "${#contains}" -eq 0 ]; then
-                git for-each-ref --color --format="$format" "$refs";
-            else
-                git for-each-ref --color --format="$format" --contains="$contains" "$refs";
-            fi;
+        if [ "${#contains}" -eq 0 ]; then
+            git -c color.ui=always for-each-ref --color --format="$format" "$refs";
         else
-            if [ "${#contains}" -eq 0 ]; then
-                git -c color.ui=always for-each-ref --format="$format" "$refs";
-            else
-                git -c color.ui=always for-each-ref --format="$format" --contains="$contains" "$refs";
-            fi;
+            git -c color.ui=always for-each-ref --color --format="$format" --contains="$contains" "$refs";
         fi |
             perl -ne "print unless /^refs\/stash /";
         [ "${#contains}" -eq 0 ] && [ "$refs" = "--" ] && git show-ref -q --verify refs/stash &&
