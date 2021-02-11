@@ -24,6 +24,9 @@ DefaultKeyBinding.dict = ~/Library/KeyBindings/DefaultKeyBinding.dict
 amethyst
 hushlogin
 
+[symlink:linux]
+fontconfig = ~/.config/fontconfig
+
 [execute]
 get-zsh-tools
 git-config
