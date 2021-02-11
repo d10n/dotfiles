@@ -186,6 +186,10 @@ touch-tree-by-file() {
     ( oldest="$(find . -mindepth 1 -type f -printf '%T+=%p\n' | sort | head -n 1 | cut -d= -f2-)"; find . -depth -type d -exec sh -c 'newest="$(find "$1" -mindepth 1 -maxdepth 1 -printf "%T+=%p\n" | sort |tail -n 1 | cut -d= -f2-)"; if [ -n "$newest" ]; then ref="$newest"; else ref="$2"; fi; set -x; touch -r "$ref" "$1";' -- '{}' "$oldest" \; ; )
 }
 
+find-sort-date() {
+    find "$@" -printf '%T+\t%p\n' | LC_ALL=C sort
+}
+
 cmdfu() {
     local tempfile="$(mktemp)" || return 1
     echo -e "\n# press za to toggle a fold" >> "$tempfile"
