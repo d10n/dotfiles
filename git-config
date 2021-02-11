@@ -9,37 +9,57 @@ set -x
 git config --global alias.oldest-ancestor "!bash -c '"$'git log -1 "$(diff --old-line-format= --new-line-format= <(git rev-list --first-parent "${1:-master}") <(git rev-list --first-parent "${2:-HEAD}") | head -1)"'"' -"
 
 # Sort branch by date
-# Usage: git bd [-a] [-<line_limit>]
+# Usage: git bd [-a] [-<line_limit>] [--contains <ref>]
 #     -a             include remote branches and tags
 #     -<line_limit>  number of lines to tail
+#     --contains <ref>  Only show branches containing ref
 # Example: git bd
 # Example: git bd -3
 # Example: git bd -a
+# Example: git bd --contains release/1.0
 # Example: git bd -a -20
 # Example: git bd -a20
+# Example: git bd -a --contains release/1.0
 git config --global alias.bd '!f() {
-    case "$1" in
-        -a) refs="--"; shift;;
-        -a*) refs="--"; one="${1/-a/-}"; shift; set -- "$one" "$@";;
-        *) refs="refs/heads/";;
-    esac;
+    refs="refs/heads/";
+    tail_n="+0";
+    contains= ;
+    while [ "$#" -gt 0 ]; do
+      case "$1" in
+          -a) refs="--"; shift;;
+          -a*) refs="--"; one="${1/-a/-}"; shift; set -- "$one" "$@";;
+          --contains) contains="$2"; shift 2;;
+          --contains=*) contains="${1#*=}"; shift;;
+          -*[!0123456789]*) shift;;
+          -*) tail_n="${1#-}"; shift;;
+          *) shift;;
+      esac;
+    done;
+    color_flag=no;
     git for-each-ref --color --count=1 1>/dev/null 2>&1 && color_flag=yes;
-    format="--format=%(refname) %00%(committerdate:format:%s)%(taggerdate:format:%s) %(color:red)%(committerdate:relative)%(taggerdate:relative)%(color:reset)%09%00%(color:yellow)%(refname:short)%(color:reset) %00%(subject)%00 %(color:reset)%(color:dim cyan)<%(color:reset)%(color:cyan)%(authorname)%(taggername)%(color:reset)%(color:dim cyan)>%(color:reset)";
+    format="%(refname) %00%(committerdate:format:%s)%(taggerdate:format:%s) %(color:red)%(committerdate:relative)%(taggerdate:relative)%(color:reset)%09%00%(color:yellow)%(refname:short)%(color:reset) %00%(subject)%00 %(color:reset)%(color:dim cyan)<%(color:reset)%(color:cyan)%(authorname)%(taggername)%(color:reset)%(color:dim cyan)>%(color:reset)";
     {
-        {
-            [ "$color_flag" = yes ] &&
-                git for-each-ref --color "$format" "$refs" ||
-                git -c color.ui=always for-each-ref "$format" "$refs";
-        } |
+        if [ "$color_flag" = yes ]; then
+            if [ "${#contains}" -eq 0 ]; then
+                git for-each-ref --color --format="$format" "$refs";
+            else
+                git for-each-ref --color --format="$format" --contains="$contains" "$refs";
+            fi;
+        else
+            if [ "${#contains}" -eq 0 ]; then
+                git -c color.ui=always for-each-ref --format="$format" "$refs";
+            else
+                git -c color.ui=always for-each-ref --format="$format" --contains="$contains" "$refs";
+            fi;
+        fi |
             perl -ne "print unless /^refs\/stash /";
-        [ "$refs" = "--" ] &&
-            git show-ref -q --verify refs/stash &&
+        [ "${#contains}" -eq 0 ] && [ "$refs" = "--" ] && git show-ref -q --verify refs/stash &&
             git log --color --walk-reflogs --format="%gd %x00%ct %C(red)%cr%C(reset)%x09%x00%C(yellow)%gd%C(reset) %x00%s%x00 %C(reset)%C(dim cyan)<%C(reset)%C(cyan)%an%C(reset)%C(dim cyan)>%C(reset)" refs/stash;
     } |
         perl -pe "s/^refs\/tags\/[^\x00]*\x00([^\x00]*)\x00([^\x00]*)/\$1(tag) \$2/ || s/^[^\x00]*\x00([^\x00]*)\x00/\$1/; s/\x00([^\x00]{0,50})([^\x00]*)\x00/\$1\x1b[1;30m\$2\x1b[0m/" |
         sort -n -k1,1 |
         cut -d" " -f2- |
-        tail "${@:--n+0}";
+        tail -n "$tail_n";
 }; f'
 
 # Short log
