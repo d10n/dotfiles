@@ -105,6 +105,19 @@ swap() {
     fi
 }
 
+# swap file <-> file.bak and file.bak <-> file
+bak() {
+    [[ "$#" -ne 1 ]] && { echo >&2 '1 path must be supplied'; return 1; }
+    [[ "$1" = *'.bak' ]] && other="${1%.bak}" || other="$1.bak"
+    [[ -e "$1" ]] && [[ -e "$other" ]] && { echo >&2 "Both $1 and $other already exist"; return 1; }
+    ! [[ -e "$1" ]] && ! [[ -e "$other" ]] && { echo >&2 "Neither $1 nor $other exist"; return 1; }
+    if [[ -e "$other" ]]; then
+        mv "$other" "$1"
+    else
+        mv "$1" "$other"
+    fi
+}
+
 unalias which &>/dev/null  # Prevent system-wide which alias from breaking the which function
 # When which output is a file, ls -l the file (bash-specific version)
 which() {
