@@ -51,34 +51,29 @@ class Config(object):
         })
         if not file_path or not os.path.exists(file_path):
             return
-        state = None
         with open(file_path) as file:
-            for line in file:
-                line = line.rstrip('\n')
-                section = re.findall(r'^\[(.*)\]$', line)
-                if section:
-                    state = section[0]
-                elif line:
-                    srcdest = re.findall(r'^([^=]*) = (.*)$', line)
-                    if srcdest:
-                        src, dest = srcdest[0]
-                        self.items[state][src] = dest or None
-                    else:
-                        self.items[state][line] = None
+            self.parse_file_sections(file)
+
+    def parse_file_sections(self, file):
+        section = None
+        for line in file:
+            line = line.rstrip()
+            new_section = re.findall(r'^\[(.*)\]$', line)
+            if new_section:
+                section = new_section[0]
+            elif line:
+                src, dest = re.findall(r'^(.*?)(?: = (.*))?$', line)[0]
+                self.items[section][src] = dest or None
 
     def save(self):
         with open(self.file_path, 'w') as file:
             for section in self.sorted_keys():
                 file.write('[' + section + ']\n')
-                section_items = ''
                 for src, dest in sorted(self.items[section].items()):
                     if dest:
-                        section_items += src + ' = ' + dest
+                        file.write(src + ' = ' + dest + '\n')
                     else:
-                        section_items += src
-                    section_items += '\n'
-                if section_items:
-                    file.write(section_items)
+                        file.write(src + '\n')
                 file.write('\n')
         self.warn_overlap()
 
