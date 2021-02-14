@@ -307,6 +307,8 @@ elif [[ -x /usr/share/git/diff-highlight/diff-highlight ]]; then
     diff_highlight_found='/usr/share/git/diff-highlight/diff-highlight'
 elif [[ -x /usr/share/doc/git/diff-highlight/diff-highlight ]]; then
     diff_highlight_found='/usr/share/doc/git/diff-highlight/diff-highlight'
+elif [[ -x /usr/share/git-core/contrib/diff-highlight ]]; then
+    diff_highlight_found='/usr/share/git-core/contrib/diff-highlight'
 fi
 if [[ -n "$diff_highlight_found" ]]; then
     git config --global pager.log "$diff_highlight_found | less -RFX"
