@@ -96,7 +96,14 @@ else
     " Set the ColorColumn to something less obnoxious (may need tweaking for other color themes)
     highlight ColorColumn ctermbg=0 guibg=Black
   endif
+
+  " Enable transparent background.
+  " Restore by setting colorscheme again in vimrc.local.
+  highlight Normal ctermbg=NONE guibg=NONE
+  "highlight ColorColumn ctermbg=NONE guibg=NONE
+
 endif
+
 
 set shortmess=atI  " Disable vim intro message
 

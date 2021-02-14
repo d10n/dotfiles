@@ -17,6 +17,7 @@ Plug 'tpope/vim-characterize'  " Enhance ga with unicode character names
 Plug 'tpope/vim-rsi'  " Readline-style input makes ctrl-a and ctrl-e work
 Plug 'romainl/vim-qlist'  " Display results of [I in quickfix window
 Plug 'flazz/vim-colorschemes', {'do': ':colorscheme badwolf'}
+Plug 'kjwon15/vim-transparent'  " Enable transparent terminal by unsetting the vim bg color. Restore bg color with :TransparentDisable
 Plug 'terryma/vim-multiple-cursors'  " Sublime Text-like multiple selection. next=^n, prev=^p, skip=^x
 Plug 'terryma/vim-expand-region'  " IntelliJ-like context-aware selection. expand=+, contract=_
 "Plug 'editorconfig/editorconfig-vim'  " Universal editor config files - TODO prevent trimming trailing whitespace on save when in git add -p
