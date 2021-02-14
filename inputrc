@@ -15,6 +15,13 @@ $if Bash
   Space: magic-space
 $endif
 
+# $if Bash
+#   "\C-w": unix-filename-rubout
+#   set bind-tty-special-chars off
+#   "\C-u": kill-whole-line
+#   "\C-w": backward-kill-word
+# $endif
+
 # Case insensitive path completion
 set completion-ignore-case on
 
