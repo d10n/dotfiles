@@ -14,4 +14,7 @@ done
 DOTFILES_DIR="$( cd -P "$( dirname "$SOURCE" )" && pwd )"
 cd "$DOTFILES_DIR" || { echo >&2 'Error finding dotfiles dir'; exit 1; }
 
-./find-installed-dotfiles -print0 | xargs -0 -n1 -I % find % -maxdepth 0 -type l -print -exec rm '{}' ';'
+rm_command=(sh -c 'PS4=; set -x; rm "$1"' sh)
+case "$1" in -n|--dry-run) rm_command=(sh -c 'printf "[dry run] rm %q\n" "$1"' sh);; esac
+
+./find-installed-dotfiles -print0 | xargs -0 -I, find , -maxdepth 0 -type l -exec "${rm_command[@]}" '{}' ';'
