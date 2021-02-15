@@ -1,3 +1,5 @@
+#!/hint/zsh
+
 typeset -U path  # Keep only the first occurrence of each duplicated value
 path=($path /usr/local/bin)
 path=($path $HOME/bin $HOME/.bin $HOME/.local/bin)

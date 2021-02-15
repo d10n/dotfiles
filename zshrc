@@ -1,3 +1,4 @@
+#!/hint/zsh
 PS4='%D{%Y-%m-%d %H:%M:%S.%.} '
 #set -x  # for debugging zsh startup time
 #zmodload zsh/zprof  # for debugging zsh startup time
