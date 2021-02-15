@@ -42,6 +42,22 @@ def main():
 
 
 class Config(object):
+    """
+    Reads and writes ini-like files. Example:
+    [symlink]
+    bashrc
+    nvim = ~/.config/nvim
+    vimrc
+
+    [symlink:linux]
+    fontconfig = ~/.config/fontconfig
+
+    [execute]
+    git-config
+
+    [ignore]
+    README.md
+    """
     def __init__(self, file_path=None):
         self.file_path = file_path
         self.items = defaultdict(lambda: {}, {
@@ -78,6 +94,7 @@ class Config(object):
         self.warn_overlap()
 
     def warn_overlap(self):
+        """Warn if an entry is in 2 sections; for example, [symlink] and [ignore]"""
         for section_a, section_b in itertools.combinations(self.items.keys(), 2):
             items_overlap = sorted(set(self[section_a]) & set(self[section_b]))
             a_primary, _, a_secondary = section_a.partition(':')
@@ -97,6 +114,7 @@ class Config(object):
         return keys
 
     def __getitem__(self, item):
+        """Get a section, including platform-specific config"""
         merged_sections = {}
         for section in self.items.keys():
             primary_section, _, secondary_section = section.partition(':')
