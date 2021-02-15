@@ -13,8 +13,8 @@ fi
 branch="$(git symbolic-ref --short -q HEAD)"
 
 should_branch_be_in_commit() {
-    # Ignore master branch
-    [ "$branch" = "master" ] && return 1
+    # Ignore master/main branch
+    case "$branch" in master|main) return 1;; esac
     # Create this file to ignore branches per repository
     if [ -r "$GIT_DIR/dont-automatically-add-these-branches-to-commits" ]; then
         printf %s "$branch" |
