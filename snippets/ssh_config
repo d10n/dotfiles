@@ -1,0 +1,23 @@
+# ~/.ssh/config
+# chmod 700 ~/.ssh
+# chmod 600 ~/.ssh/config
+
+Host *
+  ServerAliveInterval 120
+  IdentitiesOnly yes
+
+Include ~/.ssh/config.d/*
+Include ~/.ssh/config.local
+
+Host myhost
+  HostName 10.0.0.1
+  User me
+  IdentityFile ~/.ssh/id_mykey
+  Port 22
+# Color aabbccdd
+#  ForwardX11 yes
+#  ForwardX11Trusted yes
+  LocalForward 8080 127.0.0.1:8080
+# plain sock5 proxy:
+  DynamicForward 31337
+
