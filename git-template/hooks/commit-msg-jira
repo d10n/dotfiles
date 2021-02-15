@@ -6,6 +6,16 @@
 # Otherwise, it is appended as the last line of the body
 # Example branch name: feature/SRC-1234-short-description
 
+# Configuration:
+# Set specific JIRA prefix with:
+#   git config hooks.jiraPrefix 'SRC'
+# Set multiple custom ignored branch regular expressions with:
+#   git config --add hooks.jiraExcludedBranchPatterns '^custom-ignored-branch$'
+#   git config --add hooks.jiraExcludedBranchPatterns '^scratch/'
+# Allow JIRA ticket to be added to the commit subject even if it causes the
+# subject to be over 50 characters long with:
+#   git config --bool hooks.jiraHonorSubjectLengthConvention false
+
 match_any_jira_prefix='[A-Z][A-Z]*'
 jira_prefix="$(git config hooks.jiraPrefix || printf %s "$match_any_jira_prefix")"
 honor_subject_length_convention="$(git config --bool hooks.jiraHonorSubjectLengthConvention || echo true)"
