@@ -10,6 +10,14 @@ match_any_jira_prefix='[A-Z][A-Z]*'
 jira_prefix="$(git config hooks.jiraPrefix || printf %s "$match_any_jira_prefix")"
 honor_subject_length_convention="$(git config --bool hooks.jiraHonorSubjectLengthConvention || echo true)"
 
+default_excluded_branch_patterns="$(cat <<'EOF' | sed 's/^  *//;s/  *$//'
+^release/
+^master$
+^main$
+EOF
+)"
+excluded_branches="$(git config --get-all hooks.jiraExcludedBranchPatterns || printf %s "$default_excluded_branch_patterns")"
+
 # This gets added with git commit -v or git commit --cleanup=scissors
 cut_line='------------------------ >8 ------------------------'
 
@@ -43,8 +51,7 @@ capitalize_jira() {
 }
 
 is_branch_excluded() {
-    # TODO get with git config
-    [[ -z "$branch" ]] || printf %s "$branch" | egrep -qf <(echo $'^release\\/\n/^master$')
+    [[ -z "$branch" ]] || printf %s "$branch" | egrep -qf <(printf %s "$excluded_branches" | grep .)
 }
 
 # If a specific JIRA prefix is configured, then we can attempt
