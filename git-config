@@ -126,8 +126,11 @@ git config --global alias.dsw "diff --word-diff=color --staged"
 # Show branches
 git config --global alias.b "branch"
 
-# Update both branches and tags
-git config --global alias.f "!git fetch --all --prune 2>&1 | sed 's/^/branches: /'; git fetch --all --prune --tags 2>&1 | sed 's/^/tags: /'"
+# Update both branches and tags for either all remotes or specified remotes
+# Examples:
+# git f
+# git f origin upstream
+git config --global alias.f '!f() { if [ "$#" -eq 0 ]; then git fetch --all --prune 2>&1; else git fetch --multiple --prune "$@" 2>&1; fi | sed "s/^/branches: /"; if [ "$#" -eq 0 ]; then git fetch --all --tags 2>&1; else git fetch --multiple --tags "$@" 2>&1; fi | sed "s/^/tags: /"; }; f'
 
 # Update both branches and tags, then pull.
 git config --global alias.fp '!f() { git fetch --all --prune 2>&1 | sed "s/^/branches: /"; git fetch --all --prune --tags 2>&1 | sed "s/^/tags: /"; [ "$1" = "--rebase" ] && action=rebase || action=merge; git "$action" FETCH_HEAD; }; f'
