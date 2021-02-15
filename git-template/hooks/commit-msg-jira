@@ -8,7 +8,7 @@
 
 match_any_jira_prefix='[A-Z][A-Z]*'
 jira_prefix="$(git config hooks.jiraPrefix || printf %s "$match_any_jira_prefix")"
-honor_subject_length_convention="$(git config --bool hooks.honorSubjectLengthConvention || echo true)"
+honor_subject_length_convention="$(git config --bool hooks.jiraHonorSubjectLengthConvention || echo true)"
 
 # This gets added with git commit -v or git commit --cleanup=scissors
 cut_line='------------------------ >8 ------------------------'
