@@ -56,6 +56,7 @@ git config --global alias.bd '!f() {
 # Usage: git l
 # Takes the same arguments as `git log`
 git config --global alias.l '!f() { : git log ;
+    cd "${GIT_PREFIX:-.}"
     commit_count="$(git rev-list --count HEAD@{upstream}..HEAD 2>/dev/null || echo 2)";
     commit_count=$(( commit_count + 3 ))
     [ "$commit_count" -lt 5 ] && commit_count=5;
