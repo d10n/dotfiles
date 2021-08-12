@@ -239,6 +239,15 @@ git() {
             return 1
         fi
     fi
+    # Force push with --force-with-lease by default
+    if [[ "$1" = "push" ]] && [[ "$2" = "-f" ]]; then
+        shift 2
+        if ! [[ "$*" = *--no-force-with-lease* ]]; then
+          echo >&2 'Force push: automatically adding --force-with-lease flag.'
+          echo >&2 'Bypass by manually adding the --no-force-with-lease flag.'
+        fi
+        set -- push --force-with-lease "$@"
+    fi
     command git "$@"
     code="$?"
     if [[ "$1" = "commit" ]] && (( ! code )); then
