@@ -109,7 +109,6 @@ zstyle ':completion:*' menu select  # complete with arrow key selection
 #zstyle ':completion:*:*:gradle:*' gradle-inspect no  # just use simple gradle completion
 zstyle ':completion:*:man:*' menu yes select
 zstyle ':completion:*' rehash true  # automatically detect new executables
-autoload -Uz compinit && compinit -i > /dev/null
 
 [[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
 [[ -d "$DOTFILES_DIR/zsh-libs/even-faster-vcs-info" ]] && fpath=("$DOTFILES_DIR/zsh-libs/even-faster-vcs-info" $fpath)
@@ -122,6 +121,7 @@ if [[ "$OSTYPE" == "darwin"* ]] && (( ${(@)fpath[(I)/usr/local/share/zsh/site-fu
     fpath=("${(@)fpath:#/usr/local/share/zsh/site-functions}" /usr/local/share/zsh/site-functions)
 fi
 
+autoload -Uz compinit && compinit -i >/dev/null # should go after setting fpath
 
 # By default, the zsh help command does not show help for builtins
 autoload -Uz run-help
