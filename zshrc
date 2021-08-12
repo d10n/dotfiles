@@ -60,6 +60,8 @@ REPORTTIME=1  # if a command takes longer than this many seconds of cpu time, sh
 WORDCHARS=${WORDCHARS//\/}  # Make ctrl-w delete 1 folder at a time
 WORDCHARS=${WORDCHARS//[\*\?\.\[\]\~\=\/\&\;\!\#\$\%\^\(\)\{\}\<\>]}  # Make ctrl-w stop deleting at these characters
 
+ZLE_SPACE_SUFFIX_CHARS=$'&|' # After tab completing, when typing & or |, preserve the space before the & or |
+
 ## Default programs
 #export BROWSER=firefox
 export VISUAL=vim
