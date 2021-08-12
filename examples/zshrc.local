@@ -63,6 +63,7 @@ export SYSTEMD_EDITOR=vim
 # if [[ $? -ne 0 ]]; then
 #     eval $(minikube docker-env --shell=bash)
 # fi
+#. <(kubectl completion zsh)
 
 
 ## Ruby
