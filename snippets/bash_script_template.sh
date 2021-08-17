@@ -20,7 +20,7 @@ Options:
   -q --quiet      Show no output
 EOF
 }
-[[ "$#" -eq 0 ]] && set -- --help
+[[ "$#" -gt 0 ]] || { usage | awk 'u&&/^$/{exit}/^Usage:$/{u=1}1'; exit 0; }
 
 # parameters
 params=""
