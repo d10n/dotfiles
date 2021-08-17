@@ -94,10 +94,10 @@ command -v node &>/dev/null && alias npx='eval "$({ type -w type &>/dev/null && 
 ## Lazy load nvm instead:
 NVM_DIR=~/.nvm
 if [[ -d "$NVM_DIR" ]]; then
-    nvm() { lazy_load_nvm; "$0" "$@" }
-    npm() { lazy_load_nvm; "$0" "$@" }
-    node() { lazy_load_nvm; "$0" "$@" }
-    yarn() { lazy_load_nvm; "$0" "$@" }
+    nvm() { lazy_load_nvm; "$0" "$@"; }
+    npm() { lazy_load_nvm; "$0" "$@"; }
+    node() { lazy_load_nvm; "$0" "$@"; }
+    yarn() { lazy_load_nvm; "$0" "$@"; }
     lazy_load_nvm() {
         export NVM_DIR
         unset -f lazy_load_nvm nvm npm node yarn
