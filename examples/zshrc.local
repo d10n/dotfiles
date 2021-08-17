@@ -184,6 +184,22 @@ btrfs() {
 
 ## Miscellaneous functions
 
+# git grep all repositories in current directory
+codegrep() {
+    find . -maxdepth 2 -mindepth 2 -type d -name .git \
+        -execdir sh -o pipefail -c 'git grep --color --line-number --extended-regexp "$@" | perl -pe "s/^([^:]*:[^:]*?)(?:\e\[[^:]*m)?:.{500,}/\$1\e[0m matches/" | awk -v dir="$(basename "$PWD")" -v branch="($(git rev-parse --verify --abbrev-ref HEAD))" "NR==1{print dir, branch}1" && echo' - "$@" \;
+}
+
+# eval bash string inside all repositories in current directory
+allcode() {
+    find . -maxdepth 2 -mindepth 2 -type d -name .git -exec bash -c '
+        dir="${1%.git}"
+        shift
+        cd "$dir"
+        ( eval "$*"; ) | dir="$dir" perl -pe "s/^/\$ENV{dir}\t/"
+        ' bash '{}' "$@" \;
+}
+
 touch-tree-by-file() {
     # Recursively update the last modified dates of a tree of directories by the most recently modified file in each directory
     ( oldest="$(find . -mindepth 1 -type f -printf '%T+=%p\n' | sort | head -n 1 | cut -d= -f2-)"; find . -depth -type d -exec sh -c 'newest="$(find "$1" -mindepth 1 -maxdepth 1 -printf "%T+=%p\n" | sort |tail -n 1 | cut -d= -f2-)"; if [ -n "$newest" ]; then ref="$newest"; else ref="$2"; fi; set -x; touch -r "$ref" "$1";' -- '{}' "$oldest" \; ; )
@@ -331,21 +347,6 @@ ansicolors() {
     echo
 }
 
-
-# git grep all repositories in current directory
-codegrep() {
-    find . -maxdepth 2 -mindepth 2 -type d -name .git \
-        -execdir sh -o pipefail -c 'git grep --color --line-number --extended-regexp "$@" | perl -pe "s/^([^:]*:[^:]*?)(?:\e\[[^:]*m)?:.{500,}/\$1\e[0m matches/" | awk -v dir="$(basename "$PWD")" -v branch="($(git rev-parse --verify --abbrev-ref HEAD))" "NR==1{print dir, branch}1" && echo' - "$@" \;
-}
-
-# eval bash string inside all repositories in current directory
-allcode() {
-    find . -maxdepth 2 -mindepth 2 -type d -name .git -exec bash -c '
-        dir="${1%.git}"
-        shift
-        cd "$dir"
-        ( eval "$*"; ) | dir="$dir" perl -pe "s/^/\$ENV{dir}\t/"
-        ' bash '{}' "$@" \;
 }
 
 #gtm() {
