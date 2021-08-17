@@ -497,7 +497,7 @@ __git_info() {
     [[ "$on_branch" = true ]] && message+=" ${branch}"
     [[ -n "${tracking}" ]] && message+=" ${tracking}"
     [[ -n "${stash_message}" ]] && message+=" ${stash_message}"
-    echo -en "\n${message}"
+    printf '\n%s' "$message"
 }
 
 monitorhttp() {
