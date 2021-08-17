@@ -110,7 +110,7 @@ zstyle ':completion:*' menu select  # complete with arrow key selection
 zstyle ':completion:*:man:*' menu yes select
 zstyle ':completion:*' rehash true  # automatically detect new executables
 
-[[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions $fpath)
+[[ -d /usr/local/share/zsh-completions ]] && fpath=(/usr/local/share/zsh-completions "${(@)fpath:#/usr/local/share/zsh-completions}")
 [[ -d "$DOTFILES_DIR/zsh-libs/even-faster-vcs-info" ]] && fpath=("$DOTFILES_DIR/zsh-libs/even-faster-vcs-info" $fpath)
 if [[ "$OSTYPE" == "darwin"* ]] && (( ${(@)fpath[(I)/usr/local/share/zsh/site-functions]} )); then
     # On mac with zsh and git installed from homebrew:
