@@ -331,20 +331,22 @@ ansicolors() {
     echo
 }
 
-#codegrep() {
-#    find ~/code -maxdepth 2 -mindepth 2 -type d -name .git \
-#        -execdir sh -o pipefail -c 'git grep --color --line-number --extended-regexp "$@" | perl -pe "s/^([^:]*:[^:]*?)(?:\e\[[^:]*m)?:.{500,}/\$1\e[0m matches/" | awk -v dir="$(basename "$PWD")" -v branch="($(git rev-parse --verify --abbrev-ref HEAD))" "NR==1{print dir, branch}1" && echo' - "$@" \;
-#}
 
-#allcode() {
-#    find ~/Projects -maxdepth 2 -mindepth 2 -type d -name .git -print0 | while IFS= read -r -d '' git_dir; do
-#        dir="${git_dir#~/Projects/}"
-#        dir="${dir%.git}"
-#        pushd -q "${git_dir%.git}"
-#        ( eval "$*"; ) | dir="$dir" perl -pe 's/^/$ENV{dir}\t/'
-#        popd -q
-#    done
-#}
+# git grep all repositories in current directory
+codegrep() {
+    find . -maxdepth 2 -mindepth 2 -type d -name .git \
+        -execdir sh -o pipefail -c 'git grep --color --line-number --extended-regexp "$@" | perl -pe "s/^([^:]*:[^:]*?)(?:\e\[[^:]*m)?:.{500,}/\$1\e[0m matches/" | awk -v dir="$(basename "$PWD")" -v branch="($(git rev-parse --verify --abbrev-ref HEAD))" "NR==1{print dir, branch}1" && echo' - "$@" \;
+}
+
+# eval bash string inside all repositories in current directory
+allcode() {
+    find . -maxdepth 2 -mindepth 2 -type d -name .git -exec bash -c '
+        dir="${1%.git}"
+        shift
+        cd "$dir"
+        ( eval "$*"; ) | dir="$dir" perl -pe "s/^/\$ENV{dir}\t/"
+        ' bash '{}' "$@" \;
+}
 
 #gtm() {
 #    if [[ "$#" -ne 1 ]]; then
