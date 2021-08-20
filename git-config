@@ -107,7 +107,7 @@ git config --global alias.l '!f() { : git log ;
 }; f'
 
 # Log oneline with date
-git config --global alias.lo "log --all --format='%C(auto)%h %cs %s %an %d%C(reset)'"
+git config --global alias.lo "log --format='%C(auto)%h %cs %s %an %d%C(reset)'"
 
 # Full log graph
 git config --global alias.lg "log --all --graph --format='%C(auto)%h %C(dim red)[%C(reset)%C(red)%cr%C(dim red)]%C(reset)%C(auto) %s %C(dim cyan)<%C(reset)%C(cyan)%an%C(dim cyan)>%C(reset)%C(auto)%d'%C(reset)"
