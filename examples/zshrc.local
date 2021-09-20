@@ -347,8 +347,6 @@ ansicolors() {
     echo
 }
 
-}
-
 #gtm() {
 #    if [[ "$#" -ne 1 ]]; then
 #        echo $'Usage: gtm <meeting-id>\nExample: gtm 123-456-543'
