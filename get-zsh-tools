@@ -3,7 +3,7 @@
 tools=(
     https://github.com/d10n/even-faster-vcs-info.git
     https://github.com/zsh-users/zsh-history-substring-search.git
-    https://github.com/zdharma/fast-syntax-highlighting.git
+    https://github.com/zdharma-continuum/fast-syntax-highlighting.git
     https://github.com/funtoo/keychain.git
 )
 
